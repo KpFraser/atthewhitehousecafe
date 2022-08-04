@@ -1,11 +1,12 @@
 <script setup>
+import CompanyLogo from '@/Components/Logo.vue';
 import BreezeButton from '@/Components/Button.vue';
 import BreezeCheckbox from '@/Components/Checkbox.vue';
 import BreezeGuestLayout from '@/Layouts/Guest.vue';
 import BreezeInput from '@/Components/Input.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Head, Link, useForm, } from '@inertiajs/inertia-vue3';
 
 defineProps({
     canResetPassword: Boolean,
@@ -23,45 +24,83 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const testing = (e) => {
+    const password = document.querySelector("#password")
+
+    const type = password.getAttribute("type") === "password" ? "text" : "password"
+    password.setAttribute("type", type)
+    e.target.classList.toggle('fa-eye-slash')
+};
 </script>
 
 <template>
     <BreezeGuestLayout>
         <Head title="Log in" />
-
-        <BreezeValidationErrors class="mb-4" />
-
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <BreezeLabel for="email" value="Email" />
-                <BreezeInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus autocomplete="username" />
+            <div class="min-h-screen flex justify-center items-center max-w-lg mx-auto font-serif">
+                <div class="w-full mb-28 justify-center">
+                    <CompanyLogo />
+                    <div class="text-center mb-5 mx-auto w-1/3">
+                        <svg version="1.1" viewBox="0 0 181.32 181.06" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                            <g transform="translate(42.28 -1.6975)">
+                                <path d="m46.438 1.72c-7.2873 0.16249-14.513 1.2044-21.516 3.0779-11.203 2.9973-21.839 8.1299-31.233 15.218-9.395 7.088-17.551 16.132-23.809 26.954-6.2574 10.823-10.024 22.399-11.474 34.067-1.4499 11.668-0.58514 23.429 2.4174 34.616 3.0017 11.188 8.1411 21.803 15.239 31.184 7.0983 9.3806 16.159 17.529 26.998 23.778 10.838 6.2488 22.431 10.005 34.116 11.453 11.685 1.4482 23.462 0.58338 34.666-2.4141 11.204-2.9973 21.835-8.129 31.229-15.217 9.395-7.088 17.552-16.132 23.809-26.954 6.2574-10.824 10.024-22.399 11.474-34.067 1.4499-11.669 0.58427-23.429-2.4165-34.616-3.0025-11.188-8.1419-21.803-15.24-31.184-7.0983-9.3814-16.155-17.53-26.993-23.779-10.839-6.2488-22.436-10.005-34.121-11.453-4.3815-0.54309-8.7731-0.7612-13.146-0.66375zm-51.108 50.667c1.0779 0 1.9974 0.3841 2.7545 1.1335 0.75111 0.76208 1.1352 1.6774 1.1352 2.7597v36.601c0 4.4295 0.8374 8.6091 2.5148 12.551 0.10625 0.24965 0.22166 0.49097 0.33289 0.73558 1.633 3.3001 3.7158 6.212 6.2539 8.738 2.9162 2.9119 6.3447 5.2104 10.29 6.8828 3.9512 1.675 8.1367 2.5065 12.569 2.5065h12.295v-0.226c-8.9204-2.5063-15.466-10.684-15.466-20.395 0-11.704 9.501-21.193 21.219-21.193 11.724 0 21.227 9.4892 21.227 21.193 0 10.024-6.9735 18.416-16.34 20.621h11.221c4.4362 0 8.6182-0.83324 12.569-2.5116 3.9453-1.6715 7.3788-3.9692 10.294-6.8777 2.9254-2.9178 5.2498-6.3428 6.9725-10.289l0.15132 0.0583c1.4732-3.7228 2.2131-7.6501 2.2131-11.798v-36.601c0-1.082 0.38413-1.9974 1.135-2.7597 0.75707-0.74916 1.681-1.1333 2.7588-1.1333 1.0811 0 2.0024 0.38411 2.7588 1.1333 0.75703 0.7623 1.1358 1.6777 1.1358 2.7597v36.601c0 5.508-1.0581 10.71-3.1624 15.629l-0.27986 0.14103c-2.0546 4.4424-4.7433 8.3395-8.0855 11.675-3.6183 3.6218-7.8945 6.4798-12.809 8.5876-3.8426 1.6415-7.8603 2.632-12.06 2.994-0.3455 0.0966-0.7031 0.16336-1.0907 0.16336h-39.159c-0.38828 0-0.74497-0.0686-1.0906-0.16336-4.1985-0.36287-8.2121-1.3551-12.056-2.994-4.9145-2.1078-9.1948-4.9658-12.813-8.5876-3.6209-3.6133-6.4849-7.8776-8.5953-12.791l0.075356-0.0326c-1.8305-4.6218-2.7638-9.4883-2.7638-14.624v-36.6c0-1.0829 0.37881-1.9974 1.1358-2.7595 0.75712-0.75025 1.6775-1.1335 2.7589-1.1335z" fill="#639f1e"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+                        {{ status }}
+                    </div>
+                    <form  @submit.prevent="submit" class="text-[22px] mx-10">
+                        <BreezeLabel for="email" class="text-black" value="Username" />
+                        <BreezeInput id="email" type="email" v-model="form.email" required autofocus autocomplete="username" />
+                        <div class="flex mt-2 justify-between">
+                            <BreezeLabel for="password" value="Password" />
+                            <i @click="testing" class="fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>
+                        </div>
+                        <BreezeInput id="password" type="password" v-model="form.password" required autocomplete="current-password" />
+                        <BreezeValidationErrors class="mb-4" />
+                        <div class="flex items-center py-5">
+                            <label class="flex items-center">
+                                <BreezeCheckbox class="accent-[#639f1e] w-6 h-6 mr-4" name="remember" v-model:checked="form.remember" />
+                                <span class="ml-2 text-sm text-black">Remember me</span>
+                            </label>
+                        </div>
+                        <BreezeButton class="bg-[#639f1e] text-black w-full font-sans submit mx-auto py-4 justify-center text-[30px] font-bold" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                            Log In
+                        </BreezeButton>
+                         <!-- <div class="flex items-center justify-end mt-4">
+                            <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
+                                Forgot your password?
+                            </Link>
+                        </div> -->
+                    </form>
+                    
+                    <div class="mt-2 flex justify-center">
+                        <a :href="route('register')" method="post" as="button" class="text-gray-900 hover:text-gray-700 text-[20px]">
+                            <i>Create Account</i>
+                        </a>
+                    </div>
+                </div>
+                <footer class="fixed w-full bottom-0">
+                    <div class="grid mx-auto text-[13.5px] sm:text-[20px] justify-center max-w-lg bg-white py-4 border border-black grid-cols-4">
+                        <div class="text-center hover:text-[#639f1e] text-gray-900">
+                            <i class="mx-auto fa-2x far fa-file-invoice"></i>
+                            <div class="text-center">surveys</div>
+                        </div>
+                        <div class="text-center hover:text-[#639f1e] text-gray-900">
+                            <i class="mx-auto fa-2x fal fa-lightbulb-on"></i>
+                            <div class="text-center">projects</div>
+                        </div>
+                        <div class="text-center hover:text-[#639f1e] text-gray-900">
+                            <i class="mx-auto fa-2x fal fa-user-friends"></i>
+                            <div class="text-center">relationships</div>
+                        </div>
+                        <div class="text-center text-[#639f1e] hover:text-green-600">
+                            <i class="mx-auto fa-2x fas fa-user-circle"></i>
+                            <div class="text-center text-gray-700">accounts</div>
+                        </div>
+                    </div>
+                </footer>
             </div>
-
-            <div class="mt-4">
-                <BreezeLabel for="password" value="Password" />
-                <BreezeInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <BreezeCheckbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Forgot your password?
-                </Link>
-
-                <BreezeButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </BreezeButton>
-            </div>
-        </form>
     </BreezeGuestLayout>
 </template>
