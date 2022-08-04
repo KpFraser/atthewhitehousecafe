@@ -27,6 +27,8 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
+    Route::get('/security', fn ()=> Inertia::render('account/security') )->name('security');
+    Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
     Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
 });
 
