@@ -4,10 +4,11 @@ import CompanyLogo from '@/Components/Logo.vue';
 import LoginLogo from '@/Components/LoginLogo.vue';
 import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
-import { Head } from '@inertiajs/inertia-vue3';
+import { Head, Link } from '@inertiajs/inertia-vue3';
 </script>
 
 <template>
+
     <!-- <Head title="Dashboard" /> -->
     <BreezeAuthenticatedLayout>
         <div class="flex justify-center items-center max-w-lg mx-auto font-serif">
@@ -28,10 +29,10 @@ import { Head } from '@inertiajs/inertia-vue3';
                             <LoginLogo class="max-h-10"/>
                             <div>Security</div>
                         </div>
-                        <div class="flex my-10 items-center justify-start space-x-6 ml-10">   
+                        <Link :href="route('personal')" class="flex my-10 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
-                            <div>Personal</div>
-                        </div>
+                            <i>Personal</i>
+                        </Link>
                         <div class="flex my-10 items-center justify-start space-x-6 ml-10">   
                             <LoginLogo class="max-h-10"/>
                             <div>Healthcare</div>

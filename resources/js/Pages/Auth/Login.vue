@@ -35,6 +35,9 @@ const testing = (e) => {
 </script>
 
 <template>
+
+<!-- <img :src="'../storage/user_286_1607371610.jpg'"> -->
+
     <BreezeGuestLayout>
         <Head title="Log in" />
             <div class="min-h-screen flex justify-center items-center max-w-lg mx-auto font-serif">
@@ -76,9 +79,9 @@ const testing = (e) => {
                     </form>
                     
                     <div class="mt-2 flex justify-center">
-                        <a :href="route('register')" method="post" as="button" class="text-gray-900 hover:text-gray-700 text-[20px]">
+                        <Link :href="route('register')" class="text-gray-900 hover:text-gray-700 text-[20px]">
                             <i>Create Account</i>
-                        </a>
+                        </Link>
                     </div>
                 </div>
                 <footer class="fixed w-full bottom-0">
