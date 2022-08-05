@@ -1,5 +1,5 @@
 <template>
-    <svg class="my-5 mx-4 max-w-lg" version="1.1" viewBox="0 0 211.55 33.425" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <svg version="1.1" viewBox="0 0 211.55 33.425" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <g transform="translate(-80.945 51.486)">
         <g transform="matrix(.16866 0 0 .16866 121.16 -196.76)">
         <g transform="rotate(90 497.91 549.45)" stroke-width=".99975">

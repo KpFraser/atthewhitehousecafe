@@ -18,13 +18,13 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                     <div class="flex justify-end mr-4">
                         <div class="text-[25px] bg-[#639f1e] w-10 h-10 text-center font-bold bg-opacity-75 ">X</div>
                     </div>
-                    <BreezeLabel value="Name" />
+                    <BreezeLabel value="Emergency Contact Name" />
                     <BreezeInput />
-                    <BreezeLabel value="Phone Number" />
+                    <BreezeLabel value="Emergency Contact Number" />
                     <BreezeInput />
-                    <BreezeLabel value="Address" />
+                    <BreezeLabel value="Dr Name" />
                     <BreezeInput />
-                    <BreezeLabel value="Post Code" />
+                    <BreezeLabel value="Dr Number" />
                     <BreezeInput />
                     <div class="flex items-center justify-end mt-4">
                         <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
