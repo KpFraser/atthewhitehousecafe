@@ -23,7 +23,11 @@ class RegisteredUserController extends Controller
     {
         return Inertia::render('Auth/Register');
     }
-
+    
+    public function PasswordUpdate(Request $request)
+    {
+dd($request);
+    }
     /**
      * Handle an incoming registration request.
      *
