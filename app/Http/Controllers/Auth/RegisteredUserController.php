@@ -52,4 +52,9 @@ class RegisteredUserController extends Controller
 
         return redirect(RouteServiceProvider::HOME);
     }
+    public function show()
+    {
+        $email = User::select('email')->first();
+        return response($email);
+    }
 }

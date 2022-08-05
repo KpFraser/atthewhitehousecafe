@@ -8,6 +8,7 @@ import LoginRegisterHeader from '@/Components/LoginRegisterHeader.vue';
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 import { Head, Link, useForm, } from '@inertiajs/inertia-vue3';
 import MasterFooter from '@/Components/MasterFooter.vue';
+import { VueElement } from 'vue';
 
 defineProps({
     canResetPassword: Boolean,
