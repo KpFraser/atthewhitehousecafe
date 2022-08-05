@@ -5,7 +5,9 @@ import BreezeLabel from '@/Components/Label.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import BreezeButton from '@/Components/Button.vue';
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import useFooterList from "../../../use/useFooterList";
+
+const { footerLists } = useFooterList()
 </script>
 
 <template>
@@ -33,7 +35,9 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                     </div>
                 </form>
             </div>
-            <MasterFooter />
-        </div> 
+            <MasterFooter
+                :footerLists="footerLists"
+            />
+        </div>
     </BreezeAuthenticatedLayout>
 </template>

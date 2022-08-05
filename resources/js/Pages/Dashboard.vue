@@ -4,6 +4,9 @@ import LoginLogo from '@/Components/LoginLogo.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import MasterFooter from '@/Components/MasterFooter.vue';
+import useFooterList from "../../use/useFooterList";
+
+const { footerLists } = useFooterList()
 </script>
 
 <template>
@@ -24,11 +27,13 @@ import MasterFooter from '@/Components/MasterFooter.vue';
                         <Link :href="route('healthcare')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
                             <div>Healthcare</div>
-                        </Link> 
+                        </Link>
                     </div>
                 </div>
             </div>
-            <MasterFooter/>
-        </div> 
+            <MasterFooter
+                :footerLists="footerLists"
+            />
+        </div>
     </BreezeAuthenticatedLayout>
 </template>
