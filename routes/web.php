@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,8 @@ Route::get('/', function () {
     ]);
 });
 
-
+Route::get('/emailShow', [RegisteredUserController::class, 'show']);
+Route::post('/PasswordUpdate', [RegisteredUserController::class, 'PasswordUpdate']);
 
 Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');

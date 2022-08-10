@@ -16,7 +16,7 @@ const allErrors = ref({})
 
 const emailShow = () =>{
 
-    axios.get('/api/emailShow').then((response)=>{
+    axios.get('emailShow').then((response)=>{
     userData.email = response.data.email
     })
 }
@@ -25,11 +25,11 @@ const Validation = () =>{
     if(userData.oldPassword == '')
         allErrors.value.oldPassword = ['* Required']
 
-    if(userData.newPassword == '')
-        allErrors.value.newPassword = ['* Required']
+    if(userData.password == '')
+        allErrors.value.password = ['* Required']
     
-    if(userData.verifyPassword == '')
-        allErrors.value.verifyPassword = ['* Required']
+    if(userData.password_confirmation == '')
+        allErrors.value.password_confirmation = ['* Required']
 
     if(Object.values(allErrors.value).length != 0)
         return false
@@ -41,8 +41,8 @@ const PasswordUpdate = () =>{
     let validation_detail = true
     console.log(validation_detail)
     if(validation_detail == true){
-        if(userData.newPassword == userData.verifyPassword){
-            axios.post('/api/PasswordUpdate', userData).then((response)=>{
+        if(userData.password == userData.password_confirmation){
+            axios.post('PasswordUpdate', userData).then((response)=>{
         
             // }).catch(error => {
             //     allErrors.value = error.response.data.errors
@@ -79,12 +79,12 @@ const PasswordUpdate = () =>{
                         <BreezeLabel value="New Password" />
                         <i id="new" class="fa fa-eye fa-lg mt-5 mr-4 bg-opacity-75 text-[#639f1e]"></i>
                     </div>
-                    <BreezeInput type="password" v-model="userData.newPassword"/>
+                    <BreezeInput type="password" v-model="userData.password"/>
                     <div class="flex mt-4 justify-between">
                         <BreezeLabel value="Verify New Password" />
                         <i id="verify" class="fa fa-eye fa-lg mt-5 mr-4 bg-opacity-75 text-[#639f1e]"></i>
                     </div>
-                    <BreezeInput type="password" v-model="userData.verifyPassword"/>
+                    <BreezeInput type="password" v-model="userData.password_confirmation"/>
                     <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
                         Update
                     </BreezeButton>

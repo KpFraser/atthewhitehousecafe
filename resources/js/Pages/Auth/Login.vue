@@ -9,7 +9,9 @@ import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 import { Head, Link, useForm, } from '@inertiajs/inertia-vue3';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import { VueElement } from 'vue';
+import useFooterList from "../../../use/useFooterList";
 
+const { footerLists } = useFooterList()
 defineProps({
     canResetPassword: Boolean,
     status: String,
@@ -72,7 +74,9 @@ const PasswordView = (e) => {
                         </Link>
                     </div>
                 </div>
-                <MasterFooter />
+                <MasterFooter
+                :footerLists="footerLists"
+                 />
             </div>
     </BreezeGuestLayout>
 </template>

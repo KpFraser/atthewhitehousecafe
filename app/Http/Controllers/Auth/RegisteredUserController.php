@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use Illuminat\Support\Facades\Redirect;
 use App\Http\Requests\PasswordRequest;
-
+use Validator;
 
 class RegisteredUserController extends Controller
 {
@@ -28,8 +29,23 @@ class RegisteredUserController extends Controller
     
     public function PasswordUpdate(Request $request)
     {
-        dd(auth()->user());
-        dd(Hash::check($request->oldPassword, auth()->user()->password)); 
+        $user = auth()->user();
+        $request->validate([
+            'oldPassword' => 'required',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()]
+        ]);
+        $OldPassword = $request->oldPassword;
+        $Password = (auth()->user()->password);
+        if (Hash::check($OldPassword, $Password)) { 
+            $user->password = Hash::make($request->password);
+            $user->update();
+            return Redirect::route('dashboard');
+        
+        } else {
+            return redirect()->route('dashboard')->with('failed');
+        }
+
+        
     }
     /**
      * Handle an incoming registration request.
