@@ -26,26 +26,23 @@ class RegisteredUserController extends Controller
     {
         return Inertia::render('Auth/Register');
     }
-    
-    public function PasswordUpdate(Request $request)
+
+    public function passwordUpdate(Request $request)
     {
         $user = auth()->user();
         $request->validate([
             'oldPassword' => 'required',
             'password' => ['required', 'confirmed', Rules\Password::defaults()]
         ]);
-        $OldPassword = $request->oldPassword;
-        $Password = (auth()->user()->password);
-        if (Hash::check($OldPassword, $Password)) { 
+        $oldPassword = $request->oldPassword;
+        $password = ($user->password);
+
+        if (Hash::check($oldPassword, $password)) {
             $user->password = Hash::make($request->password);
             $user->update();
-            return Redirect::route('dashboard');
-        
-        } else {
-            return redirect()->route('dashboard')->with('failed');
-        }
-
-        
+            return response()->success();
+        } else
+            return response()->error("The Password with Confirm Password doesn't match", 500);
     }
     /**
      * Handle an incoming registration request.

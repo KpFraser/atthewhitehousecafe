@@ -5,56 +5,48 @@ import BreezeLabel from '@/Components/Label.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import BreezeButton from '@/Components/Button.vue';
-import { Head, Link } from '@inertiajs/inertia-vue3';
-import { ref, reactive, onMounted } from 'vue';
+// import { Head, Link } from '@inertiajs/inertia-vue3';
+import { ref, reactive } from 'vue';
 import axios from 'axios';
 import useFooterList from "../../../use/useFooterList";
 
 const { footerLists } = useFooterList()
 const userData = reactive({})
-const allErrors = ref({})
+const validationErrors = ref({})
 
-const emailShow = () =>{
-
-    axios.get('emailShow').then((response)=>{
-    userData.email = response.data.email
-    })
-}
 const Validation = () =>{
-    console.log(userData.oldPassword)
-    if(userData.oldPassword == '')
-        allErrors.value.oldPassword = ['* Required']
+    if(userData.oldPassword === '')
+        validationErrors.value.oldPassword = ['* Required']
 
-    if(userData.password == '')
-        allErrors.value.password = ['* Required']
-    
-    if(userData.password_confirmation == '')
-        allErrors.value.password_confirmation = ['* Required']
+    if(userData.password === '')
+        validationErrors.value.password = ['* Required']
 
-    if(Object.values(allErrors.value).length != 0)
-        return false
-    else
-        return true    
+    if(userData.password_confirmation === '')
+        validationErrors.value.password_confirmation = ['* Required']
+
+    return Object.values(allErrors.value).length === 0;
 }
+
 const PasswordUpdate = () =>{
     // let validation_detail = Validation ()
     let validation_detail = true
-    console.log(validation_detail)
-    if(validation_detail == true){
-        if(userData.password == userData.password_confirmation){
-            axios.post('PasswordUpdate', userData).then((response)=>{
-        
-            // }).catch(error => {
-            //     allErrors.value = error.response.data.errors
-            })
+    if(validation_detail === true){
+        if(userData.password === userData.password_confirmation){
+            axios
+                .post('password-update', userData).then((response)=>{
+                    if(response.data.success === true)
+                    {
+                        alert('Password changed successfully!');
+                    }
+                })
+                .catch((error)=>{
+                    if (error.response?.status === 422)
+                        validationErrors.value = error.response.data
+
+                })
         }
     }
 }
- 
-    onMounted( ()=> {
-        emailShow()
-    })
-
 
 </script>
 

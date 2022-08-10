@@ -26,7 +26,7 @@ Route::get('/', function () {
 });
 
 Route::get('/emailShow', [RegisteredUserController::class, 'show']);
-Route::post('/PasswordUpdate', [RegisteredUserController::class, 'PasswordUpdate']);
+Route::post('/password-update', [RegisteredUserController::class, 'passwordUpdate']);
 
 Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
