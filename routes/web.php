@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\UHealthcareController ;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,11 @@ Route::get('/', function () {
 });
 
 Route::get('/emailShow', [RegisteredUserController::class, 'show']);
-Route::post('/password-update', [RegisteredUserController::class, 'passwordUpdate']);
+Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
+Route::post('/password-update', [RegisteredUserController::class, 'PasswordUpdate']);
+Route::post('/personal', [RegisteredUserController::class, 'update']);
+Route::get('/healthcareInfo', [UHealthcareController::class, 'show']);
+Route::post('/healthcare', [UHealthcareController::class, 'update']);
 
 Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');

@@ -74,7 +74,40 @@ class RegisteredUserController extends Controller
     }
     public function show()
     {
-        $email = User::select('email')->first();
+        $email = Auth()->user()->email;
         return response($email);
+    }
+    public function update(Request $request)
+    { 
+        $user = auth()->user();
+        $user->name = $request->name;
+        $user->phone_number = $request->phone_number;
+        $user->address = $request->address;
+        $user->postcode = $request->postcode;
+        $user->update();
+        
+        return response()->success();
+    }
+    public function showPersonalInfo(Request $request)
+    { 
+        $data['name'] = auth()->user()->name;
+        $data['address'] = auth()->user()->address;
+        $data['postcode'] = auth()->user()->postcode;
+        $data['phone_number'] = auth()->user()->phone_number;
+         
+        return ['data'=>$data];
+            
+    }
+    public function healthUpdate(Request $request)
+    { 
+        $user = auth()->user();
+        $user->emergency_name = $request->name;
+        $user->emergency_number = $request->phone_number;
+        $user->address = $request->address;
+        $user->postcode = $request->postcode;
+        $user->update();
+        
+        return response()->success();
+            
     }
 }

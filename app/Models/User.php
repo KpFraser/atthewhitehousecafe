@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone_number',
+        'address',
+        'postcode',
     ];
 
     /**
@@ -41,4 +44,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function UHealthcares()
+    {
+        return $this->hasOne(UHealthcare::class,'user_id','id')->select('user_id','id', 'emergency_name', 'emergency_contact', 'dr_name', 'dr_contact');
+    }
 }

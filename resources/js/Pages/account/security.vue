@@ -5,12 +5,12 @@ import BreezeLabel from '@/Components/Label.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import BreezeButton from '@/Components/Button.vue';
-// import { Head, Link } from '@inertiajs/inertia-vue3';
+import { Head, Link } from '@inertiajs/inertia-vue3';
 import { ref, reactive } from 'vue';
 import axios from 'axios';
 import useFooterList from "../../../use/useFooterList";
 
-const { footerLists } = useFooterList()
+const { footerLists , avb } = useFooterList()
 const userData = reactive({})
 const validationErrors = ref({})
 
@@ -36,10 +36,13 @@ const PasswordUpdate = (post) =>{
                     if(response.data.success === true)
                     {
                         alert('Password changed successfully!');
+                        userData.oldPassword = ''
+                        userData.password = ''
+                        userData.password_confirmation = ''
                     }
                 })
                 .catch((error)=>{
-                    validationErrors.value = error.response.data.errors
+                    validationErrors.value = !!error.response.data.errors ? error.response.data.errors: ''
                 })
         }
     }
@@ -52,12 +55,12 @@ const PasswordUpdate = (post) =>{
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full justify-center">
                 <MasterHeader/>
-                <form method="POST" @submit.prevent="PasswordUpdate(userData)" class="mx-8 mb-28 max-w-lg text-[22px] bg-opacity-75 bg-white">
+                <form method="POST" @submit.prevent="PasswordUpdate(userData)" class="mx-8 mb-28 mt-4 max-w-lg text-[22px] bg-opacity-75 bg-white">
                     <div class="flex justify-end mr-4">
                         <div class="text-[25px] bg-[#639f1e] w-10 h-10 text-center font-bold bg-opacity-75 ">X</div>
                     </div>
                     <BreezeLabel value="Email" />
-                    <BreezeInput :value=" $page.props.auth.user.email" disabled/>
+                    <BreezeInput class="text-sm !mt-4" :value=" $page.props.auth.user.email" disabled/>
                     <div class="flex mt-4 justify-between">
                         <div>
                             <BreezeLabel value="Old Password" />
@@ -85,9 +88,9 @@ const PasswordUpdate = (post) =>{
                     <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
                         Update
                     </BreezeButton>
-                    <BreezeButton class="bg-opacity-75 mt-4 bg-[#800000] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
-                        Login
-                    </BreezeButton>
+                    <Link :href="route('dashboard')" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#800000] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]">
+                        Cancel
+                    </Link>
                 </form>
             </div>
             <MasterFooter
