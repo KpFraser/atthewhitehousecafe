@@ -6,6 +6,7 @@ import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import BreezeButton from '@/Components/Button.vue';
 import useFooterList from "../../../use/useFooterList";
+import { Head, Link } from '@inertiajs/inertia-vue3';
 import {ref, onMounted, reactive } from "vue";
 import axios from 'axios';
 
@@ -30,7 +31,10 @@ const personalInfo = (post) =>{
     let validation_detail = validation (post)
     if(validation_detail === true){
         axios.post('/personal', personal).then((response)=>{
-
+            if(response.data.success === true)
+                {
+                    alert('Personal Information updated successfully!');
+                }
         })
     }
 }
@@ -57,7 +61,7 @@ onMounted( ()=> {
                 <MasterHeader/>
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10" @submit.prevent="personalInfo(personal)">
                     <div class="flex justify-end mr-4">
-                        <div class="text-[25px] bg-[#639f1e] w-10 h-10 text-center font-bold bg-opacity-75 ">X</div>
+                        <Link :href="route('dashboard')" class="text-[25px] bg-[#639f1e] px-1 text-center font-bold bg-opacity-75">X</Link>
                     </div>
                     <div class="flex items-center">
                         <BreezeLabel value="Name" />

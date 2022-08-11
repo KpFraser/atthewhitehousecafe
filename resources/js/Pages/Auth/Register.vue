@@ -20,7 +20,21 @@ const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
-};
+}
+const eye_one = (e) => {
+    const password = document.querySelector("#password")
+
+    const type = password.getAttribute("type") === "password" ? "text" : "password"
+    password.setAttribute("type", type)
+    e.target.classList.toggle('fa-eye-slash')
+}
+const eye_two = (e) => {
+    const password = document.querySelector("#password_confirmation")
+
+    const type = password.getAttribute("type") === "password" ? "text" : "password"
+    password.setAttribute("type", type)
+    e.target.classList.toggle('fa-eye-slash')
+}
 </script>
 
 <template>
@@ -44,7 +58,7 @@ const submit = () => {
                     <div class="mt-4">
                         <div class="flex mt-2 justify-between">
                             <BreezeLabel for="password" value="Password" />
-                            <i @onclick="eye" class="fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>
+                            <i @click="eye_one" class="fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>
                         </div>
                         <BreezeInput id="password" type="password" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="form.password" required autocomplete="new-password" />
                     </div>
@@ -52,7 +66,7 @@ const submit = () => {
                     <div class="mt-4">
                         <div class="flex mt-2 justify-between">
                             <BreezeLabel for="password_confirmation" value="Confirm Password" />
-                            <i @onclick="eye" class="fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>
+                            <i @click="eye_two" class="fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>
                         </div>
                         <BreezeInput id="password_confirmation" type="password" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="form.password_confirmation" required autocomplete="new-password" />
                     </div>

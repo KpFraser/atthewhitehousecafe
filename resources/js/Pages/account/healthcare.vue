@@ -8,7 +8,7 @@
     import useFooterList from "../../../use/useFooterList";
     import {ref, onMounted, reactive } from "vue";
     import axios from 'axios';
-    // import { Head, Link } from '@inertiajs/inertia-vue3';
+    import { Head, Link } from '@inertiajs/inertia-vue3';
 
     const { footerLists } = useFooterList()
     const health = reactive ({})
@@ -32,7 +32,9 @@
         if(validation_detail === true){
             axios
                 .post('/healthcare', health).then((response)=>{
-
+                    {
+                        alert('Healthcare Information updated successfully!');
+                    }
                 })
         }
     }
@@ -62,7 +64,7 @@
                 <MasterHeader/>
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-[22px] mx-10"  @submit.prevent="healthInfo(health)">
                     <div class="flex justify-end mr-4">
-                        <div class="text-[25px] bg-[#639f1e] w-10 h-10 text-center font-bold bg-opacity-75 ">X</div>
+                        <Link :href="route('dashboard')" class="text-[25px] bg-[#639f1e] px-1 text-center font-bold bg-opacity-75">X</Link>
                     </div>
                     <div class="flex items-center">
                         <BreezeLabel value="Emergency Contact Name" />
