@@ -8,7 +8,10 @@ import BreezeButton from '@/Components/Button.vue';
 import useFooterList from "../../../use/useFooterList";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import {ref, onMounted, reactive } from "vue";
+import commonFunctions from "@/use/common";
 import axios from 'axios';
+
+const { Toast } = commonFunctions()
 
 const { footerLists } = useFooterList()
 const personal = reactive({})
@@ -24,18 +27,24 @@ const validation = (post) =>{
         validationErrors.value.phone_number = ['* Required feild!']
     if(!post.postcode)
         validationErrors.value.postcode = ['* Required feild!']
-  
-    return Object.values(validationErrors.value).length == 0;
+
+    return Object.values(validationErrors.value).length === 0;
 }
 const personalInfo = (post) =>{
+    if(personal.processing) return;
+
+    personal.processing = true;
     let validation_detail = validation (post)
     if(validation_detail === true){
-        axios.post('/personal', personal).then((response)=>{
+        axios
+            .post('/personal', personal)
+            .then((response)=>{
             if(response.data.success === true)
-                {
-                    alert('Personal Information updated successfully!');
-                }
-        })
+                Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
+            })
+            .finally(()=>{
+                personal.processing = false;
+            })
     }
 }
 const showInfo = () => {
@@ -65,26 +74,26 @@ onMounted( ()=> {
                     </div>
                     <div class="flex items-center">
                         <BreezeLabel value="Name" />
-                        <div v-if="personal.name ==''" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                        <div v-if="!personal.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
                     </div>
                     <BreezeInput  @focusout="delete validationErrors['name']" v-model="personal.name" />
                     <div class="flex items-center">
                         <BreezeLabel value="Phone Number" />
-                        <div v-if="personal.phone_number ==''" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.phone_number">{{ message }}</div>
+                        <div v-if="!personal.phone_number" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.phone_number">{{ message }}</div>
                     </div>
                     <BreezeInput  @focusout="delete validationErrors['phone_number']"  v-model="personal.phone_number" />
                     <div class="flex items-center">
                         <BreezeLabel value="Address" />
-                        <div v-if="personal.address ==''" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.address">{{ message }}</div>
+                        <div v-if="!personal.address" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.address">{{ message }}</div>
                     </div>
                     <BreezeInput  @focusout="delete validationErrors['address']" v-model="personal.address" />
                     <div class="flex items-center">
                         <BreezeLabel value="Post Code" />
-                        <div v-if="personal.postcode ==''" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.postcode">{{ message }}</div>
+                        <div v-if="!personal.postcode" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.postcode">{{ message }}</div>
                     </div>
                     <BreezeInput  @focusout="delete validationErrors['postcode']" v-model="personal.postcode" />
                     <div class="flex items-center justify-end mt-4">
-                        <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
+                        <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': personal.processing }" :disabled="personal.processing">
                             Save
                         </BreezeButton>
                     </div>

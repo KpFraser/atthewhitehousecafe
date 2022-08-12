@@ -26,12 +26,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/emailShow', [RegisteredUserController::class, 'show']);
-Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
-Route::post('/password-update', [RegisteredUserController::class, 'PasswordUpdate']);
-Route::post('/personal', [RegisteredUserController::class, 'update']);
-Route::get('/healthcareInfo', [UHealthcareController::class, 'show']);
-Route::post('/healthcare', [UHealthcareController::class, 'update']);
+
 
 Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
@@ -39,6 +34,13 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
     Route::get('/survey', fn ()=> Inertia::render('account/survey') )->name('survey');
     Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
+
+    Route::get('/emailShow', [RegisteredUserController::class, 'show']);
+    Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
+    Route::post('/password-update', [RegisteredUserController::class, 'PasswordUpdate']);
+    Route::post('/personal', [RegisteredUserController::class, 'update']);
+    Route::get('/healthcareInfo', [UHealthcareController::class, 'show']);
+    Route::post('/healthcare', [UHealthcareController::class, 'update']);
 });
 
 require __DIR__.'/auth.php';
