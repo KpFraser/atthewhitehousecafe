@@ -1,5 +1,6 @@
 <script setup>
 import LoginLogo from '@/Components/LoginLogo.vue';
+import { Link } from '@inertiajs/inertia-vue3';
 import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 </script>
 
@@ -8,9 +9,9 @@ import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
     <div class="text-white ml-10">
         <div class="text-[25px]">{{ $page.props.auth.user.name }}</div>
         <div class="text-[16px]">{{ $page.props.auth.user.email }}</div>
-        <BreezeResponsiveNavLink :href="route('logout')" class="text-white !0px-0" method="post" as="button">
+        <Link :href="route('logout')" class="font-medium text-white hover:text-[#639f1e] !0px-0" method="post" as="button">
             Log Out
-        </BreezeResponsiveNavLink>
+        </Link>
     </div>
     <LoginLogo class="max-h-24 mx-2 w-1/2"/>
 </div>

@@ -1,40 +1,42 @@
 <script setup>
-import BreezeButton from '@/Components/Button.vue';
-import MasterFooter from '@/Components/MasterFooter.vue';
-import BreezeGuestLayout from '@/Layouts/Guest.vue';
-import BreezeInput from '@/Components/Input.vue';
-import BreezeLabel from '@/Components/Label.vue';
-import LoginRegisterHeader from '@/Components/LoginRegisterHeader.vue';
-import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+    import BreezeButton from '@/Components/Button.vue';
+    import MasterFooter from '@/Components/MasterFooter.vue';
+    import BreezeGuestLayout from '@/Layouts/Guest.vue';
+    import BreezeInput from '@/Components/Input.vue';
+    import BreezeLabel from '@/Components/Label.vue';
+    import LoginRegisterHeader from '@/Components/LoginRegisterHeader.vue';
+    import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
+    import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+    import useFooterList from "../../../use/useFooterList";
 
-const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    terms: false,
-});
-
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+    const { footerLists , avb } = useFooterList()
+    const form = useForm({
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        terms: false,
     });
-}
-const eye_one = (e) => {
-    const password = document.querySelector("#password")
 
-    const type = password.getAttribute("type") === "password" ? "text" : "password"
-    password.setAttribute("type", type)
-    e.target.classList.toggle('fa-eye-slash')
-}
-const eye_two = (e) => {
-    const password = document.querySelector("#password_confirmation")
+    const submit = () => {
+        form.post(route('register'), {
+            onFinish: () => form.reset('password', 'password_confirmation'),
+        });
+    }
+    const eye_one = (e) => {
+        const password = document.querySelector("#password")
 
-    const type = password.getAttribute("type") === "password" ? "text" : "password"
-    password.setAttribute("type", type)
-    e.target.classList.toggle('fa-eye-slash')
-}
+        const type = password.getAttribute("type") === "password" ? "text" : "password"
+        password.setAttribute("type", type)
+        e.target.classList.toggle('fa-eye-slash')
+    }
+    const eye_two = (e) => {
+        const password = document.querySelector("#password_confirmation")
+
+        const type = password.getAttribute("type") === "password" ? "text" : "password"
+        password.setAttribute("type", type)
+        e.target.classList.toggle('fa-eye-slash')
+    }
 </script>
 
 <template>
@@ -80,7 +82,9 @@ const eye_two = (e) => {
                     </div>
                 </form>
             </div>
-            <MasterFooter />
+            <MasterFooter
+                :footerLists="footerLists"
+            />
         </div>
     </BreezeGuestLayout>
 </template>
