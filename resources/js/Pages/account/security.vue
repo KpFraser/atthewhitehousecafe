@@ -1,56 +1,64 @@
 <script setup>
-    import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-    import BreezeInput from '@/Components/Input.vue';
-    import BreezeLabel from '@/Components/Label.vue';
-    import MasterFooter from '@/Components/MasterFooter.vue';
-    import MasterHeader from '@/Components/MasterHeader.vue';
-    import BreezeButton from '@/Components/Button.vue';
-    import { Head, Link } from '@inertiajs/inertia-vue3';
-    import { ref, reactive } from 'vue';
-    import axios from 'axios';
-    import useFooterList from "../../../use/useFooterList";
+import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
+import BreezeInput from '@/Components/Input.vue';
+import BreezeLabel from '@/Components/Label.vue';
+import MasterFooter from '@/Components/MasterFooter.vue';
+import MasterHeader from '@/Components/MasterHeader.vue';
+import BreezeButton from '@/Components/Button.vue';
+import { Head, Link } from '@inertiajs/inertia-vue3';
+import { ref, reactive } from 'vue';
+import commonFunctions from "@/use/common";
+import axios from 'axios';
+import useFooterList from "../../../use/useFooterList";
 
-    const { footerLists , avb } = useFooterList(),
-        userData = reactive({}),
-        validationErrors = ref({}),
-        passwordVisible = ref({
-            old_pass: false, 
-            new_pass: false, 
-            confirm_pass: false
-        })
+const { Toast } = commonFunctions()
 
-    const validation = (post) =>{
+const { footerLists , avb } = useFooterList(),
+    userData = reactive({}),
+    validationErrors = ref({}),
+    passwordVisible = ref({
+        old_pass: false,
+        new_pass: false,
+        confirm_pass: false
+    })
 
-        if(!post.oldPassword)
-            validationErrors.value.oldPassword = ['* Required feild!']
-        if(!post.password)
-            validationErrors.value.password = ['* Required feild!']
-        if(!post.password_confirmation)
-            validationErrors.value.password_confirmation = ['* Required feild!']
-        if(post.password != post.password_confirmation)
-            validationErrors.value.password_confirmation = ['* Password Confirmation failed!']
-    
-        return Object.values(validationErrors.value).length == 0;
+const validation = (post) =>{
+
+    if(!post.oldPassword)
+        validationErrors.value.oldPassword = ['* Required feild!']
+    if(!post.password)
+        validationErrors.value.password = ['* Required feild!']
+    if(!post.password_confirmation)
+        validationErrors.value.password_confirmation = ['* Required feild!']
+    if(post.password !== post.password_confirmation)
+        validationErrors.value.password_confirmation = ['* Password Confirmation failed!']
+
+    return Object.values(validationErrors.value).length === 0;
+}
+
+const PasswordUpdate = (post) =>{
+    if(userData.processing) return
+
+    userData.processing = true
+    let validation_detail = validation (post)
+    if(validation_detail === true){
+        axios
+            .post('password-update', userData)
+            .then((response)=>{
+                if(response.data.success === true)
+                {
+                    Toast.fire({icon: "success", title: "Password changed successfully!!"});
+                    userData.oldPassword = ''
+                    userData.password = ''
+                    userData.password_confirmation = ''
+                }
+            })
+            .catch((error)=>{
+                validationErrors.value = !!error.response.data.errors ? error.response.data.errors: ''
+            })
+            .finally(()=> userData.processing = false)
     }
-
-    const PasswordUpdate = (post) =>{
-        let validation_detail = validation (post)
-        if(validation_detail === true){
-            axios
-                .post('password-update', userData).then((response)=>{
-                    if(response.data.success === true)
-                    {
-                        alert('Password changed successfully!');
-                        userData.oldPassword = ''
-                        userData.password = ''
-                        userData.password_confirmation = ''
-                    }
-                })
-                .catch((error)=>{
-                    validationErrors.value = !!error.response.data.errors ? error.response.data.errors: ''
-                })
-        }
-    }
+}
 </script>
 
 <template>
@@ -89,7 +97,7 @@
                         <i @click="passwordVisible.confirm_pass = !passwordVisible.confirm_pass" class="fa fa-lg mt-5 mr-4 bg-opacity-75 text-[#639f1e]" :class=" !passwordVisible.confirm_pass ? 'fa-eye' :'fa-eye-slash'"></i>
                     </div>
                     <BreezeInput :type="!passwordVisible.confirm_pass ? 'password' : 'text'"  @focusout="delete validationErrors['password_confirmation']" v-model="userData.password_confirmation"/>
-                    <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
+                    <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': userData.processing }" :disabled="userData.processing">
                         Update
                     </BreezeButton>
                     <Link :href="route('dashboard')" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#800000] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]">
