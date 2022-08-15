@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\UHealthcareController ;
+use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController } ;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +35,8 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/survey', fn ()=> Inertia::render('account/survey') )->name('survey');
     Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
 
+    Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
+    Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
     Route::get('/emailShow', [RegisteredUserController::class, 'show']);
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
     Route::post('/password-update', [RegisteredUserController::class, 'PasswordUpdate']);
