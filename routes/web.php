@@ -29,11 +29,18 @@ Route::get('/', function () {
 
 
 Route::group(['middleware' => ['auth', 'verified']], function (){
+    Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
     Route::get('/security', fn ()=> Inertia::render('account/security') )->name('security');
     Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
     Route::get('/survey', fn ()=> Inertia::render('account/survey') )->name('survey');
-    Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
+    Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
+    Route::get('/proposed', fn ()=> Inertia::render('project/proposed') )->name('proposed');
+    Route::get('/current', fn ()=> Inertia::render('project/current') )->name('current');
+    Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
+    Route::get('/project', fn ()=> Inertia::render('project/project') )->name('project');
+    Route::get('/allprojects', fn ()=> Inertia::render('project/allprojects') )->name('project');
+
 
     Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
     Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameName;
+use App\Mail\SurveyMail;
 use App\Models\SurveySubmission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\SurveySubmissionResource;
 use App\Models\SurveyContact;
 
@@ -60,6 +62,7 @@ class SurveySubmissionController extends Controller
                 'phone_number'=> $request->phone_number,
             ]);
             return response()->success();
+            Mail::to('salman9607@gmail.com')->send(new SurveyMail());
         }else{
             return response()->error(500);
         }
