@@ -5,21 +5,39 @@
     import MasterFooter from '@/Components/MasterFooter.vue';
     import MasterHeader from '@/Components/MasterHeader.vue';
     import BreezeButton from '@/Components/Button.vue';
+    import commonFunctions from "@/use/common";
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import { ref, reactive , onMounted} from 'vue';
     import axios from 'axios';
     import useFooterList from "../../../use/useFooterList";
 
+    const { Toast } = commonFunctions()
     const { footerLists , avb } = useFooterList()
     const survey = reactive({answers: {}})
     const names = ref({})
+    const validationErrors = ref({})
 
-    const surveyData = () =>{
-        axios
-            .post('/surveyProjects', survey)
-            .then((response)=>{
+    const validation = (post) =>{
 
-        })
+        if(!post.name)
+            validationErrors.value.name = ['* Required feild!']
+        if(!post.email)
+            validationErrors.value.email = ['* Required feild!']
+        if(!post.phone_number)
+            validationErrors.value.phone_number = ['* Required feild!']
+         
+        return Object.values(validationErrors.value).length === 0;
+    }
+    const surveyData = (post) =>{
+        let validation_detail = validation (post)
+        if(validation_detail === true){
+            axios
+                .post('/surveyProjects', survey)
+                .then((response)=>{
+                if(response.data.success === true)
+                    Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
+            })
+        }
     }
     const surveyProjects = () =>{
         axios
@@ -38,7 +56,7 @@
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full justify-center">
                 <MasterHeader/>
-                <form class="border-8 border-[#556553] border-opacity-75 mb-32 mt-5 mx-auto" @submit.prevent="surveyData()">
+                <form class="border-8 border-[#556553] border-opacity-75 mb-32 mt-5 mx-auto" @submit.prevent="surveyData(survey)">
                     <h1 class="bg-[#639f1e] bg-opacity-75 p-3">How might you engage with these projects-</h1>
                     <div class="p-4 space-y-4">
                         <div class="flex">
@@ -63,16 +81,25 @@
                     <h1 class="bg-[#639f1e] bg-opacity-75 py-3">If you would like us to contact you, please complete-</h1>
                     <div class="w-full p-2">
                         <div class="mb-6">
-                            <BreezeLabel value="Name"/>
-                            <BreezeInput v-model="survey.name"/>
+                            <div class="flex items-center">
+                                <BreezeLabel value="Name" />
+                                <div v-if="!survey.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                            </div>
+                            <BreezeInput type="text" v-model="survey.name" @focusout="delete validationErrors['name']"/>
                         </div>
                         <div class="mb-6">
-                            <BreezeLabel value="Phone Number"/>
-                            <BreezeInput v-model="survey.phone_number"/>
+                            <div class="flex items-center">
+                                <BreezeLabel value="Phone Number"/>
+                                <div v-if="!survey.phone_number" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.phone_number">{{ message }}</div>
+                            </div>
+                            <BreezeInput type="tel" v-model="survey.phone_number" @focusout="delete validationErrors['phone_number']"/>
                         </div>
                         <div class="mb-6">
-                            <BreezeLabel value="Email"/>
-                            <BreezeInput v-model="survey.email"/>
+                            <div class="flex items-center">
+                                <BreezeLabel value="Email"/>
+                                <div v-if="!survey.email" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.email">{{ message }}</div>
+                            </div>
+                            <BreezeInput type="email" v-model="survey.email" @focusout="delete validationErrors['email']"/>
                         </div>
                         <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
                             Save

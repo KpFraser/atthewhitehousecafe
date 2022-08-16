@@ -6,7 +6,7 @@ use App\Models\GameName;
 use App\Models\SurveySubmission;
 use Illuminate\Http\Request;
 use App\Http\Resources\SurveySubmissionResource;
-
+use App\Models\SurveyContact;
 
 class SurveySubmissionController extends Controller
 {
@@ -38,7 +38,7 @@ class SurveySubmissionController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->answers);
+        // dd(auth()->user()->id);
         // echo "<pre>";
         // echo $key;
         if($request->answers != ""){
@@ -47,11 +47,18 @@ class SurveySubmissionController extends Controller
                     SurveySubmission::updateOrCreate([
                         'game_id'=> $key,
                     ],[
-                        'user_id'=> auth()->id(),
+                        'user_id'=> auth()->user()->id,
                         'options'=> $ans,
                     ]);
                 };
-            }
+            };
+            SurveyContact::updateOrCreate([
+                'user_id'=> auth()->user()->id,
+            ],[
+                'name'=> $request->name,
+                'email'=> $request->email,
+                'phone_number'=> $request->phone_number,
+            ]);
             return response()->success();
         }else{
             return response()->error(500);

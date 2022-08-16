@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('survey_contact', function (Blueprint $table) {
+        Schema::create('survey_contacts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable(false)->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name')->nullable(true);

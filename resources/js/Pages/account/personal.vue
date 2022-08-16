@@ -76,22 +76,22 @@ onMounted( ()=> {
                         <BreezeLabel value="Name" />
                         <div v-if="!personal.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
                     </div>
-                    <BreezeInput  @focusout="delete validationErrors['name']" v-model="personal.name" />
+                    <BreezeInput @focusout="delete validationErrors['name']" v-model="personal.name" />
                     <div class="flex items-center">
                         <BreezeLabel value="Phone Number" />
                         <div v-if="!personal.phone_number" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.phone_number">{{ message }}</div>
                     </div>
-                    <BreezeInput  @focusout="delete validationErrors['phone_number']"  v-model="personal.phone_number" />
+                    <BreezeInput @focusout="delete validationErrors['phone_number']"  v-model="personal.phone_number" />
                     <div class="flex items-center">
                         <BreezeLabel value="Address" />
                         <div v-if="!personal.address" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.address">{{ message }}</div>
                     </div>
-                    <BreezeInput  @focusout="delete validationErrors['address']" v-model="personal.address" />
+                    <BreezeInput @focusout="delete validationErrors['address']" v-model="personal.address" />
                     <div class="flex items-center">
                         <BreezeLabel value="Post Code" />
                         <div v-if="!personal.postcode" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.postcode">{{ message }}</div>
                     </div>
-                    <BreezeInput  @focusout="delete validationErrors['postcode']" v-model="personal.postcode" />
+                    <BreezeInput @focusout="delete validationErrors['postcode']" v-model="personal.postcode" />
                     <div class="flex items-center justify-end mt-4">
                         <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': personal.processing }" :disabled="personal.processing">
                             Save
