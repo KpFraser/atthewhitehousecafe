@@ -17,7 +17,7 @@ use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController } ;
 |
 */
 
-Route::get('/', function () {
+Route::middleware('guest')->get('/', function () {
     return Inertia::render('Auth/Login', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
