@@ -39,7 +39,8 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/current', fn ()=> Inertia::render('project/current') )->name('current');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/project', fn ()=> Inertia::render('project/project') )->name('project');
-    Route::get('/allprojects', fn ()=> Inertia::render('project/allprojects') )->name('project');
+    Route::get('/allprojects', fn ()=> Inertia::render('project/allprojects') )->name('allproject');
+    Route::get('/roster', fn ()=> Inertia::render('project/roster') )->name('roster');
 
 
     Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
