@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster', fn ()=> Inertia::render('project/roster') )->name('roster');
 
 
+    Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
     Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
     Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
     Route::get('/emailShow', [RegisteredUserController::class, 'show']);

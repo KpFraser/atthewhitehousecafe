@@ -40,20 +40,6 @@ class SurveySubmissionController extends Controller
      */
     public function store(Request $request)
     {
-        // dd(auth()->user()->id);
-        // echo "<pre>";
-        // echo $key;
-        if($request->answers != ""){
-            foreach ($request->answers as $key => $ans) {
-                if ($ans != "") {
-                    SurveySubmission::updateOrCreate([
-                        'game_id'=> $key,
-                    ],[
-                        'user_id'=> auth()->user()->id,
-                        'options'=> $ans,
-                    ]);
-                };
-            };
             SurveyContact::updateOrCreate([
                 'user_id'=> auth()->user()->id,
             ],[
@@ -63,9 +49,6 @@ class SurveySubmissionController extends Controller
             ]);
             return response()->success();
             Mail::to('salman9607@gmail.com')->send(new SurveyMail());
-        }else{
-            return response()->error(500);
-        }
     }
 
     /**
@@ -76,7 +59,7 @@ class SurveySubmissionController extends Controller
      */
     public function show()
     {
-        $data = GameName::select('id', 'name')->get();
+        $data = GameName::with('SurveySubmission')->get();
         return response($data);
     }
 
@@ -86,11 +69,20 @@ class SurveySubmissionController extends Controller
      * @param  \App\Models\SurveySubmission  $surveySubmission
      * @return \Illuminate\Http\Response
      */
-    public function edit(SurveySubmission $surveySubmission)
+    public function option(Request $request)
     {
-        //
+        if($request->id != ""){
+            SurveySubmission::updateOrCreate([
+                    'game_id'=> $request->id,
+                ],[
+                    'user_id'=> auth()->user()->id,
+                    'options'=> $request->option,
+                ]);
+                    return response()->success();
+        }else{
+            return response()->error(500);
+        }
     }
-
     /**
      * Update the specified resource in storage.
      *

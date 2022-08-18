@@ -11,4 +11,8 @@ class GameName extends Model
     protected $fillable = [
         'name'
     ];
+    public function SurveySubmission()
+    {
+        return $this->hasOne(SurveySubmission::class,'game_id','id')->select('user_id', 'id', 'game_id', 'options');
+    }
 }

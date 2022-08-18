@@ -16,6 +16,7 @@
     const survey = reactive({answers: {}})
     const names = ref({})
     const validationErrors = ref({})
+    const selected = reactive({})
 
     const validation = (post) =>{
 
@@ -39,6 +40,15 @@
             })
         }
     }
+    const selectOption = (event, id) =>{
+        selected.id = id
+        selected.option = event.target.value
+
+        axios.post('/selectOption', selected).then((response)=>{
+
+        })
+    }
+
     const surveyProjects = () =>{
         axios
             .get('/surveyProjects')
@@ -56,7 +66,7 @@
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full justify-center">
                 <MasterHeader/>
-                <form class="border-8 border-[#556553] border-opacity-75 mb-32 mt-5 mx-auto" @submit.prevent="surveyData(survey)">
+                <div class="border-8 border-[#556553] border-opacity-75 mb-32 mt-5 mx-auto">
                     <h1 class="bg-[#639f1e] bg-opacity-75 p-3">How might you engage with these projects-</h1>
                     <div class="p-4 space-y-4">
                         <div class="flex">
@@ -68,44 +78,47 @@
                                 <div>Leader</div>
                             </div>
                         </div>
+                         
                         <div class="flex items-center" v-for="options in names">
                             <BreezeLabel class="w-1/2 text-[14px]" :value="options.name"/>
-                            <div class="flex w-full justify-between">
-                                <input type="radio" v-model="survey.answers[options.id]" value="0" :id="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-model="survey.answers[options.id]" value="1" :id="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-model="survey.answers[options.id]" value="2" :id="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-model="survey.answers[options.id]" value="3" :id="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                            </div>
+                            <form class="flex w-full justify-between">
+                                <input type="radio" v-bind:checked="options.survey_submission.options == 0" @change="selectOption($event, options.id)" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" v-bind:checked="options.survey_submission.options == 1" @change="selectOption($event, options.id)" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" v-bind:checked="options.survey_submission.options == 2" @change="selectOption($event, options.id)" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" v-bind:checked="options.survey_submission.options == 3" @change="selectOption($event, options.id)" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                            </form>
                         </div>
                     </div>
-                    <h1 class="bg-[#639f1e] bg-opacity-75 py-3">If you would like us to contact you, please complete-</h1>
-                    <div class="w-full p-2">
-                        <div class="mb-6">
-                            <div class="flex items-center">
-                                <BreezeLabel value="Name" />
-                                <div v-if="!survey.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                    <form class="mt-5 mx-auto" @submit.prevent="surveyData(survey)">
+                        <h1 class="bg-[#639f1e] bg-opacity-75 py-3">If you would like us to contact you, please complete-</h1>
+                        <div class="w-full p-2">
+                            <div class="mb-6">
+                                <div class="flex items-center">
+                                    <BreezeLabel value="Name" />
+                                    <div v-if="!survey.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                                </div>
+                                <BreezeInput type="text" v-model="survey.name" @focusout="delete validationErrors['name']"/>
                             </div>
-                            <BreezeInput type="text" v-model="survey.name" @focusout="delete validationErrors['name']"/>
-                        </div>
-                        <div class="mb-6">
-                            <div class="flex items-center">
-                                <BreezeLabel value="Phone Number"/>
-                                <div v-if="!survey.phone_number" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.phone_number">{{ message }}</div>
+                            <div class="mb-6">
+                                <div class="flex items-center">
+                                    <BreezeLabel value="Phone Number"/>
+                                    <div v-if="!survey.phone_number" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.phone_number">{{ message }}</div>
+                                </div>
+                                <BreezeInput type="number" v-model="survey.phone_number" @focusout="delete validationErrors['phone_number']"/>
                             </div>
-                            <BreezeInput type="tel" v-model="survey.phone_number" @focusout="delete validationErrors['phone_number']"/>
-                        </div>
-                        <div class="mb-6">
-                            <div class="flex items-center">
-                                <BreezeLabel value="Email"/>
-                                <div v-if="!survey.email" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.email">{{ message }}</div>
+                            <div class="mb-6">
+                                <div class="flex items-center">
+                                    <BreezeLabel value="Email"/>
+                                    <div v-if="!survey.email" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.email">{{ message }}</div>
+                                </div>
+                                <BreezeInput type="email" v-model="survey.email" @focusout="delete validationErrors['email']"/>
                             </div>
-                            <BreezeInput type="email" v-model="survey.email" @focusout="delete validationErrors['email']"/>
+                            <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
+                                Save
+                            </BreezeButton>
                         </div>
-                        <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
-                            Save
-                        </BreezeButton>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
             <MasterFooter
                 :footerLists="footerLists"
