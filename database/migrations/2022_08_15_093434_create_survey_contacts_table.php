@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('survey_contacts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable(false)->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+//            $table->foreignId('user_id')->nullable(true)->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('session_id');
             $table->string('name')->nullable(true);
             $table->string('phone_number')->nullable(true);
             $table->string('email')->nullable(true);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Session;
 
 class GameName extends Model
 {
@@ -13,6 +14,6 @@ class GameName extends Model
     ];
     public function SurveySubmission()
     {
-        return $this->hasOne(SurveySubmission::class,'game_id','id')->select('user_id', 'id', 'game_id', 'options');
+        return $this->hasOne(SurveySubmission::class,'game_id','id')->select('id', 'game_id', 'options')->where('session_id', Session::getId());
     }
 }
