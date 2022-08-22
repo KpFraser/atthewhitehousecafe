@@ -13,7 +13,7 @@
 
     const { Toast } = commonFunctions()
     const { footerLists , avb } = useFooterList()
-    const survey = reactive({answers: {}})
+    const survey = reactive({})
     const names = ref({})
     const validationErrors = ref({})
     const selected = reactive({})
@@ -29,24 +29,20 @@
 
         return Object.values(validationErrors.value).length === 0;
     }
+
     const surveyData = (post) =>{
+        console.log(selected);
+        if(survey.processing) return
+            survey.processing = true
         let validation_detail = validation (post)
         if(validation_detail === true){
             axios
-                .post('/surveyProjects', survey)
+                .post('/surveyProjects', {survey, selected})
                 .then((response)=>{
                 if(response.data.success === true)
                     Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
-            })
+            }).finally(()=> survey.processing = false)
         }
-    }
-    const selectOption = (event, id) =>{
-        selected.id = id
-        selected.option = event.target.value
-
-        axios.post('/selectOption', selected).then((response)=>{
-
-        })
     }
 
     const surveyProjects = () =>{
@@ -82,17 +78,10 @@
                         <div class="flex items-center" v-for="options in names">
                             <BreezeLabel class="w-1/2 text-[14px]" :value="options.name"/>
                             <form class="flex w-full justify-between">
-<<<<<<< HEAD
-                                <input type="radio" :checked="options.survey_submission.options == 0" @change="selectOption($event, options.id)" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" :checked="options.survey_submission.options == 1" @change="selectOption($event, options.id)" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" :checked="options.survey_submission.options == 2" @change="selectOption($event, options.id)" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" :checked="options.survey_submission.options == 3" @change="selectOption($event, options.id)" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-=======
-                                <input type="radio" v-bind:checked="options.survey_submission?.options === 0" @change="selectOption($event, options.id)" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-bind:checked="options.survey_submission?.options === 1" @change="selectOption($event, options.id)" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-bind:checked="options.survey_submission?.options === 2" @change="selectOption($event, options.id)" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-bind:checked="options.survey_submission?.options === 3" @change="selectOption($event, options.id)" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
->>>>>>> ee83b34de1a72a15c1494ea39aedc05ead923e65
+                                <input type="radio" checked="options.survey_submission.options == 0" v-model="selected[options.id]" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" checked="options.survey_submission.options == 1" v-model="selected[options.id]" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" checked="options.survey_submission.options == 2" v-model="selected[options.id]" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" checked="options.survey_submission.options == 3" v-model="selected[options.id]" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
                             </form>
                         </div>
                     </div>
@@ -120,7 +109,7 @@
                                 </div>
                                 <BreezeInput type="email" v-model="survey.email" @focusout="delete validationErrors['email']"/>
                             </div>
-                            <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold">
+                            <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': survey.processing }" :disabled="survey.processing">
                                 Save
                             </BreezeButton>
                         </div>

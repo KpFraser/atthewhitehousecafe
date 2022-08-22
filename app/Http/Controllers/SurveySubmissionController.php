@@ -42,16 +42,27 @@ class SurveySubmissionController extends Controller
      */
     public function store(Request $request)
     {
-            SurveyContact::updateOrCreate([
+      
+        $survey_contact = SurveyContact::updateOrCreate([
+            'session_id'=> Session::getId(),
+        ],[
+            'name'=> $request->survey['name'],
+            'email'=> $request->survey['email'],
+            'phone_number'=> $request->survey['phone_number'],
+        ]);
+    
+        foreach($request->selected as $key=>$ans){
+            
+            SurveySubmission::updateOrCreate([
                 'session_id'=> Session::getId(),
+                'game_id'=> $key,
             ],[
-                'name'=> $request->name,
-                'email'=> $request->email,
-                'phone_number'=> $request->phone_number,
+                'options'=> $ans,
+                'survey_contact_id'=> $survey_contact->id,
             ]);
-
-            return response()->success();
-            Mail::to('salman9607@gmail.com')->send(new SurveyMail());
+        }
+        return response()->success();
+        Mail::to('salman9607@gmail.com')->send(new SurveyMail());
     }
 
     /**
@@ -75,20 +86,20 @@ class SurveySubmissionController extends Controller
      */
     public function option(Request $request)
     {
-        if($request->id != ""){
-            SurveySubmission::updateOrCreate([
-                    'session_id'=> Session::getId(),
-                    'game_id'=> $request->id,
-                ],[
-                    'session_id'=> Session::getId(),
-                    'options'=> $request->option,
-                    'survey_contact_id'=> 1,
-                ]);
+        // if($request->id != ""){
+        //     SurveySubmission::updateOrCreate([
+        //             'session_id'=> Session::getId(),
+        //             'game_id'=> $request->id,
+        //         ],[
+        //             'session_id'=> Session::getId(),
+        //             'options'=> $request->option,
+        //             'survey_contact_id'=> 1,
+        //         ]);
 
-            return response()->success();
-        }else{
-            return response()->error(500);
-        }
+        //     return response()->success();
+        // }else{
+        //     return response()->error(500);
+        // }
     }
     /**
      * Update the specified resource in storage.
