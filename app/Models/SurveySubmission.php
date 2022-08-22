@@ -11,6 +11,7 @@ class SurveySubmission extends Model
     protected $fillable = [
         'session_id',
         'game_id',
-        'options'
+        'options',
+        'survey_contact_id',
     ];
 }

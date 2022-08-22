@@ -82,6 +82,7 @@ class SurveySubmissionController extends Controller
                 ],[
                     'session_id'=> Session::getId(),
                     'options'=> $request->option,
+                    'survey_contact_id'=> 1,
                 ]);
 
             return response()->success();
