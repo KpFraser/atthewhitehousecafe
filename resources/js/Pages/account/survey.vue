@@ -82,10 +82,10 @@
                         <div class="flex items-center" v-for="options in names">
                             <BreezeLabel class="w-1/2 text-[14px]" :value="options.name"/>
                             <form class="flex w-full justify-between">
-                                <input type="radio" v-bind:checked="options.survey_submission.options == 0" @change="selectOption($event, options.id)" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-bind:checked="options.survey_submission.options == 1" @change="selectOption($event, options.id)" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-bind:checked="options.survey_submission.options == 2" @change="selectOption($event, options.id)" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" v-bind:checked="options.survey_submission.options == 3" @change="selectOption($event, options.id)" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options == 0" @change="selectOption($event, options.id)" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options == 1" @change="selectOption($event, options.id)" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options == 2" @change="selectOption($event, options.id)" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options == 3" @change="selectOption($event, options.id)" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
                             </form>
                         </div>
                     </div>
