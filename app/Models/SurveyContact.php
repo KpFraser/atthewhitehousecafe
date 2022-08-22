@@ -9,7 +9,7 @@ class SurveyContact extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
+        'session_id',
         'name',
         'phone_number',
         'email'

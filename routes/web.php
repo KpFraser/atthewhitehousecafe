@@ -33,7 +33,6 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
     Route::get('/security', fn ()=> Inertia::render('account/security') )->name('security');
     Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
-    Route::get('/survey', fn ()=> Inertia::render('account/survey') )->name('survey');
     Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
     Route::get('/proposed', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/current', fn ()=> Inertia::render('project/current') )->name('current');
@@ -43,15 +42,17 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster', fn ()=> Inertia::render('project/roster') )->name('roster');
 
 
-    Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
-    Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
-    Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
-    Route::get('/emailShow', [RegisteredUserController::class, 'show']);
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
+    Route::get('/emailShow', [RegisteredUserController::class, 'show']);
     Route::post('/password-update', [RegisteredUserController::class, 'PasswordUpdate']);
     Route::post('/personal', [RegisteredUserController::class, 'update']);
     Route::get('/healthcareInfo', [UHealthcareController::class, 'show']);
     Route::post('/healthcare', [UHealthcareController::class, 'update']);
 });
+
+Route::get('/survey', fn ()=> Inertia::render('account/survey') )->name('survey');
+Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
+Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
+Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 
 require __DIR__.'/auth.php';

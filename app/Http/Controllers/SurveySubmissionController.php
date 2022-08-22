@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\SurveySubmissionResource;
 use App\Models\SurveyContact;
+use Session;
+use phpDocumentor\Reflection\Types\Null_;
 
 class SurveySubmissionController extends Controller
 {
@@ -41,12 +43,13 @@ class SurveySubmissionController extends Controller
     public function store(Request $request)
     {
             SurveyContact::updateOrCreate([
-                'user_id'=> auth()->user()->id,
+                'session_id'=> Session::getId(),
             ],[
                 'name'=> $request->name,
                 'email'=> $request->email,
                 'phone_number'=> $request->phone_number,
             ]);
+
             return response()->success();
             Mail::to('salman9607@gmail.com')->send(new SurveyMail());
     }
@@ -59,6 +62,7 @@ class SurveySubmissionController extends Controller
      */
     public function show()
     {
+//        with('SurveySubmission')->get
         $data = GameName::with('SurveySubmission')->get();
         return response($data);
     }
@@ -73,12 +77,15 @@ class SurveySubmissionController extends Controller
     {
         if($request->id != ""){
             SurveySubmission::updateOrCreate([
+                    'session_id'=> Session::getId(),
                     'game_id'=> $request->id,
                 ],[
-                    'user_id'=> auth()->user()->id,
+                    'session_id'=> Session::getId(),
                     'options'=> $request->option,
+                    'survey_contact_id'=> 1,
                 ]);
-                    return response()->success();
+
+            return response()->success();
         }else{
             return response()->error(500);
         }
