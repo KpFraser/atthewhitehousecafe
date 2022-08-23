@@ -106,3 +106,5 @@ onMounted( ()=>{
         </div>
     </BreezeAuthenticatedLayout>
 </template>
+<!--:class="{ 'hidden' : textVal[name.id] }-->
+<!--display.value[id] = false-->

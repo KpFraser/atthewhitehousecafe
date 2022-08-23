@@ -107,9 +107,14 @@ class SurveySubmissionController extends Controller
      * @param  \App\Models\SurveySubmission  $surveySubmission
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SurveySubmission $surveySubmission)
+    public function update(Request $request)
     {
-        //
+        GameName::updateOrCreate([
+            'id'=> $request->name['id'],
+        ],[
+            'name'=> $request->name['name'],
+        ]);
+        return response()->success();
     }
 
     /**

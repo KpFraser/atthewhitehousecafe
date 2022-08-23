@@ -50,10 +50,11 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/healthcare', [UHealthcareController::class, 'update']);
 });
 
-Route::get('/diet', fn ()=> Inertia::render('account/diet') )->name('diet');
-Route::get('/survey', fn ()=> Inertia::render('account/survey') )->name('survey');
-Route::get('/surveys_home', fn ()=> Inertia::render('account/surveys_home') )->name('surveys_home');
+Route::get('/diet', fn ()=> Inertia::render('survey/diet') )->name('diet');
+Route::get('/survey', fn ()=> Inertia::render('survey/survey') )->name('survey');
+Route::get('/surveys_home', fn ()=> Inertia::render('survey/surveys_home') )->name('surveys_home');
 Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
+Route::post('/name-edit', [SurveySubmissionController::class, 'update']);
 Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
 Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 
