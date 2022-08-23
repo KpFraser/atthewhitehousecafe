@@ -14,6 +14,6 @@ class GameName extends Model
     ];
     public function SurveySubmission()
     {
-        return $this->hasOne(SurveySubmission::class,'game_id','id')->select('id', 'game_id', 'options')->where('session_id', Session::getId());
+        return $this->hasOne(SurveySubmission::class,'game_id')->select('id', 'game_id', 'options')->where('session_id', Session::getId());
     }
 }

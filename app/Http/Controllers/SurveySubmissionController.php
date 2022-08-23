@@ -42,7 +42,7 @@ class SurveySubmissionController extends Controller
      */
     public function store(Request $request)
     {
-      
+
         $survey_contact = SurveyContact::updateOrCreate([
             'session_id'=> Session::getId(),
         ],[
@@ -50,9 +50,9 @@ class SurveySubmissionController extends Controller
             'email'=> $request->survey['email'],
             'phone_number'=> $request->survey['phone_number'],
         ]);
-    
+
         foreach($request->selected as $key=>$ans){
-            
+
             SurveySubmission::updateOrCreate([
                 'session_id'=> Session::getId(),
                 'game_id'=> $key,
@@ -73,7 +73,6 @@ class SurveySubmissionController extends Controller
      */
     public function show()
     {
-//        with('SurveySubmission')->get
         $data = GameName::with('SurveySubmission')->get();
         return response($data);
     }

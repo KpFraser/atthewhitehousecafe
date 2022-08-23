@@ -6,27 +6,24 @@
     import MasterHeader from '@/Components/MasterHeader.vue';
     import BreezeButton from '@/Components/Button.vue';
     import commonFunctions from "@/use/common";
-    import { Head, Link } from '@inertiajs/inertia-vue3';
     import { ref, reactive , onMounted} from 'vue';
     import axios from 'axios';
     import useFooterList from "../../../use/useFooterList";
 
     const { Toast } = commonFunctions()
     const { footerLists , avb } = useFooterList()
-    const survey = reactive({})
-    const names = ref({})
-    const validationErrors = ref({})
-    const selected = reactive({})
+    const survey = reactive({}),
+        names = ref({}),
+        validationErrors = ref({}),
+        selected = reactive({})
 
     const validation = (post) =>{
-
         if(!post.name)
             validationErrors.value.name = ['* Required feild!']
         if(!post.email)
             validationErrors.value.email = ['* Required feild!']
         if(!post.phone_number)
             validationErrors.value.phone_number = ['* Required feild!']
-
         return Object.values(validationErrors.value).length === 0;
     }
 
@@ -39,9 +36,10 @@
             axios
                 .post('/surveyProjects', {survey, selected})
                 .then((response)=>{
-                if(response.data.success === true)
-                    Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
-            }).finally(()=> survey.processing = false)
+                    if(response.data.success === true)
+                        Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
+                })
+                .finally(()=> survey.processing = false)
         }
     }
 
@@ -53,7 +51,7 @@
             })
     }
     onMounted( ()=> {
-    surveyProjects ()
+        surveyProjects ()
     })
 </script>
 
@@ -78,10 +76,10 @@
                         <div class="flex items-center" v-for="options in names">
                             <BreezeLabel class="w-1/2 text-[14px]" :value="options.name"/>
                             <form class="flex w-full justify-between">
-                                <input type="radio" checked="options.survey_submission.options == 0" v-model="selected[options.id]" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" checked="options.survey_submission.options == 1" v-model="selected[options.id]" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" checked="options.survey_submission.options == 2" v-model="selected[options.id]" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" checked="options.survey_submission.options == 3" v-model="selected[options.id]" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options === 0" v-model="selected[options.id]" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options === 1" v-model="selected[options.id]" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options === 2" v-model="selected[options.id]" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission.options === 3" v-model="selected[options.id]" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
                             </form>
                         </div>
                     </div>
