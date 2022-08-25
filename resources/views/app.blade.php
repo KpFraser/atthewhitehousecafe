@@ -12,6 +12,8 @@
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 
         <!-- Scripts -->
+
+
         @routes
         @vite('resources/js/app.js')
         @inertiaHead
@@ -19,4 +21,5 @@
     <body class="font-sans antialiased">
         @inertia
     </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 </html>
