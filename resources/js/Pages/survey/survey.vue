@@ -28,19 +28,15 @@
     }
 
     const surveyData = (post) =>{
-        console.log(selected);
         if(survey.processing) return
-            survey.processing = true
-        let validation_detail = validation (post)
-        if(validation_detail === true){
-            axios
-                .post('/surveyProjects', {survey, selected})
-                .then((response)=>{
-                    if(response.data.success === true)
-                        Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
-                })
-                .finally(()=> survey.processing = false)
-        }
+        survey.processing = true
+        axios
+            .post('/surveyProjects', {survey, selected})
+            .then((response)=>{
+                if(response.data.success === true)
+                    Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
+            })
+            .finally(()=> survey.processing = false)
     }
 
     const surveyProjects = () =>{
@@ -76,10 +72,10 @@
                         <div class="flex items-center" v-for="options in names">
                             <BreezeLabel class="w-1/2 text-[14px]" :value="options.name"/>
                             <form class="flex w-full justify-between">
-                                <input type="radio" :checked="options.survey_submission.options === 0" v-model="selected[options.id]" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" :checked="options.survey_submission.options === 1" v-model="selected[options.id]" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" :checked="options.survey_submission.options === 2" v-model="selected[options.id]" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
-                                <input type="radio" :checked="options.survey_submission.options === 3" v-model="selected[options.id]" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission?.options === 0" v-model="selected[options.id]" value="0" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission?.options === 1" v-model="selected[options.id]" value="1" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission?.options === 2" v-model="selected[options.id]" value="2" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
+                                <input type="radio" :checked="options.survey_submission?.options === 3" v-model="selected[options.id]" value="3" :name="options.id" class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] transition ease-in-out p-2.5">
                             </form>
                         </div>
                     </div>
