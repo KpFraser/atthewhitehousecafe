@@ -12,6 +12,6 @@ class ResultsController extends Controller
     {
         $name = GameName::select('id', 'name')->get();
         $result = SurveySubmission::select('game_id', 'options')->get();
-         return response([$result, $name]);
+         return json_encode(array('status' => 200,'data' => $result, 'data2' => $name));
     }
 }

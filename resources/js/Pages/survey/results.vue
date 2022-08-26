@@ -5,55 +5,106 @@ import MasterFooter from '@/Components/MasterFooter.vue';
 import useFooterList from "../../../use/useFooterList";
 import commonFunctions from "@/use/common";
 import {onMounted, ref} from "vue";
+import _ from "lodash";
 
 const { Toast } = commonFunctions(),
     { footerLists  } = useFooterList(),
-    names = ref([])
+    questionName = ref([]),
+    questionData = ref([])
 
-const results = () =>{
-    axios.get('/survey-results').then((response)=>{
+    const results = async () =>{
 
-        for (const element of response.data[1]) {
-            names.value.push(element.name)
+        await axios.get('/survey-results').then((response)=>{
+             if(response.data.status === 200 )
+             {
+                 questionData.value = response.data?.data
+                 questionName.value = response.data?.data2
+                 //graphLabel(response.data?.data2)
+             }
+           /*
+            console.log(names.value)*/
+            // let test =  response.data
+            // let result = _.map(test, function(o) {
+            //     if (o.game_id == "1") return o;
+            // });
+            // result = _.without(result, undefined)
+        }).finally(()=>{
+            graph();
+        })
+    }
+    function graphLabel(arrayData)
+    {
+        let questionLabel = []
+        if(!!arrayData)
+        {
+            for (const element of arrayData ) {
+                questionLabel.push(element.name)
+            }
+            return questionLabel
         }
-        console.log(names.value)
-        // let test =  response.data
-        // let result = _.map(test, function(o) {
-        //     if (o.game_id == "1") return o;
-        // });
-        // result = _.without(result, undefined)
+    }
+    function scoreData(optionValue)
+    {
+        var dataArray = []
+        var data = ''
+        questionName.value.forEach(function(value){
+            var result = _.filter(questionData.value, function(o) { return o.game_id === value.id });
+            if(!!result)
+            {
+                var result2 = _.filter(result, function(obj) { return obj.options === optionValue });
+                if(!!result2){
+                    data = countOfSurvey(result2)
+                    dataArray.push(data)
+                }
+            }
+        })
+        return dataArray
+    }
+    /*
+        In this function we get same options length and then get value of countsObject;
+     */
+    function countOfSurvey(arr)
+    {
+        var counts = {}
+        var getValues = ''
+        var questionVal = 0
+        if(arr.length > 0){
+            arr.forEach(x => counts[x] = (counts[x] || 0)+1 )
 
+            getValues = Object.values(counts)
+            if(!!getValues)
+                questionVal = getValues[0]
+        }
+        return questionVal
+    }
+    onMounted(async ()=>{
+        await results()
     })
-}
-    onMounted(()=>{
-        results()
-        graph()
-    })
-    function graph(){
+    async function graph(){
         const ctxP = document.getElementById('myChart').getContext('2d');
 
         const myPieChart = new Chart(ctxP, {
             type: 'bar',
             data: {
-                labels: [names.value],
+                labels: await graphLabel(questionName.value),
                 datasets: [{
                     label: 'Lead',
-                    data: [2, 1, 3, 2, 1, 2, 2, 1, 4, 1],
+                    data: scoreData(3),
                     backgroundColor: "#639f1e",
                     hoverBackgroundColor: "#00ee97"
                 },{
                     label: 'Assist',
-                    data: [3, 4, 4, 3, 1, 3, 2, 3, 1, 2],
+                    data: scoreData(2),
                     backgroundColor: "#7FFF00",
                     hoverBackgroundColor: "#00ee97"
                 },{
                     label: 'Participate',
-                    data: [2, 1, 2, 1, 2, 2, 3, 1, 0, 2],
+                    data: scoreData(1),
                     backgroundColor: "#ADFF2F",
                     hoverBackgroundColor: "#00ee97"
                 },{
                     label: 'Never',
-                    data: [1, 1, 2, 2, 3, 1, 2, 1, 1, 1],
+                    data: scoreData(0),
                     backgroundColor: "#32CD32",
                     hoverBackgroundColor: "#00ee97"
                 }]
