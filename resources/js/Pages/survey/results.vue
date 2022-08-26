@@ -4,12 +4,28 @@ import MasterHeader from '@/Components/MasterHeader.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import useFooterList from "../../../use/useFooterList";
 import commonFunctions from "@/use/common";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
+import axios from 'axios';
+import _ from 'lodash';
+
 
 const { Toast } = commonFunctions()
 const { footerLists  } = useFooterList()
+const result_array = ref([])
 
+const results = () =>{
+    axios.get('/survey-results').then((response)=>{
+        let test =  response.data
+        let result = _.map(test, function(o) {
+            if (o.game_id == "1") return o;
+        });
+        result = _.without(result, undefined)
+        result_array.value.push(result.length)
+        console.log(result)
+    })
+}
     onMounted(()=>{
+        results()
         graph()
     })
     function graph(){
@@ -66,7 +82,7 @@ const { footerLists  } = useFooterList()
                     <div class="w-full">
                         <div class="flex relative">
                             <div class="absolute -left-7 top-32 -rotate-90 text-[18px]">Responses</div>
-                            <canvas class="pl-5" id="myChart"></canvas>
+                            <canvas class="pl-8" id="myChart"></canvas>
                         </div>
                         <div class="text-[18px] text-center">Activities </div>
                     </div>

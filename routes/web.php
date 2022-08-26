@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController } ;
+use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController, ResultsController} ;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,5 +58,8 @@ Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
 Route::post('/name-edit', [SurveySubmissionController::class, 'update']);
 Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
 Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
+
+
+Route::get('/survey-results', [ResultsController::class, 'show']);
 
 require __DIR__.'/auth.php';
