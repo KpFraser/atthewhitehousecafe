@@ -5,7 +5,6 @@ import MasterFooter from '@/Components/MasterFooter.vue';
 import useFooterList from "../../../use/useFooterList";
 import commonFunctions from "@/use/common";
 import {onMounted, ref} from "vue";
-import _ from "lodash";
 
 const { Toast } = commonFunctions(),
     { footerLists  } = useFooterList(),
@@ -19,15 +18,7 @@ const { Toast } = commonFunctions(),
              {
                  questionData.value = response.data?.data
                  questionName.value = response.data?.data2
-                 //graphLabel(response.data?.data2)
              }
-           /*
-            console.log(names.value)*/
-            // let test =  response.data
-            // let result = _.map(test, function(o) {
-            //     if (o.game_id == "1") return o;
-            // });
-            // result = _.without(result, undefined)
         }).finally(()=>{
             graph();
         })
