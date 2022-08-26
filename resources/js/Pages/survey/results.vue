@@ -5,23 +5,24 @@ import MasterFooter from '@/Components/MasterFooter.vue';
 import useFooterList from "../../../use/useFooterList";
 import commonFunctions from "@/use/common";
 import {onMounted, ref} from "vue";
-import axios from 'axios';
-import _ from 'lodash';
 
-
-const { Toast } = commonFunctions()
-const { footerLists  } = useFooterList()
-const result_array = ref([])
+const { Toast } = commonFunctions(),
+    { footerLists  } = useFooterList(),
+    names = ref([])
 
 const results = () =>{
     axios.get('/survey-results').then((response)=>{
-        let test =  response.data
-        let result = _.map(test, function(o) {
-            if (o.game_id == "1") return o;
-        });
-        result = _.without(result, undefined)
-        result_array.value.push(result.length)
-        console.log(result)
+
+        for (const element of response.data[1]) {
+            names.value.push(element.name)
+        }
+        console.log(names.value)
+        // let test =  response.data
+        // let result = _.map(test, function(o) {
+        //     if (o.game_id == "1") return o;
+        // });
+        // result = _.without(result, undefined)
+
     })
 }
     onMounted(()=>{
@@ -34,7 +35,7 @@ const results = () =>{
         const myPieChart = new Chart(ctxP, {
             type: 'bar',
             data: {
-                labels: ["Canoeing", "Morning Runs", "Track Runs", "Frisbee", "Lead Cycling", "Lead Walks", "Cooking", "Gardening", "Pickelball"],
+                labels: [names.value],
                 datasets: [{
                     label: 'Lead',
                     data: [2, 1, 3, 2, 1, 2, 2, 1, 4, 1],
