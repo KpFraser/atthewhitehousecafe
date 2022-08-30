@@ -36,7 +36,7 @@
                             <LoginLogo class="max-h-10"/>
                             <div>Questionnaires</div>
                         </Link>
-                        <Link class="flex my-16 items-center justify-start space-x-6 ml-10">
+                        <Link :href="route('results')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
                             <div>Results</div>
                         </Link>
