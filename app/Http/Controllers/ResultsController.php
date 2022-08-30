@@ -12,6 +12,7 @@ class ResultsController extends Controller
     public function show()
     {
         $contractIds = [];
+        $surveys = [];
         $name = GameName::select('id', 'name')->get();
         $result = SurveySubmission::select('game_id', 'options', 'survey_contact_id')->get();
         $contractUniqueIds = $result->unique('survey_contact_id');
