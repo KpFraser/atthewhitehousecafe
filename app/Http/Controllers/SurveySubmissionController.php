@@ -62,6 +62,7 @@ class SurveySubmissionController extends Controller
             ]);
         }
         return response()->success();
+
         Mail::to('salman9607@gmail.com')->send(new SurveyMail());
     }
 

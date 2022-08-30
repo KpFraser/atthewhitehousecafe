@@ -57,12 +57,12 @@
             <div class="w-full justify-center">
                 <MasterHeader/>
                 <div class="border-8 border-[#556553] border-opacity-75 mb-32 mt-5 mx-auto">
-                    <h1 class="bg-[#639f1e] bg-opacity-75 p-3">How might you engage with these projects-</h1>
+                    <h1 class="bg-[#639f1e] bg-opacity-75 p-3">What role would you wish to play in these activites?</h1>
                     <div class="p-4 space-y-4">
                         <div class="flex">
                             <div class="w-1/2"></div>
                             <div class="flex text-[11px] w-full justify-between">
-                                <div>Never</div>
+                                <div>None</div>
                                 <div>Participant</div>
                                 <div>Assistant</div>
                                 <div>Leader</div>

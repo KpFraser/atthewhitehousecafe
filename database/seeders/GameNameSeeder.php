@@ -18,12 +18,12 @@ class GameNameSeeder extends Seeder
     {
         // $this->call(GameNameFactory::class);
         $names = array(
-            array('name' => 'Canoeing'), 
+            array('name' => 'Canoeing'),
             array('name' => 'Morning Runs'),
             array('name' => 'Track Runs'),
             array('name' => 'Frisbee'),
-            array('name' => 'Lead Cycling'),
-            array('name' => 'Lead Walks'),
+            array('name' => 'Cycle Rides'),
+            array('name' => 'Group Walks'),
             array('name' => 'Cooking'),
             array('name' => 'Gardening'),
             array('name' => 'Pickelball'),
