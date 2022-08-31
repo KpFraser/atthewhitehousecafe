@@ -16,13 +16,13 @@ const { footerLists } = useFooterList()
                 <MasterHeader/>
                 <div class="h-fit flex justify-center text-[30px]">
                     <div class="w-full">
-                        <Link :href="route('proposed')" class="flex my-16 items-center justify-start space-x-6 ml-10">
+                        <Link :href="route('new-project')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
                             <div>Purposed</div>
                         </Link>
-                        <Link :href="route('current')" class="flex my-16 items-center justify-start space-x-6 ml-10">
+                        <Link :href="route('proposed')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
-                            <div>Current</div>
+                            <div>Projects</div>
                         </Link>
                         <Link :href="route('archieved')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>

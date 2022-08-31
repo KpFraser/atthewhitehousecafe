@@ -5,7 +5,7 @@ const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-white">
             <main>
                 <slot />
             </main>

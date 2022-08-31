@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController, ResultsController} ;
+use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController, ResultsController, ProjectController} ;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,8 +33,10 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
     Route::get('/security', fn ()=> Inertia::render('account/security') )->name('security');
     Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
+
     Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
-    Route::get('/proposed', fn ()=> Inertia::render('project/proposed') )->name('proposed');
+    Route::get('/newProject', fn ()=> Inertia::render('project/newProject') )->name('new-project');
+    Route::get('/proposed/{id?}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/current', fn ()=> Inertia::render('project/current') )->name('current');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/project', fn ()=> Inertia::render('project/project') )->name('project');
@@ -59,6 +61,12 @@ Route::post('/name-edit', [SurveySubmissionController::class, 'update']);
 Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
 Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 
+Route::get('/project-names', [ProjectController::class, 'index']);
+Route::post('/project-names', [ProjectController::class, 'store']);
+
+Route::get('/new-projects/{id?}', [ProjectController::class, 'show']);
+Route::post('/update-project', [ProjectController::class, 'update']);
+Route::post('/approve-project', [ProjectController::class, 'approve']);
 
 Route::get('/survey-results', [ResultsController::class, 'show']);
 
