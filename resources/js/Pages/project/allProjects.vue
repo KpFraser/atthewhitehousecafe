@@ -14,13 +14,17 @@ const { Toast } = commonFunctions()
 const { footerLists } = useFooterList()
 const all_names = ref([])
 const user_names = ref([])
+const names = ref([])
 
 const projects = () =>{
     axios
         .get('/projects')
         .then((response)=>{
-            all_names.value = response.data
-            user_names.value = all_names.value.filter(x => x.is_user == 1)
+            names.value = response.data
+            all_names.value = names.value
+                .filter(x => x.is_approved === 1 && x.is_archieved !== 1)
+            user_names.value = all_names.value
+                .filter(x => x.is_user === 1)
         })
 }
 
@@ -29,7 +33,7 @@ const plusBtn = (id) =>{
         .post('/user-project',{id: id})
         .then((response)=>{
             projects ()
-            Toast.fire({icon: "success", title: "Add to User!"})
+            Toast.fire({icon: "success", title: "Added to User!"})
         })
 }
 
@@ -37,9 +41,18 @@ const archieveBtn = (id) =>{
     axios
         .post('/archieve-project',{id: id})
         .then((response)=>{
-            console.log(response)
-            Toast.fire({icon: "success", title: "Add to Archieved!"})
+            projects ()
+            Toast.fire({icon: "success", title: "Added to Archieved!"})
 
+        })
+}
+
+const keyBtn = (id) =>{
+    axios
+        .post('/favourite-project',{id: id})
+        .then((response)=>{
+            Toast.fire({icon: "success", title: "Added to Key!"})
+            projects  ()
         })
 }
 
@@ -68,23 +81,23 @@ onMounted( ()=> {
                         <div class="tab-content bg-white items-center max-w-lg mx-auto" id="tabs-tabContent">
                             <div class="tab-pane fade show active" id="tabs-home" role="tabpanel" aria-labelledby="tabs-home-tab">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
-                                    <div class="ml-5 text-white" >{{all.name}}</div>
+                                    <div v-if="all.is_user === 1" class="ml-5 text-white font-extrabold">{{all.name}}</div>
+                                    <div v-if="all.is_user !== 1" class="ml-5 text-white">{{all.name}}</div>
                                     <div >
                                         <i class="fas cursor-pointer text-[30px] mr-2 fa-plus-circle" @click="plusBtn(all.id)"></i>
                                         <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(all.id)"></i>
                                     </div>
                                 </div>
+                                <div v-if="all_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
                             <div class="tab-pane fade" id="tabs-profile" role="tabpanel" aria-labelledby="tabs-profile-tab">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
-                                    <div class="ml-5 text-white" >{{user.name}}</div>
-                                    <div >
-<!--                                        <i class="fas cursor-pointer text-[30px] mr-2 fa-plus-circle" @click="plusBtn(name.id)"></i>-->
-<!--                                        <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(name.id)"></i>-->
-                                    </div>
+                                    <div v-if="user.is_key === 1" class="ml-5 text-white font-extrabold">{{user.name}}</div>
+                                    <div v-if="user.is_key !== 1" class="ml-5 text-white">{{user.name}}</div>
+                                    <i class="far cursor-pointer font-bold text-[30px] mt-2 fa-key-skeleton rotate-45 pr-5" @click="keyBtn(user.id)"></i>
                                 </div>
+                            <div v-if="user_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
-                            <div v-if="all_names.length === 0" class="bg-white text-center">Projects Empty !</div>
                         </div>
                     </div>
             </div>

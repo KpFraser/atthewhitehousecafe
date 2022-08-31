@@ -94,6 +94,16 @@ class ProjectController extends Controller
         ]);
         return response()->success();
     }
+    public function iskey(Request $request)
+    {
+//        dd($request->all());
+        Project::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'is_key'=> 1,
+        ]);
+        return response()->success();
+    }
 
     /**
      * Update the specified resource in storage.
@@ -125,7 +135,7 @@ class ProjectController extends Controller
      */
     public function projects(Project $project)
     {
-        $data = Project::select('id','name', 'is_approved', 'is_user')->where('module', 1 )->get();
+        $data = Project::select('id','name', 'is_approved', 'is_user', 'is_archieved', 'is_key')->where('module', 1 )->get();
         return response($data);
     }
 }

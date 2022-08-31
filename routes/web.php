@@ -66,8 +66,9 @@ Route::post('/project-names', [ProjectController::class, 'store']);
 Route::get('/projects', [ProjectController::class, 'projects']);
 Route::post('/user-project', [ProjectController::class, 'isuser']);
 Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
+Route::post('/favourite-project', [ProjectController::class, 'iskey']);
 
-Route::get('/new-projects/{id?}', [ProjectController::class, 'show']);
+Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
 Route::post('/update-project', [ProjectController::class, 'update']);
 Route::post('/approve-project', [ProjectController::class, 'approve']);
 

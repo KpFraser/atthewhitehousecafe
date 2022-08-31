@@ -6,6 +6,7 @@ import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import useFooterList from "../../../use/useFooterList";
 import { Head, Link } from '@inertiajs/inertia-vue3';
+import { Inertia } from '@inertiajs/inertia';
 import {ref, onMounted, reactive } from "vue";
 import axios from "axios";
 import commonFunctions from "@/use/common";
@@ -43,8 +44,10 @@ const approveInfo = () =>{
     axios
         .post ('/approve-project' , information.value)
         .then((response)=>{
-            if(response.data.success === true)
-            Toast.fire({icon: "success",title: "Project approved successfully!"})
+            if(response.data.success === true) {
+                Toast.fire({icon: "success", title: "Project approved successfully!"})
+                Inertia.visit('/allproject')
+            }
         })
         .finally(()=> information.value.approving = false)
 }
