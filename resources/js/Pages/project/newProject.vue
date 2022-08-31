@@ -39,7 +39,7 @@
             validationErrors.value.name = ['* Required field!']
     }
 
-    const EnterNewProject = (name) => {
+    const enterNewProject = (name) => {
         console.log(name)
         let validation_detail = validation (name)
         if (!!name.name){
@@ -86,7 +86,7 @@
                                 </Link>
                             </div>
                             <div class="flex ml-5 items-center mt-4" v-show="option == key">
-                                <i class="far fa-check text-[20px] hover:text-[#639f1e]" @click="EnterNewProject(name)"></i>
+                                <i class="far fa-check text-[20px] hover:text-[#639f1e]" @click="enterNewProject(name)"></i>
                                 <input type="text" v-model="name.name" class="ml-4 h-8 rounded">
                                 <div v-if="!name.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
                             </div>

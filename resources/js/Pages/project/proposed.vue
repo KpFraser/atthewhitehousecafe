@@ -27,14 +27,13 @@ const projectInfo = () => {
 const updateInfo = () =>{
     if(information.value.updating) return
     information.value.updating = true
-    console.log('update')
     axios
         .post ('/update-project', information.value)
         .then((response)=>{
             if(response.data.success === true)
                 Toast.fire({icon: "success",title: "Project updated successfully!"})
         })
-        .finally(()=> information.value.processing = false)
+        .finally(()=> information.value.updating = false)
 }
 
 const approveInfo = () =>{
@@ -45,10 +44,9 @@ const approveInfo = () =>{
         .post ('/approve-project' , information.value)
         .then((response)=>{
             if(response.data.success === true)
-                console.log('response')
-
             Toast.fire({icon: "success",title: "Project approved successfully!"})
-    })
+        })
+        .finally(()=> information.value.approving = false)
 }
 
 onMounted( ()=> {

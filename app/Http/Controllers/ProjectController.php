@@ -74,9 +74,25 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $project)
+    public function isuser(Request $request)
     {
-        //
+//        dd($request->all());
+        Project::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'is_user'=> 1,
+        ]);
+        return response()->success();
+    }
+    public function isarchieve(Request $request)
+    {
+//        dd($request->all());
+        Project::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'is_archieved'=> 1,
+        ]);
+        return response()->success();
     }
 
     /**
@@ -107,8 +123,9 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Project $project)
+    public function projects(Project $project)
     {
-        //
+        $data = Project::select('id','name', 'is_approved', 'is_user')->where('module', 1 )->get();
+        return response($data);
     }
 }

@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/current', fn ()=> Inertia::render('project/current') )->name('current');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/project', fn ()=> Inertia::render('project/project') )->name('project');
-    Route::get('/allprojects', fn ()=> Inertia::render('project/allprojects') )->name('allproject');
+    Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster', fn ()=> Inertia::render('project/roster') )->name('roster');
 
 
@@ -63,6 +63,9 @@ Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 
 Route::get('/project-names', [ProjectController::class, 'index']);
 Route::post('/project-names', [ProjectController::class, 'store']);
+Route::get('/projects', [ProjectController::class, 'projects']);
+Route::post('/user-project', [ProjectController::class, 'isuser']);
+Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
 
 Route::get('/new-projects/{id?}', [ProjectController::class, 'show']);
 Route::post('/update-project', [ProjectController::class, 'update']);
