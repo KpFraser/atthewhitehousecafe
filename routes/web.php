@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController, ResultsController, ProjectController} ;
+use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController, ResultsController, ProjectController, EventController};
 
 /*
 |--------------------------------------------------------------------------
@@ -37,11 +37,10 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
     Route::get('/newProject', fn ()=> Inertia::render('project/newProject') )->name('new-project');
     Route::get('/proposed/{id?}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
-    Route::get('/current', fn ()=> Inertia::render('project/current') )->name('current');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/favourite-project', fn ()=> Inertia::render('project/project') )->name('favourite-project');
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
-    Route::get('/roster', fn ()=> Inertia::render('project/roster') )->name('roster');
+    Route::get('/roster/{id}', fn ()=> Inertia::render('project/roster') )->name('roster');
 
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
@@ -73,6 +72,10 @@ Route::get('/favourite-projects', [ProjectController::class, 'favourite_info']);
 Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
 Route::post('/update-project', [ProjectController::class, 'update']);
 Route::post('/approve-project', [ProjectController::class, 'approve']);
+
+Route::post('/event-name', [EventController::class, 'store']);
+Route::get('/event-name', [EventController::class, 'show']);
+Route::get('/event-info/{id}', [EventController::class, 'showInfo']);
 
 Route::get('/survey-results', [ResultsController::class, 'show']);
 

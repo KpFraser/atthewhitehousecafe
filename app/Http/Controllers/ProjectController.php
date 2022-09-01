@@ -100,6 +100,7 @@ class ProjectController extends Controller
             'id' => $request->id,
         ],[
             'is_archieved'=> 1,
+            'is_key'=> 0,
         ]);
         return response()->success();
     }

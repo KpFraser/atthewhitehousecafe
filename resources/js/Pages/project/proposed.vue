@@ -98,9 +98,6 @@ onMounted( ()=> {
                     <button type="button" @click="approveInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
                         Approved
                     </button>
-<!--                    <BreezeButton class="bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': survey.processing }" :disabled="survey.processing">-->
-<!--                        Save-->
-<!--                    </BreezeButton>-->
                 </form>
             </div>
             <MasterFooter

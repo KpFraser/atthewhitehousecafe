@@ -19,17 +19,15 @@
 
     const plusbtn = () => {
 
-        if(names.value.length == 0){
+        if(names.value.length === 0){
             names.value.push({id: '', name: ''});
-            let last = names.value.length-1;
-            option.value = last
+            option.value = names.value.length-1;
         }
         else {
-            let last_entry = names.value[names.value.length-1].name;
-            if(last_entry != '') {
+            let last_id = names.value[names.value.length-1].id;
+            if(last_id !== '') {
                 names.value.push({id: '', name: ''});
-                let last = names.value.length-1;
-                option.value = last
+                option.value = names.value.length-1;
             }
         }
     }
@@ -40,13 +38,13 @@
     }
 
     const enterNewProject = (name) => {
-        console.log(name)
-        let validation_detail = validation (name)
+        validation (name)
         if (!!name.name){
             axios
                 .post('/project-names', {name, module:1})
                 .then((response)=>{
                     Toast.fire({icon: "success", title: "Updated Successfully!"})
+                    projectName ()
                     option.value = -1
                 });
         }

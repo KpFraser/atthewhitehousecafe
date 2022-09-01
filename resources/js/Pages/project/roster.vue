@@ -1,6 +1,5 @@
 <script setup>
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-import BreezeInput from '@/Components/Input.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
@@ -8,8 +7,28 @@ import BreezeButton from '@/Components/Button.vue';
 import useFooterList from "../../../use/useFooterList";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import {ref, onMounted, reactive } from "vue";
- 
+import axios from "axios";
+
 const { footerLists } = useFooterList()
+const info = ref({})
+
+const eventInfo = () => {
+    const queryString = window.location.href;
+    let id = queryString.split('/')[4];
+
+    axios
+        .get('/event-info/'+id)
+        .then((response)=>{
+            info.value.date = response.data[1]+' '+response.data[0]+' '+response.data[2]
+            info.value.start_time = response.data[3]
+            info.value.end_time = response.data[4]
+
+        })
+}
+
+onMounted( ()=> {
+    eventInfo ()
+})
 
 </script>
 
@@ -25,10 +44,19 @@ const { footerLists } = useFooterList()
                             <i class="fas fa-home"></i>
                         </Link>
                     </div>
-                    <div class="flex justify-between">
-                        <div class="p-4 bg-opacity-75 bg-[#639f1e]">Date</div>
-                        <div class="p-4 bg-opacity-75 bg-[#639f1e]">Start Time</div>
-                        <div class="p-4 bg-opacity-75 bg-[#639f1e]">End Time</div>
+                    <div class="flex space-x-2 justify-between">
+                        <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
+                            <div class="px-4 pt-2 text-[16px] text-center">Date</div>
+                            <div class="text-[12px] text-white text-center font-sans">{{info.date}}</div>
+                        </div>
+                        <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
+                            <div class="px-4 pt-2 text-[16px] text-center">Start Time</div>
+                            <div class="text-[12px] text-white text-center font-sans">{{info.start_time}}</div>
+                        </div>
+                        <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
+                            <div class="px-4 pt-2 text-[16px] text-center">End Time</div>
+                            <div class="text-[12px] text-white text-center font-sans">{{info.end_time}}</div>
+                        </div>
                     </div>
                     <BreezeLabel value="Roster"/>
                     <div class="bg-[#639f1e] py-5 bg-opacity-75">
@@ -41,22 +69,22 @@ const { footerLists } = useFooterList()
                             <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <BreezeLabel class="ml-5" value="Project 2"/>
                             <i class="far fa-pen"></i>
-                        </div> 
+                        </div>
                         <div class="flex items-center justify-between mx-5">
                             <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <BreezeLabel class="ml-5" value="Project 3"/>
                             <i class="far fa-pen"></i>
-                        </div> 
+                        </div>
                         <div class="flex items-center justify-between mx-5">
                             <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <BreezeLabel class="ml-5" value="Project 4"/>
                             <i class="far fa-pen"></i>
-                        </div> 
+                        </div>
                         <div class="flex items-center justify-between mx-5">
                             <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <BreezeLabel class="ml-5" value="Project 5"/>
                             <i class="far fa-pen"></i>
-                        </div> 
+                        </div>
                         <div class="flex items-center justify-between mx-5">
                             <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <BreezeLabel class="ml-5" value="Project 6"/>
@@ -65,7 +93,7 @@ const { footerLists } = useFooterList()
                     </div>
                     <BreezeLabel value="Group Comment"/>
                     <textarea class="w-full h-28 bg-opacity-75 bg-[#639f1e]"></textarea>
-                    <BreezeButton class="bg-opacity-75 px-10 mt-4 bg-[#639f1e] text-white w-full font-sans submit py-3 justify-center text-[25px] font-bold">
+                    <BreezeButton type="button" class="bg-opacity-75 px-10 mt-4 bg-[#639f1e] text-white w-full font-sans submit py-3 justify-center text-[25px] font-bold">
                         Save
                     </BreezeButton>
                 </form>

@@ -11,7 +11,10 @@ const { footerLists } = useFooterList()
 const all_names = ref([])
 const user_names = ref([])
 const names = ref([])
-
+const classObject = reactive({
+    active: true,
+    'text-danger': false
+})
 const projects = () =>{
     axios
         .get('/projects')
@@ -47,7 +50,7 @@ const keyBtn = (id) =>{
     axios
         .post('/favourite-project',{id: id})
         .then((response)=>{
-            Toast.fire({icon: "success", title: "Added to Key!"})
+            Toast.fire({icon: "success", title: "Added to Key Project!"})
             projects  ()
         })
 }
@@ -90,7 +93,8 @@ onMounted( ()=> {
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
                                     <div v-if="user.is_key === 1" class="ml-5 text-white font-extrabold">{{user.name}}</div>
                                     <div v-if="user.is_key !== 1" class="ml-5 text-white">{{user.name}}</div>
-                                    <i class="far cursor-pointer font-bold text-[30px] mt-2 fa-key-skeleton rotate-45 pr-5" @click="keyBtn(user.id)"></i>
+                                    <i v-if="user.is_key === 1" class="far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5" @click="keyBtn(user.id)"></i>
+                                    <i v-if="user.is_key !== 1" class="far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5" @click="keyBtn(user.id)"></i>
                                 </div>
                             <div v-if="user_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
