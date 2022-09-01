@@ -48,7 +48,7 @@ onMounted( ()=> {
                     <div class="bg-white items-center max-w-lg mx-auto">
                         <div class="flex p-1 my-3 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
                             <div class="ml-5 text-white font-extrabold">{{all.name}}</div>
-                            <i class="fas mr-2 text-[30px] fa-save" @click="unArchieved(all.id)"></i>
+                            <i class="fas mr-2 text-[30px] fa-save cursor-pointer" @click="unArchieved(all.id)"></i>
                         </div>
                         <div v-if="all_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                     </div>

@@ -41,7 +41,7 @@ const archieveBtn = (id) =>{
         .post('/archieve-project',{id: id})
         .then((response)=>{
             projects ()
-            Toast.fire({icon: "success", title: "Added to Archieved!"})
+            Toast.fire({icon: "success", title: "Added to Project!"})
 
         })
 }
