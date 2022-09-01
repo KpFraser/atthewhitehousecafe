@@ -5,8 +5,26 @@ import MasterHeader from '@/Components/MasterHeader.vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import useFooterList from "../../use/useFooterList";
+import {onMounted, ref} from "vue";
 
 const { footerLists } = useFooterList()
+const favourite = ref([])
+const names = ref([])
+
+const projects = () =>{
+    axios
+        .get('/projects')
+        .then((response)=>{
+            names.value = response.data
+            favourite.value = names.value
+                .filter(x => x.is_key === 1)
+        })
+}
+
+    onMounted( ()=> {
+        projects ()
+    })
+
 </script>
 
 <template>
@@ -20,7 +38,11 @@ const { footerLists } = useFooterList()
                             <LoginLogo class="max-h-10"/>
                             <div>Purposed</div>
                         </Link>
-                        <Link :href="route('all-project')" class="flex my-16 items-center justify-start space-x-6 ml-10">
+                        <Link v-if="favourite.length === 0" :href="route('all-project')" class="flex my-16 items-center justify-start space-x-6 ml-10">
+                            <LoginLogo class="max-h-10"/>
+                            <div>Projects</div>
+                        </Link>
+                        <Link v-if="favourite.length !== 0" :href="route('favourite-project')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
                             <div>Projects</div>
                         </Link>

@@ -39,7 +39,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/proposed/{id?}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/current', fn ()=> Inertia::render('project/current') )->name('current');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
-    Route::get('/project', fn ()=> Inertia::render('project/project') )->name('project');
+    Route::get('/favourite-project', fn ()=> Inertia::render('project/project') )->name('favourite-project');
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster', fn ()=> Inertia::render('project/roster') )->name('roster');
 
@@ -66,7 +66,9 @@ Route::post('/project-names', [ProjectController::class, 'store']);
 Route::get('/projects', [ProjectController::class, 'projects']);
 Route::post('/user-project', [ProjectController::class, 'isuser']);
 Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
+Route::post('/un-archieve', [ProjectController::class, 'unarchieve']);
 Route::post('/favourite-project', [ProjectController::class, 'iskey']);
+Route::get('/favourite-projects', [ProjectController::class, 'favourite_info']);
 
 Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
 Route::post('/update-project', [ProjectController::class, 'update']);

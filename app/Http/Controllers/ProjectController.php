@@ -20,6 +20,14 @@ class ProjectController extends Controller
         return response($data);
     }
 
+    public function favourite_info()
+    {
+        $data = Project::select('id', 'name', 'frequency', 'is_key')->where('is_key', 1)->get();
+        if (!empty($data)) {
+            return response($data);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -61,9 +69,10 @@ class ProjectController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @return ProjectResource
      */
-    public function show(Project $id)
+
+    public function show (Project $id)
     {
             return new ProjectResource($id);
     }
@@ -84,9 +93,9 @@ class ProjectController extends Controller
         ]);
         return response()->success();
     }
+
     public function isarchieve(Request $request)
     {
-//        dd($request->all());
         Project::updateOrCreate([
             'id' => $request->id,
         ],[
@@ -94,9 +103,21 @@ class ProjectController extends Controller
         ]);
         return response()->success();
     }
+
+    public function unarchieve(Request $request)
+    {
+        Project::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'is_archieved'=> 0,
+        ]);
+        return response()->success();
+    }
+
     public function iskey(Request $request)
     {
-//        dd($request->all());
+        Project::where('module', 1)->update(array('is_key' => '0'));
+
         Project::updateOrCreate([
             'id' => $request->id,
         ],[
