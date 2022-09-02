@@ -67,11 +67,13 @@ Route::post('/user-project', [ProjectController::class, 'isuser']);
 Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
 Route::post('/un-archieve', [ProjectController::class, 'unarchieve']);
 Route::post('/favourite-project', [ProjectController::class, 'iskey']);
-Route::get('/favourite-projects', [ProjectController::class, 'favourite_info']);
-
+Route::get('/favourite-projects', [ProjectController::class, 'favourite_info'])->name('favourite_info');;;
 Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
 Route::post('/update-project', [ProjectController::class, 'update']);
 Route::post('/approve-project', [ProjectController::class, 'approve']);
+Route::get('/favourite-info', [ProjectController::class, 'favourite']);
+Route::delete('/delete-project/{id}', [ProjectController::class, 'destroy']);
+Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');;
 
 Route::post('/event-name', [EventController::class, 'store']);
 Route::get('/event-name', [EventController::class, 'show']);

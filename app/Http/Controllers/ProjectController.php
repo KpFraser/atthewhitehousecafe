@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProjectResource;
+use Inertia\Inertia;
 
 
 class ProjectController extends Controller
@@ -20,9 +21,28 @@ class ProjectController extends Controller
         return response($data);
     }
 
+    public function footer_project()
+    {
+        $favourite = Project::select()->where('is_key', 1)->get();
+       if (!empty($favourite[0])){
+           return Inertia::render('project/project');
+       }
+       else
+       {
+           return Inertia::render('ProjectsHome');
+       }
+    }
+
     public function favourite_info()
     {
         $data = Project::select('id', 'name', 'frequency', 'is_key')->where('is_key', 1)->get();
+        if (!empty($data)) {
+            return response($data);
+        }
+    }
+    public function favourite()
+    {
+        $data = Project::select('id', 'is_key')->where('is_key', 1)->get();
         if (!empty($data)) {
             return response($data);
         }
@@ -85,7 +105,6 @@ class ProjectController extends Controller
      */
     public function isuser(Request $request)
     {
-//        dd($request->all());
         Project::updateOrCreate([
             'id' => $request->id,
         ],[
@@ -136,7 +155,6 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-//        dd($request);
         Project::updateOrCreate([
             'id' => $request->identity,
         ],[
@@ -159,5 +177,10 @@ class ProjectController extends Controller
     {
         $data = Project::select('id','name', 'is_approved', 'is_user', 'is_archieved', 'is_key')->where('module', 1 )->get();
         return response($data);
+    }
+    public function destroy($id)
+    {
+        Project::where('id', $id)->delete();
+        return response()->success();
     }
 }

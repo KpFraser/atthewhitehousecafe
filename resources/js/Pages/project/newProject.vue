@@ -55,8 +55,18 @@
         .get('/project-names')
         .then((response)=>{
             names.value = response.data
-            // console.log(names.value)
         })
+    }
+
+    const deleteProject = (id) =>{
+        if (!!id){
+            axios
+                .delete('/delete-project/'+id)
+                .then((response)=>{
+                    Toast.fire({icon: "success", title: "Deleted Successfully!"})
+                    projectName ()
+                })
+        }
     }
 
     onMounted( ()=> {
@@ -72,7 +82,7 @@
                 <MasterHeader/>
                 <div class="border-8 border-[#556553] pb-5 border-opacity-75 mb-28 mt-5 mx-auto">
                     <div class="text-[#639f1e]">
-                        <h1 class="text-3xl font-sans text-center bg-opacity-75 p-3">PROPOSED</h1>
+                        <h1 class="text-3xl font-sans text-center bg-opacity-75 p-3 uppercase">PROPOSED</h1>
                         <div class="text-center">Diet of Activities</div>
                     </div>
                     <div class="min-h-[30vh] overflow-y-auto">
@@ -84,15 +94,16 @@
                                 </Link>
                             </div>
                             <div class="flex ml-5 items-center mt-4" v-show="option == key">
-                                <i class="far fa-check text-[20px] hover:text-[#639f1e]" @click="enterNewProject(name)"></i>
                                 <input type="text" v-model="name.name" class="ml-4 h-8 rounded">
+                                <i class="far fa-check ml-4 border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="enterNewProject(name)"></i>
+                                <i class="fas fa-trash text-[20px] hover:text-white rounded px-2 py-1.5 border hover:bg-red-600 ml-2" @click="deleteProject(name.id)"></i>
                                 <div v-if="!name.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
                             </div>
                         </div>
                     </div>
                     <div class="mx-auto flex mt-5 justify-center">
                         <div class="w-60 cursor-pointer p-4 bg-[#639f1e] justify-between items-center flex" @click="plusbtn()">
-                            <div class="text-xl ">Add New Activity</div>
+                            <div class="text-xl ">Propose An Activity</div>
                             <i class="text-xl fas fa-plus-circle"></i>
                         </div>
                     </div>

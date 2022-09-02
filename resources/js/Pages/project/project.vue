@@ -16,7 +16,7 @@ const favourite = ref([])
 const names = ref([])
 const event = ref ({})
 const eventShow = ref ({})
-const eventValue = ref ({})
+const eventValue = reactive (-1)
 
 const projects = () =>{
     axios
@@ -44,7 +44,7 @@ const showEvent = () =>{
     axios
         .get('event-name')
         .then((response)=> {
-            console.log(eventShow.value = response.data)
+            eventShow.value = response.data
         })
 }
 
@@ -69,7 +69,7 @@ onMounted( ()=> {
                 <MasterHeader/>
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
                     <div class="flex justify-end mr-4">
-                        <Link :href="route('all-project')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
+                        <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
                             <i class="fas fa-home"></i>
                         </Link>
                     </div>
@@ -90,8 +90,8 @@ onMounted( ()=> {
                     </div>
                     <div class="flex items-center">
                         <select @change="selectedEvent(eventValue)" v-model="eventValue" class="w-full bg-opacity-75 hover:bg-opacity-75 focus:ring-[#639f1e] border-none focus:border-[#639f1e] hover:bg-[#639f1e] bg-[#639f1e]">
-                          <option class="" value="" disabled>Select Event</option>
-                          <option v-for="name in eventShow" class="text-[20px]" v-if="!!eventShow" :value="name.id">{{name.name}}</option>
+                            <option value="-1" disabled hidden >Select Event</option>
+                            <option v-for="name in eventShow" class="text-[20px]" v-if="!!eventShow" :value="name.id">{{name.name}}</option>
                         </select>
                     </div>
                     <div class="flex items-center">
