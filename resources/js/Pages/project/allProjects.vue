@@ -23,7 +23,9 @@ const projects = () =>{
             all_names.value = names.value
                 .filter(x => x.is_approved === 1 && x.is_archived !== 1)
             user_names.value = all_names.value
-                .filter(x => x.is_user === 1)
+                .filter(x => x.user_project !== null)
+            // console.log(all_names.value[0].user_project === null)
+
         })
 }
 
@@ -50,6 +52,7 @@ const keyBtn = (id) =>{
     axios
         .post('/favourite-project',{id: id})
         .then((response)=>{
+            console.log(response)
             Toast.fire({icon: "success", title: "Added to Key Project!"})
             projects  ()
         })
@@ -80,8 +83,8 @@ onMounted( ()=> {
                         <div class="tab-content bg-white items-center max-w-lg mx-auto" id="tabs-tabContent">
                             <div class="tab-pane fade show active" id="tabs-home" role="tabpanel" aria-labelledby="tabs-home-tab">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
-                                    <div v-if="all.is_user === 1" class="ml-5 text-white font-extrabold">{{all.name}}</div>
-                                    <div v-if="all.is_user !== 1" class="ml-5 text-white">{{all.name}}</div>
+                                    <div v-if="!!all.user_project" class="ml-5 text-white font-extrabold">{{all.name}}</div>
+                                    <div v-else class="ml-5 text-white">{{all.name}}</div>
                                     <div >
                                         <i class="fas cursor-pointer text-[30px] mr-2 fa-plus-circle" @click="plusBtn(all.id)"></i>
                                         <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(all.id)"></i>

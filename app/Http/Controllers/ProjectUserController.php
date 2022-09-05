@@ -67,9 +67,17 @@ class ProjectUserController extends Controller
      * @param  \App\Models\ProjectUser  $projectUser
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProjectUser $projectUser)
+    public function update(Request $request)
     {
-        //
+
+//        dd($request->all());
+        ProjectUser::updateOrCreate([
+            'project_id' => $request->id,
+        ],[
+            'user_id'=> auth()->user()->id,
+            'is_user'=> 1,
+        ]);
+        return response()->success();
     }
 
     /**

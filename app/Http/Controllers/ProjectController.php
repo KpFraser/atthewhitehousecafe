@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\ProjectUser;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProjectResource;
 use Inertia\Inertia;
@@ -103,16 +104,6 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function isuser(Request $request)
-    {
-        Project::updateOrCreate([
-            'id' => $request->id,
-        ],[
-            'is_user'=> 1,
-        ]);
-        return response()->success();
-    }
-
     public function isarchieve(Request $request)
     {
         Project::updateOrCreate([
@@ -175,7 +166,10 @@ class ProjectController extends Controller
      */
     public function projects(Project $project)
     {
-        $data = Project::select('id','name', 'is_approved', 'is_user', 'is_archived', 'is_key')->where('module', 1 )->get();
+//        $health = Project::with('user_project')->all();
+
+        $data = Project::select('id','name', 'is_approved', 'is_archived', 'is_key')->with('user_project')->where('module', 1 )->get();
+
         return response($data);
     }
     public function destroy($id)

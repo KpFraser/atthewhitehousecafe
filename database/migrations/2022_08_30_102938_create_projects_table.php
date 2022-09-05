@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('leadership')->nullable(true);
             $table->tinyInteger('module')->nullable(true);
             $table->boolean('is_approved')->nullable(true);
-            $table->boolean('is_user')->nullable(true);
             $table->boolean('is_archived')->nullable(true);
             $table->boolean('is_key')->nullable(true);
             $table->foreignId('created_by')->references('id')->on('users')->constrained()->onDelete('cascade');
