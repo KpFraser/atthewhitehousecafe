@@ -79,7 +79,7 @@ class ProjectController extends Controller
             Project::updateOrCreate([
                 'id' => $request->name['id'],
             ],[
-                'user_id'=> auth()->user()->id,
+                'created_by'=> auth()->user()->id,
                 'name'=> $request->name['name'],
                 'module'=> $request->module,
             ]);
@@ -118,7 +118,7 @@ class ProjectController extends Controller
         Project::updateOrCreate([
             'id' => $request->id,
         ],[
-            'is_archieved'=> 1,
+            'is_archived'=> 1,
             'is_key'=> 0,
         ]);
         return response()->success();
@@ -129,7 +129,7 @@ class ProjectController extends Controller
         Project::updateOrCreate([
             'id' => $request->id,
         ],[
-            'is_archieved'=> 0,
+            'is_archived'=> 0,
         ]);
         return response()->success();
     }
@@ -175,7 +175,7 @@ class ProjectController extends Controller
      */
     public function projects(Project $project)
     {
-        $data = Project::select('id','name', 'is_approved', 'is_user', 'is_archieved', 'is_key')->where('module', 1 )->get();
+        $data = Project::select('id','name', 'is_approved', 'is_user', 'is_archived', 'is_key')->where('module', 1 )->get();
         return response($data);
     }
     public function destroy($id)
