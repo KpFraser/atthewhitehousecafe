@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->boolean('is_user')->nullable(true);
+            $table->boolean('is_key')->nullable(true);
             $table->timestamps();
         });
     }

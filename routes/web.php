@@ -50,6 +50,29 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/personal', [RegisteredUserController::class, 'update']);
     Route::get('/healthcareInfo', [UHealthcareController::class, 'show']);
     Route::post('/healthcare', [UHealthcareController::class, 'update']);
+/*
+ * ProjectController
+ */
+    Route::get('/project-names', [ProjectController::class, 'index']);
+    Route::get('/projects', [ProjectController::class, 'projects']);
+    Route::get('/favourite-info', [ProjectController::class, 'favourite']);
+    Route::get('/favourite-projects', [ProjectController::class, 'favourite_info'])->name('favourite_info');;;
+    Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
+    Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
+    Route::post('/project-names', [ProjectController::class, 'store']);
+    Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
+    Route::post('/un-archieve', [ProjectController::class, 'unarchieve']);
+    Route::post('/favourite-project', [ProjectController::class, 'iskey']);
+    Route::post('/update-project', [ProjectController::class, 'update']);
+    Route::post('/approve-project', [ProjectController::class, 'approve']);
+    Route::delete('/delete-project/{id}', [ProjectController::class, 'destroy']);
+    Route::post('/user-project', [ProjectUserController::class, 'update']);
+/*
+ *  EventController
+*/
+    Route::get('/event-name', [EventController::class, 'show']);
+    Route::get('/event-info/{id}', [EventController::class, 'showInfo']);
+    Route::post('/event-name', [EventController::class, 'store']);
 });
 
 Route::get('/diet', fn ()=> Inertia::render('survey/diet') )->name('diet');
@@ -61,25 +84,7 @@ Route::post('/name-edit', [SurveySubmissionController::class, 'update']);
 Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
 Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 
-Route::get('/project-names', [ProjectController::class, 'index']);
-Route::post('/project-names', [ProjectController::class, 'store']);
-Route::get('/projects', [ProjectController::class, 'projects']);
-Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
-Route::post('/un-archieve', [ProjectController::class, 'unarchieve']);
-Route::post('/favourite-project', [ProjectController::class, 'iskey']);
-Route::get('/favourite-projects', [ProjectController::class, 'favourite_info'])->name('favourite_info');;;
-Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
-Route::post('/update-project', [ProjectController::class, 'update']);
-Route::post('/approve-project', [ProjectController::class, 'approve']);
-Route::get('/favourite-info', [ProjectController::class, 'favourite']);
-Route::delete('/delete-project/{id}', [ProjectController::class, 'destroy']);
-Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');;
 
-Route::post('/user-project', [ProjectUserController::class, 'update']);
-
-Route::post('/event-name', [EventController::class, 'store']);
-Route::get('/event-name', [EventController::class, 'show']);
-Route::get('/event-info/{id}', [EventController::class, 'showInfo']);
 
 Route::get('/survey-results', [ResultsController::class, 'show']);
 

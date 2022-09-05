@@ -168,7 +168,7 @@ class ProjectController extends Controller
     {
 //        $health = Project::with('user_project')->all();
 
-        $data = Project::select('id','name', 'is_approved', 'is_archived', 'is_key')->with('user_project')->where('module', 1 )->get();
+        $data = Project::select('id','name', 'is_approved', 'is_archived', 'is_key')->with('projectUser')->where('module', 1 )->get();
 
         return response($data);
     }
