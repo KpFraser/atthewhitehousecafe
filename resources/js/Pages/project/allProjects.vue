@@ -19,12 +19,12 @@ const projects = () =>{
     axios
         .get('/projects')
         .then((response)=>{
-            names.value = response.data
+            // console.log(response.data.data)
+            names.value = response.data.data
             all_names.value = names.value
                 .filter(x => x.is_approved === 1 && x.is_archived !== 1)
             user_names.value = all_names.value
-                .filter(x => x.project_user !== null)
-            // console.log(all_names.value[0].project_user === null)
+                .filter(x => x.is_user === 1)
 
         })
 }
@@ -83,7 +83,7 @@ onMounted( ()=> {
                         <div class="tab-content bg-white items-center max-w-lg mx-auto" id="tabs-tabContent">
                             <div class="tab-pane fade show active" id="tabs-home" role="tabpanel" aria-labelledby="tabs-home-tab">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
-                                    <div :class="!!all.project_user ? `ml-5 text-white font-extrabold`: `ml-5 text-white`">{{all.name}}</div>
+                                    <div :class="!!all.is_user ? `ml-5 text-white font-extrabold`: `ml-5 text-white`">{{all.name}}</div>
                                     <div >
                                         <i class="fas cursor-pointer text-[30px] mr-2 fa-plus-circle" @click="plusBtn(all.id)"></i>
                                         <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(all.id)"></i>
@@ -93,10 +93,8 @@ onMounted( ()=> {
                             </div>
                             <div class="tab-pane fade" id="tabs-profile" role="tabpanel" aria-labelledby="tabs-profile-tab">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
-                                    <div v-if="user.is_key === 1" class="ml-5 text-white font-extrabold">{{user.name}}</div>
-                                    <div v-if="user.is_key !== 1" class="ml-5 text-white">{{user.name}}</div>
-                                    <i v-if="user.is_key === 1" class="far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5" @click="keyBtn(user.id)"></i>
-                                    <i v-if="user.is_key !== 1" class="far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5" @click="keyBtn(user.id)"></i>
+                                    <div :class="!!user.is_key ? `ml-5 text-white font-extrabold` : `ml-5 text-white`">{{user.name}}</div>
+                                    <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
                                 </div>
                             <div v-if="user_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>

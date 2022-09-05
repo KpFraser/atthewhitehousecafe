@@ -22,6 +22,7 @@ const projects = () =>{
     axios
         .get('/favourite-projects')
         .then((response)=>{
+            console.log(response.data[0])
             names.value = response.data
             let info = names.value.filter(x => x.is_key === 1)
             favourite.value = info[0]

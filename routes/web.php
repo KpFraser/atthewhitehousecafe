@@ -56,7 +56,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/project-names', [ProjectController::class, 'index']);
     Route::get('/projects', [ProjectController::class, 'projects']);
     Route::get('/favourite-info', [ProjectController::class, 'favourite']);
-    Route::get('/favourite-projects', [ProjectController::class, 'favourite_info'])->name('favourite_info');;;
+    Route::get('/favourite-projects', [ProjectController::class, 'favourite_info'])->name('favourite_info');
     Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
     Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
     Route::post('/project-names', [ProjectController::class, 'store']);

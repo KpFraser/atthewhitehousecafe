@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\ProjectUser;
 use Illuminate\Http\Request;
-use App\Http\Resources\ProjectResource;
+use App\Http\Resources\{ ProjectResource, AllProjectResource };
 use Inertia\Inertia;
 
 
@@ -24,8 +24,9 @@ class ProjectController extends Controller
 
     public function footer_project()
     {
-        $favourite = Project::select()->where('is_key', 1)->get();
-       if (!empty($favourite[0])){
+       $favourite = ProjectUser::select('id', 'user_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
+
+       if (!empty($favourite)){
            return Inertia::render('project/project');
        }
        else
@@ -36,7 +37,7 @@ class ProjectController extends Controller
 
     public function favourite_info()
     {
-        $data = Project::select('id', 'name', 'frequency', 'is_key')->where('is_key', 1)->get();
+        $data = ProjectUser::select('is_key')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->with('key_project')->first();
         if (!empty($data)) {
             return response($data);
         }
@@ -127,10 +128,11 @@ class ProjectController extends Controller
 
     public function iskey(Request $request)
     {
-        Project::where('module', 1)->update(array('is_key' => '0'));
+        ProjectUser::where('user_id', auth()->user()->id )->update(array('is_key' => '0'));
 
-        Project::updateOrCreate([
-            'id' => $request->id,
+        ProjectUser::updateOrCreate([
+            'project_id' => $request->id,
+            'user_id'=> auth()->user()->id,
         ],[
             'is_key'=> 1,
         ]);
@@ -162,16 +164,17 @@ class ProjectController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @return AllProjectResource
      */
     public function projects(Project $project)
     {
-//        $health = Project::with('user_project')->all();
+        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived' )->with('projectUser')->get();
+//        dd($data);
+        return AllProjectResource::Collection($data);
 
-        $data = Project::select('id','name', 'is_approved', 'is_archived', 'is_key')->with('projectUser')->where('module', 1 )->get();
-
-        return response($data);
+//        return response($data);
     }
+
     public function destroy($id)
     {
         Project::where('id', $id)->delete();
