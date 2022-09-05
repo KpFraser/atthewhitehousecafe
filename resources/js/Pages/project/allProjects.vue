@@ -21,7 +21,7 @@ const projects = () =>{
         .then((response)=>{
             names.value = response.data
             all_names.value = names.value
-                .filter(x => x.is_approved === 1 && x.is_archieved !== 1)
+                .filter(x => x.is_approved === 1 && x.is_archived !== 1)
             user_names.value = all_names.value
                 .filter(x => x.is_user === 1)
         })
