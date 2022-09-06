@@ -8,7 +8,7 @@
     import useFooterList from "../../../use/useFooterList";
     import commonFunctions from "@/use/common";
 
-    const { Toast } = commonFunctions()
+    const { Toast, ConfirmToast } = commonFunctions()
     const { footerLists  } = useFooterList()
     const names = ref({}), option = ref(-1), validationErrors = ref({})
 
@@ -60,12 +60,18 @@
 
     const deleteProject = (id) =>{
         if (!!id){
-            axios
-                .delete('/delete-project/'+id)
-                .then((response)=>{
-                    Toast.fire({icon: "success", title: "Deleted Successfully!"})
-                    projectName ()
-                })
+            ConfirmToast.fire({}).then((confirmed) => {
+                if (confirmed.isConfirmed === true) {
+                    axios
+                        .delete('/delete-project/' + id)
+                        .then((response) => {
+                            Toast.fire({icon: "success", title: "Deleted Successfully!"})
+                            projectName()
+                        })
+                } else {
+                    Toast.fire({icon: "error", title: "Project not deleted !"})
+                }
+            })
         }
     }
 
@@ -87,16 +93,18 @@
                     </div>
                     <div class="min-h-[30vh] overflow-y-auto">
                         <div class="flex ml-5 mt-4" v-for="(name,key) in names">
-                            <div class="flex items-center ml-5 mt-5" v-show="key != option">
-                                <i class="far fa-pencil text-[16px] hover:text-[#639f1e]" @click="pencil(key)"></i>
-                                <Link :href="route('proposed', name.id)" class="ml-5 text-[16px]">
+                            <div class="grid grid-cols-4 w-full flex items-center ml-5 mt-5" v-show="key != option">
+                                <Link :href="route('proposed', name.id)" class="col-span-3 text-[16px]">
                                     {{name.name}}
                                 </Link>
+                                <div class="flex justify-center">
+                                    <i class="far fa-pencil border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="pencil(key)"></i>
+                                    <i class="fas fa-trash text-[20px] hover:text-white rounded px-2 py-1.5 border hover:bg-red-600 mx-5" @click="deleteProject(name.id)"></i>
+                                </div>
                             </div>
-                            <div class="flex ml-5 items-center mt-4" v-show="option == key">
-                                <input type="text" v-model="name.name" class="ml-4 h-8 rounded">
+                            <div class="flex ml-5 flex items-center mt-4" v-show="option == key">
+                                <input type="text" v-model="name.name" class="ml-4 h-8 rounded border-[#556553] active:border-[#556553] focus:ring-0 focus:border-[#556553] hover:border-[#556553]">
                                 <i class="far fa-check ml-4 border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="enterNewProject(name)"></i>
-                                <i class="fas fa-trash text-[20px] hover:text-white rounded px-2 py-1.5 border hover:bg-red-600 ml-2" @click="deleteProject(name.id)"></i>
                                 <div v-if="!name.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
                             </div>
                         </div>

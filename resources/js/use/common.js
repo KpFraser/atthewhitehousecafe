@@ -13,9 +13,22 @@ export default function commonFunctions() {
                 toast.addEventListener('mouseenter', Swal.stopTimer)
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
+        }),
+
+        ConfirmToast = Swal.mixin({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this Project!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Delete !",
+            cancelButtonText: "Cancel !",
+            closeOnConfirm: false,
+            closeOnCancel: false
+
         })
 
     return {
-        Toast
+        Toast, ConfirmToast
     }
 }

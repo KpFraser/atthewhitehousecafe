@@ -27,8 +27,6 @@ Route::middleware('guest')->get('/', function () {
     ]);
 });
 
-
-
 Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
@@ -36,7 +34,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
 
     Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
-    Route::get('/newProject', fn ()=> Inertia::render('project/newProject') )->name('new-project');
+    Route::get('/new-project', fn ()=> Inertia::render('project/newProject') )->name('new-project');
     Route::get('/proposed/{id?}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/favourite-project', fn ()=> Inertia::render('project/project') )->name('favourite-project');
@@ -66,11 +64,13 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/update-project', [ProjectController::class, 'update']);
     Route::post('/approve-project', [ProjectController::class, 'approve']);
     Route::delete('/delete-project/{id}', [ProjectController::class, 'destroy']);
+/*
+*  ProjectUserController
+*/
     Route::post('/user-project', [ProjectUserController::class, 'update']);
 /*
  *  EventController
 */
-    Route::get('/event-name', [EventController::class, 'show']);
     Route::get('/event-info/{id}', [EventController::class, 'showInfo']);
     Route::post('/event-name', [EventController::class, 'store']);
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Project;
 use App\Models\ProjectUser;
 use Illuminate\Http\Request;
@@ -37,10 +38,9 @@ class ProjectController extends Controller
 
     public function favourite_info()
     {
-        $data = ProjectUser::select('is_key')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->with('key_project')->first();
-        if (!empty($data)) {
-            return response($data);
-        }
+        $data1 = ProjectUser::select('id', 'project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->with('key_project')->first();
+        $data2 = Event::select('id', 'name')->get();
+        return response([$data1, $data2]);
     }
     public function favourite()
     {

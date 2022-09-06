@@ -62,8 +62,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $data = Event::select('id', 'name')->get();
-        return response($data);
+         //
     }
 
     /**

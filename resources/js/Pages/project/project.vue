@@ -13,19 +13,16 @@ import {Inertia} from "@inertiajs/inertia";
 const { Toast } = commonFunctions()
 const { footerLists } = useFooterList()
 const favourite = ref([])
-const names = ref([])
 const event = ref ({})
 const eventShow = ref ({})
-const eventValue = reactive (-1)
+const eventValue = ref (-1)
 
 const projects = () =>{
     axios
         .get('/favourite-projects')
         .then((response)=>{
-            console.log(response.data[0])
-            names.value = response.data
-            let info = names.value.filter(x => x.is_key === 1)
-            favourite.value = info[0]
+            favourite.value = response.data[0].key_project
+            eventShow.value = response.data[1]
         })
 }
 
@@ -36,17 +33,9 @@ const eventName = () =>{
             .then((response) => {
                 event.value = {}
                 Toast.fire({icon: "success", title: "Event Added!"})
-                showEvent()
+                projects()
             })
     }
-}
-
-const showEvent = () =>{
-    axios
-        .get('event-name')
-        .then((response)=> {
-            eventShow.value = response.data
-        })
 }
 
 const selectedEvent = (id) =>{
@@ -57,7 +46,6 @@ const selectedEvent = (id) =>{
 
 onMounted( ()=> {
     projects ()
-    showEvent()
 })
 
 </script>
