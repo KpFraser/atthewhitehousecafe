@@ -11,18 +11,20 @@ import axios from "axios";
 
 const { footerLists } = useFooterList()
 const info = ref({})
+const users = ref([])
 
 const eventInfo = () => {
-    const queryString = window.location.href;
-    let id = queryString.split('/')[4];
+    const queryString = window.location.href
+    let event_id = queryString.split('/')[4].split('-')[0]
+    let project_id = (queryString.split('/')[4].split('-')[1])
 
     axios
-        .get('/event-info/'+id)
+        .get('/event-info/'+event_id+'/'+project_id)
         .then((response)=>{
             info.value.date = response.data[1]+' '+response.data[0]+' '+response.data[2]
             info.value.start_time = response.data[3]
             info.value.end_time = response.data[4]
-
+            users.value = response.data[5]
         })
 }
 
@@ -60,34 +62,9 @@ onMounted( ()=> {
                     </div>
                     <BreezeLabel value="Roster"/>
                     <div class="bg-[#639f1e] py-5 bg-opacity-75">
-                        <div class="flex items-center justify-between mx-5">
+                        <div class="flex items-center justify-between mx-5" v-for="user in users">
                             <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
-                            <BreezeLabel class="ml-5" value="Project 1"/>
-                            <i class="far fa-pen"></i>
-                        </div>
-                        <div class="flex items-center justify-between mx-5">
-                            <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
-                            <BreezeLabel class="ml-5" value="Project 2"/>
-                            <i class="far fa-pen"></i>
-                        </div>
-                        <div class="flex items-center justify-between mx-5">
-                            <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
-                            <BreezeLabel class="ml-5" value="Project 3"/>
-                            <i class="far fa-pen"></i>
-                        </div>
-                        <div class="flex items-center justify-between mx-5">
-                            <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
-                            <BreezeLabel class="ml-5" value="Project 4"/>
-                            <i class="far fa-pen"></i>
-                        </div>
-                        <div class="flex items-center justify-between mx-5">
-                            <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
-                            <BreezeLabel class="ml-5" value="Project 5"/>
-                            <i class="far fa-pen"></i>
-                        </div>
-                        <div class="flex items-center justify-between mx-5">
-                            <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
-                            <BreezeLabel class="ml-5" value="Project 6"/>
+                            <div class="ml-5">{{user.name}}</div>
                             <i class="far fa-pen"></i>
                         </div>
                     </div>

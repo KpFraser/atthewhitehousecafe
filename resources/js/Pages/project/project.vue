@@ -22,6 +22,7 @@ const projects = () =>{
         .get('/favourite-projects')
         .then((response)=>{
             favourite.value = response.data[0].key_project
+            // console.log(favourite.value.id)
             eventShow.value = response.data[1]
         })
 }
@@ -38,9 +39,9 @@ const eventName = () =>{
     }
 }
 
-const selectedEvent = (id) =>{
-    console.log(id)
-    Inertia.visit('/roster/'+id)
+const selectedEvent = (event_id, project_id) =>{
+    console.log(event_id, project_id)
+    Inertia.visit('/roster/' + event_id+'-'+project_id)
 
 }
 
@@ -78,7 +79,7 @@ onMounted( ()=> {
                         </div>
                     </div>
                     <div class="flex items-center">
-                        <select @change="selectedEvent(eventValue)" v-model="eventValue" class="w-full bg-opacity-75 hover:bg-opacity-75 focus:ring-[#639f1e] border-none focus:border-[#639f1e] hover:bg-[#639f1e] bg-[#639f1e]">
+                        <select @change="selectedEvent(eventValue, favourite.id)" v-model="eventValue" class="w-full bg-opacity-75 hover:bg-opacity-75 focus:ring-[#639f1e] border-none focus:border-[#639f1e] hover:bg-[#639f1e] bg-[#639f1e]">
                             <option value="-1" disabled hidden >Select Event</option>
                             <option v-for="name in eventShow" class="text-[20px]" v-if="!!eventShow" :value="name.id">{{name.name}}</option>
                         </select>

@@ -15,4 +15,8 @@ class ProjectUser extends Model
     {
         return $this->belongsTo(Project::class,'project_id', 'id')->select( 'id', 'name', 'frequency');
     }
+    public function project_users()
+    {
+      return $this->belongsTo(User::class,'user_id', 'id')->select( 'id', 'name');
+    }
 }

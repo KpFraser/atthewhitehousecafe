@@ -68,8 +68,6 @@
                             Toast.fire({icon: "success", title: "Deleted Successfully!"})
                             projectName()
                         })
-                } else {
-                    Toast.fire({icon: "error", title: "Project not deleted !"})
                 }
             })
         }

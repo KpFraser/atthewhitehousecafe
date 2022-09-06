@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RosterProjectResource;
 use App\Models\Event;
+use App\Models\ProjectUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -23,10 +25,9 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showInfo($id)
+    public function showInfo($event_id, $project_id)
     {
-        $data = Event::select('name', 'created_at')->where('id', $id)->get();
-//        dd($data[0]->created_at);
+        $data = Event::select('name', 'created_at')->where('id', $event_id)->get();
         if (!empty($data[0]->created_at))
         {
             $month = Carbon::parse($data[0]->created_at)->format('F');
@@ -34,8 +35,11 @@ class EventController extends Controller
             $event_year = Carbon::parse($data[0]->created_at)->format('Y');
             $event_start = Carbon::parse($data[0]->created_at)->format('h:i a');
             $event_end = Carbon::parse($data[0]->created_at)->addHour()->format('h:i a');
-//            dd($event_end);
-            return response([$month, $date, $event_year, $event_start, $event_end]);
+
+            $data1 = ProjectUser::with('project_users')->where(array('project_id'=>$project_id, 'is_key'=> 1))->get();
+            $data2 = RosterProjectResource::Collection($data1);
+
+            return response([$month, $date, $event_year, $event_start, $event_end, $data2]);
         }
     }
 

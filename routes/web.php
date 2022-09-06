@@ -71,7 +71,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 /*
  *  EventController
 */
-    Route::get('/event-info/{id}', [EventController::class, 'showInfo']);
+    Route::get('/event-info/{event_id}/{project_id}', [EventController::class, 'showInfo']);
     Route::post('/event-name', [EventController::class, 'store']);
 });
 

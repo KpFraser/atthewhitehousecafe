@@ -14,10 +14,12 @@ import commonFunctions from "@/use/common";
 const { Toast } = commonFunctions()
 const { footerLists } = useFooterList()
 const information = ref({})
+const project_id = ref({})
 
 const projectInfo = () => {
     const queryString = window.location.href;
     let id = queryString.split('/')[4];
+    project_id.value = id;
     axios
         .get('/new-projects/'+id)
         .then((response)=>{

@@ -39,7 +39,7 @@ class ProjectController extends Controller
     public function favourite_info()
     {
         $data1 = ProjectUser::select('id', 'project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->with('key_project')->first();
-        $data2 = Event::select('id', 'name')->get();
+        $data2 = Event::select('id', 'name')->where('user_id', auth()->user()->id )->get();
         return response([$data1, $data2]);
     }
     public function favourite()
@@ -169,10 +169,8 @@ class ProjectController extends Controller
     public function projects(Project $project)
     {
         $data = Project::select( 'id', 'name', 'is_approved', 'is_archived' )->with('projectUser')->get();
-//        dd($data);
-        return AllProjectResource::Collection($data);
 
-//        return response($data);
+        return AllProjectResource::Collection($data);
     }
 
     public function destroy($id)
