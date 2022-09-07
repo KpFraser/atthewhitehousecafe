@@ -61,8 +61,8 @@ const submitInfo = (info) => {
 const showInformation = () =>{
     axios
         .get('/project-roles').then((response)=>{
-        role.value = response.data[0]
-        project.value = response.data[1]
+        project.value = response.data[0]
+        role.value = response.data[1]
     })
 }
 
