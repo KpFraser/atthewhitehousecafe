@@ -1,7 +1,6 @@
 <script setup>
 import LoginLogo from '@/Components/LoginLogo.vue';
 import { Link } from '@inertiajs/inertia-vue3';
-import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 </script>
 
 <template>

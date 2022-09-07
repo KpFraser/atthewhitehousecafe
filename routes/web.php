@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController, ResultsController, ProjectController,
-    EventController, ProjectUserController};
+    EventController, ProjectUserController, ApplicationController };
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/favourite-project', fn ()=> Inertia::render('project/project') )->name('favourite-project');
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster/{id}', fn ()=> Inertia::render('project/roster') )->name('roster');
+    Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
 
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
@@ -73,6 +74,12 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 */
     Route::get('/event-info/{event_id}/{project_id}', [EventController::class, 'showInfo']);
     Route::post('/event-name', [EventController::class, 'store']);
+/*
+ *  ApplicationController
+*/
+    Route::get('/project-roles', [ApplicationController::class, 'show']);
+    Route::post('/application-info', [ApplicationController::class, 'store']);
+
 });
 
 Route::get('/diet', fn ()=> Inertia::render('survey/diet') )->name('diet');

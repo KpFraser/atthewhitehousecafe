@@ -63,7 +63,7 @@ onMounted( ()=> {
                     <BreezeLabel value="Roster"/>
                     <div class="bg-[#639f1e] py-5 bg-opacity-75">
                         <div class="flex items-center justify-between mx-5" v-for="user in users">
-                            <input type="radio" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
+                            <input type="checkbox" name="project" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <div class="ml-5">{{user.name}}</div>
                             <i class="far fa-pen"></i>
                         </div>

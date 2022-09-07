@@ -10,49 +10,49 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
 import {ref, onMounted, reactive } from "vue";
 import commonFunctions from "@/use/common";
 import axios from 'axios';
+import {Inertia} from "@inertiajs/inertia";
 
 const { Toast } = commonFunctions()
 
 const { footerLists } = useFooterList()
-const personal = reactive({})
+const personal = ref({})
 const validationErrors = ref({})
 
 const validation = (post) =>{
 
     if(!post.name)
-        validationErrors.value.name = ['* Required feild!']
+        validationErrors.value.name = ['* Required field!']
     if(!post.address)
-        validationErrors.value.address = ['* Required feild!']
+        validationErrors.value.address = ['* Required field!']
     if(!post.phone_number)
-        validationErrors.value.phone_number = ['* Required feild!']
+        validationErrors.value.phone_number = ['* Required field!']
     if(!post.postcode)
-        validationErrors.value.postcode = ['* Required feild!']
+        validationErrors.value.postcode = ['* Required field!']
 
     return Object.values(validationErrors.value).length === 0;
 }
 const personalInfo = (post) =>{
-    if(personal.processing) return;
+    if(personal.value.approve) return
+    personal.value.approve = true
 
-    personal.processing = true;
     let validation_detail = validation (post)
     if(validation_detail === true){
         axios
-            .post('/personal', personal)
+            .post('/personal', personal.value)
             .then((response)=>{
             if(response.data.success === true)
                 Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
             })
-            .finally(()=>{
-                personal.processing = false;
-            })
+            .finally(()=> personal.value.approve = false)
     }
 }
+
 const showInfo = () => {
     axios.get('/showInfo').then((response)=>{
-            personal.name = response.data.data.name ? response.data.data.name: ''
-            personal.address = !!response.data.data.address ? response.data.data.address: ''
-            personal.phone_number = !!response.data.data.phone_number ? response.data.data.phone_number: ''
-            personal.postcode = !!response.data.data.postcode ? response.data.data.postcode: ''
+            personal.value.name = response.data.data.name ? response.data.data.name: ''
+            personal.value.address = !!response.data.data.address ? response.data.data.address: ''
+            personal.value.phone_number = !!response.data.data.phone_number ? response.data.data.phone_number: ''
+            personal.value.postcode = !!response.data.data.postcode ? response.data.data.postcode: ''
     })
 }
 
@@ -68,7 +68,7 @@ onMounted( ()=> {
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full justify-center">
                 <MasterHeader/>
-                <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10" @submit.prevent="personalInfo(personal)">
+                <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
                     <div class="flex justify-end mr-4">
                         <Link :href="route('dashboard')" class="text-[25px] bg-[#639f1e] px-1 text-center font-bold bg-opacity-75">X</Link>
                     </div>
@@ -93,7 +93,7 @@ onMounted( ()=> {
                     </div>
                     <BreezeInput @focusout="delete validationErrors['postcode']" v-model="personal.postcode" />
                     <div class="flex items-center justify-end mt-4">
-                        <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': personal.processing }" :disabled="personal.processing">
+                        <BreezeButton @click="personalInfo(personal)" type="button" class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': personal.approve }" :disabled="personal.approve">
                             Save
                         </BreezeButton>
                     </div>

@@ -5,17 +5,18 @@ import BreezeLabel from '@/Components/Label.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import useFooterList from "../../../use/useFooterList";
-import { Head, Link } from '@inertiajs/inertia-vue3';
-import {ref, onMounted, reactive } from "vue";
+import { Link } from '@inertiajs/inertia-vue3';
+import {ref, onMounted } from "vue";
 import commonFunctions from "@/use/common";
 import {Inertia} from "@inertiajs/inertia";
 
-const { Toast } = commonFunctions()
-const { footerLists } = useFooterList()
-const favourite = ref([])
-const event = ref ({})
-const eventShow = ref ({})
-const eventValue = ref (-1)
+const { Toast } = commonFunctions(),
+    { footerLists } = useFooterList()
+
+const favourite = ref([]),
+    event = ref ({}),
+    eventShow = ref ({}),
+    eventValue = ref (-1)
 
 const projects = () =>{
     axios
@@ -32,9 +33,11 @@ const eventName = () =>{
         axios
             .post('event-name', event.value)
             .then((response) => {
-                event.value = {}
-                Toast.fire({icon: "success", title: "Event Added!"})
-                projects()
+                if(response.data.success === true) {
+                    event.value = {}
+                    Toast.fire({icon: "success", title: "Event Added!"})
+                    projects()
+                }
             })
     }
 }
@@ -63,6 +66,9 @@ onMounted( ()=> {
                             <i class="fas fa-home"></i>
                         </Link>
                     </div>
+                    <Link :href="route('application')" class="text-[20px] text-white bg-[#639f1e] p-1 text-center bg-opacity-75">
+                        Application
+                    </Link>
                     <div class="flex items-center">
                         <BreezeLabel value="Name" />
                     </div>
