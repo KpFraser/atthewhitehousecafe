@@ -51,32 +51,29 @@ class ProjectUserController extends Controller
      */
     public function isRoster(Request $request)
     {
-        $data = $request->check;
-        if ( $data == true ){
-            ProjectUser::updateOrCreate([
-                'user_id' => $request->user_id,
-            ],[
-                'is_roster'=> 1,
-            ]);
-        }else {
-            ProjectUser::updateOrCreate([
-                'user_id' => $request->user_id,
-            ],[
-                'is_roster'=> 0,
-            ]);
-        }
+//        dd($request->project_id);
+        ProjectUser::select('id', 'user_id', 'is_roster')
+            ->where(array('user_id'=> $request->id, 'project_id' => $request->project_id))
+            ->update(array('is_roster'=> !empty($request->check)? 1 : 0));
+
         return response()->success();
     }
-
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\ProjectUser  $projectUser
      * @return \Illuminate\Http\Response
      */
-    public function edit(ProjectUser $projectUser)
+    public function edit(Request $request)
     {
-        //
+//        dd($request->all());
+        $data = ProjectUser::updateOrCreate([
+            'user_id'=> $request->id,
+            'project_id' => $request->project_id,
+        ],[
+            'comment'=> $request->comment,
+        ]);
+        return response()->success();
     }
 
     /**

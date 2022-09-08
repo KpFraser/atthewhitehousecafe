@@ -39,7 +39,9 @@ class EventController extends Controller
             $data1 = ProjectUser::with('project_users')->where(array('project_id'=>$project_id, 'is_key'=> 1))->get();
             $data2 = RosterProjectResource::Collection($data1);
 
-            return response([$month, $date, $event_year, $event_start, $event_end, $data2]);
+            $data3 = Event::select('id', 'group_comment')->where( 'id', $project_id)->get();
+
+            return response([$month, $date, $event_year, $event_start, $event_end, $data2, $data3]);
         }
     }
 

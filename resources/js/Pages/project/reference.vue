@@ -1,6 +1,5 @@
 <script setup>
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-import BreezeInput from '@/Components/Input.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
@@ -34,133 +33,121 @@ onMounted( ()=> {
                     </div>
                     <BreezeLabel value="1. How long have you known the applicant ?"/>
                     <div class="w-full">
-                        <div class="dropdown relative">
-                            <button class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center"
-                                type="button" id="Button1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div>Please Select</div>
-                                <i class="text-[20px] text-right ml-2 fas fa-caret-down"></i>
-                            </button>
-                            <ul class=" dropdown-menu w-full absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none" aria-labelledby="Button1">
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Less than 6 months</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">6 months to a year</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">A year to 18 months</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">More than 18 months</div>
-                                </li>
-                            </ul>
-                        </div>
+                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Less than 6 months</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">6 months to a year</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">A year to 18 months</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">More than 18 months</div>
+                            </option>
+                        </select>
                     </div>
                     <BreezeLabel value="2. You know the applicant as a ?"/>
                     <div class="w-full">
-                        <div class="dropdown relative">
-                            <button class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center"
-                                    type="button" id="Button2" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div>Please Select</div>
-                                <i class="text-[20px] text-right ml-2 fas fa-caret-down"></i>
-                            </button>
-                            <ul class=" dropdown-menu w-full absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none" aria-labelledby="Button2">
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                            </ul>
-                        </div>
+                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Friend</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Family</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Professionally</div>
+                            </option>
+                        </select>
                     </div>
                     <BreezeLabel value="3. Please tick your views on the following statements-"/>
                     <BreezeLabel value="a. I want to work with the applicant"/>
                     <div class="w-full">
-                        <div class="dropdown relative">
-                            <button class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center"
-                                    type="button" id="Button2" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div>Please Select</div>
-                                <i class="text-[20px] text-right ml-2 fas fa-caret-down"></i>
-                            </button>
-                            <ul class=" dropdown-menu w-full absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none" aria-labelledby="Button2">
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                            </ul>
-                        </div>
+                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            </option>
+                        </select>
                     </div>
                     <BreezeLabel value="b. The applicant can do this role"/>
                     <div class="w-full">
-                        <div class="dropdown relative">
-                            <button class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center"
-                                    type="button" id="Button2" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div>Please Select</div>
-                                <i class="text-[20px] text-right ml-2 fas fa-caret-down"></i>
-                            </button>
-                            <ul class=" dropdown-menu w-full absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none" aria-labelledby="Button2">
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                            </ul>
-                        </div>
+                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            </option>
+                        </select>
                     </div>
                     <BreezeLabel value="c. The applicant has outstanding leadership skills"/>
                     <div class="w-full">
-                        <div class="dropdown relative">
-                            <button class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center"
-                                    type="button" id="Button2" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div>Please Select</div>
-                                <i class="text-[20px] text-right ml-2 fas fa-caret-down"></i>
-                            </button>
-                            <ul class=" dropdown-menu w-full absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none" aria-labelledby="Button2">
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                            </ul>
-                        </div>
+                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            </option>
+                        </select>
                     </div>
                     <BreezeLabel value="d. The applicant has outstanding communication skills"/>
                     <div class="w-full">
-                        <div class="dropdown relative">
-                            <button class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center"
-                                    type="button" id="Button2" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div>Please Select</div>
-                                <i class="text-[20px] text-right ml-2 fas fa-caret-down"></i>
-                            </button>
-                            <ul class=" dropdown-menu w-full absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none" aria-labelledby="Button2">
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Something</div>
-                                </li>
-                            </ul>
-                        </div>
+                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            </option>
+                            <option>
+                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            </option>
+                        </select>
                     </div>
                     <div>
                         <BreezeLabel value="4. Add an additional comment here"/>

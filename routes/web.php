@@ -70,7 +70,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 *  ProjectUserController
 */
     Route::post('/user-project', [ProjectUserController::class, 'update']);
-    Route::post('/roster-comment', [ProjectUserController::class, 'addComment']);
+    Route::post('/roster-comment', [ProjectUserController::class, 'edit']);
     Route::post('/is-roster', [ProjectUserController::class, 'isRoster']);
 /*
  *  EventController

@@ -6,6 +6,8 @@ use App\Models\Application;
 use App\Models\Project;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Reference;
 
 class ApplicationController extends Controller
 {
@@ -37,18 +39,23 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
-        Application::Create([
-            'project_id' => $request->project_id,
-            'role_id'=> $request->role_id,
-            'name'=> $request->name,
-            'created_by'=> auth()->user()->id,
-            'email'=> $request->email,
-            'ref1_email'=> $request->ref_one,
-            'ref2_email'=> $request->ref_two,
-            'text1'=> $request->first_txt,
-            'text2'=> $request->second_txt,
-            'text3'=> $request->third_txt,
-        ]);
+        $data = Application::Create([
+                'project_id' => $request->project_id,
+                'role_id'=> $request->role_id,
+                'name'=> $request->name,
+                'created_by'=> auth()->user()->id,
+                'email'=> $request->email,
+                'ref1_email'=> $request->ref_one,
+                'ref2_email'=> $request->ref_two,
+                'text1'=> $request->first_txt,
+                'text2'=> $request->second_txt,
+                'text3'=> $request->third_txt,
+            ]);
+
+        Mail::to($data->ref1_email)->send(new Reference($data->email));
+        if(!empty($data->ref2_email)) {
+            Mail::to($data->ref2_email)->send(new Reference($data->email));
+        }
         return response()->success();
     }
 
