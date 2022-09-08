@@ -100,12 +100,11 @@ onMounted( ()=> {
                     <textarea class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                 </form>
             </div>
-
             <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="eventmodel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="eventmodelLabel" aria-hidden="true">
                 <div class="modal-dialog relative w-auto pointer-events-none">
                     <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                         <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-                            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel"> Add Event </h5>
+                            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Add Event</h5>
                             <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                         </div>
                         <div class="modal-body relative p-4">

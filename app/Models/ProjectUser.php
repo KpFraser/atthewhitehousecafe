@@ -9,7 +9,7 @@ class ProjectUser extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'project_id', 'is_user', 'is_key'
+        'user_id', 'project_id', 'comment', 'is_user', 'is_roster', 'is_key'
     ];
     public function key_project()
     {

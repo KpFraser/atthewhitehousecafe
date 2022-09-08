@@ -33,9 +33,14 @@ class ProjectUserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function addComment(Request $request)
     {
-        //
+        ProjectUser::updateOrCreate([
+            'project_id' => $request->project_id,
+        ],[
+            'comment'=> $request->comment,
+        ]);
+        return response()->success();
     }
 
     /**
@@ -44,9 +49,23 @@ class ProjectUserController extends Controller
      * @param  \App\Models\ProjectUser  $projectUser
      * @return \Illuminate\Http\Response
      */
-    public function show(ProjectUser $projectUser)
+    public function isRoster(Request $request)
     {
-        //
+        $data = $request->check;
+        if ( $data == true ){
+            ProjectUser::updateOrCreate([
+                'user_id' => $request->user_id,
+            ],[
+                'is_roster'=> 1,
+            ]);
+        }else {
+            ProjectUser::updateOrCreate([
+                'user_id' => $request->user_id,
+            ],[
+                'is_roster'=> 0,
+            ]);
+        }
+        return response()->success();
     }
 
     /**

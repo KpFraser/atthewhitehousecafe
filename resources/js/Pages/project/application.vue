@@ -19,7 +19,7 @@ const information = ref ({}),
     validationErrors = ref ({})
 
 const validation = (info) =>{
-console.log(info)
+    validationErrors.value = {}
     if(info.project_id === 0 && info.role_id === 0)
         validationErrors.value.selectOption = ['* Select Project and Role !']
     if(!info.name)
@@ -34,8 +34,6 @@ console.log(info)
         validationErrors.value.email = ['* Required field!']
     if(!info.ref_one)
         validationErrors.value.ref_one = ['* Required field!']
-    if(!info.ref_two)
-        validationErrors.value.ref_two = ['* Required field!']
 
     return Object.values(validationErrors.value).length === 0;
 }
@@ -43,7 +41,8 @@ console.log(info)
 const submitInfo = (info) => {
 
     let validation_detail = validation (info)
-    console.log(validation_detail.value)
+    console.log(validation_detail)
+
     if(validation_detail === true) {
         if (information.value.approve) return
         information.value.approve = true
@@ -55,6 +54,8 @@ const submitInfo = (info) => {
                 }
             })
             .finally(() => information.value.approve = false)
+    } else {
+        information.value.approve = false
     }
 }
 
@@ -102,7 +103,10 @@ onMounted( ()=> {
                 </div>
                 <div v-if="!information.project_id || !information.role_id" class="mt-2 text-center text-red-700 font-bold text-sm" v-for="message in  validationErrors.selectOption">{{ message }}</div>
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
-                    <div class="flex justify-end mr-4">
+                    <div class="flex justify-between mr-4">
+                        <Link :href="route('reference')" class="text-[20px] text-white bg-[#639f1e] p-1 text-center bg-opacity-75">
+                            Reference
+                        </Link>
                         <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
                             <i class="fas fa-home"></i>
                         </Link>
@@ -114,46 +118,43 @@ onMounted( ()=> {
                         </div>
                         <BreezeInput v-model="information.name" type="text"/>
                     </div>
-                    <div class="">
+                    <div>
                         <div class="flex items-center">
                             <BreezeLabel value="2. What do you do for fun ?" />
-                            <div v-if="!information.first_txt" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                            <div v-if="!information.first_txt" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.first_txt">{{ message }}</div>
                         </div>
                         <textarea v-model="information.first_txt" class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                     </div>
-                    <div class="">
+                    <div>
                         <div class="flex items-center">
                             <BreezeLabel value="3. Why do you want this role ?" />
-                            <div v-if="!information.second_txt" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                            <div v-if="!information.second_txt" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.second_txt">{{ message }}</div>
                         </div>
                         <textarea v-model="information.second_txt" class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                     </div>
-                    <div class="">
+                    <div>
                         <div class="flex items-center">
                             <BreezeLabel value="4. What experience do you have ?" />
-                            <div v-if="!information.third_txt" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                            <div v-if="!information.third_txt" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.third_txt">{{ message }}</div>
                         </div>
                         <textarea v-model="information.third_txt" class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                     </div>
-                    <div class="">
+                    <div>
                         <div class="flex items-center">
                             <BreezeLabel value="Your Email" />
-                            <div v-if="!information.email" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                            <div v-if="!information.email" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.email">{{ message }}</div>
                         </div>
                         <BreezeInput v-model="information.email" type="email"/>
                     </div>
-                    <div class="">
+                    <div>
                         <div class="flex items-center">
                             <BreezeLabel value="Reference 1 Email" />
-                            <div v-if="!information.ref_one" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
+                            <div v-if="!information.ref_one" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.ref_one">{{ message }}</div>
                         </div>
                         <BreezeInput v-model="information.ref_one" type="email"/>
                     </div>
-                    <div class="">
-                        <div class="flex items-center">
-                            <BreezeLabel value="Reference 2 Email" />
-                            <div v-if="!information.ref_two" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
-                        </div>
+                    <div>
+                        <BreezeLabel value="Reference 2 Email" />
                         <BreezeInput v-model="information.ref_two" type="email"/>
                     </div>
                     <button type="button" @click="submitInfo(information)" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approve }" :disabled="information.approve">

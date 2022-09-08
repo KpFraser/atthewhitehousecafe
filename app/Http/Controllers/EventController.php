@@ -87,9 +87,14 @@ class EventController extends Controller
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Event $event)
+    public function update(Request $request)
     {
-        //
+        Event::updateOrCreate([
+            'id' => $request->event_id,
+        ],[
+            'group_comment'=> $request->comment,
+        ]);
+        return response()->success();
     }
 
     /**
