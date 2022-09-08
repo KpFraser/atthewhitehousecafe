@@ -142,7 +142,7 @@ onMounted( ()=> {
                     <BreezeLabel value="Roster"/>
                     <div class="bg-[#639f1e] py-5 bg-opacity-75">
                         <div class="flex items-center justify-between mx-5" v-for="user in users">
-                            <input @change="checkedProject(user.identity, user.project, $event.target.checked)" :value="user.identity" type="checkbox" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
+                            <input @change="checkedProject(user.identity, user.project, $event.target.checked)" :checked ="user.roster === 1 " :value="user.identity" type="checkbox" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <div class="ml-5">{{user.name}}</div>
                             <i @click="commentModal(user.identity, user.project)" class="far fa-pen cursor-pointer" data-bs-toggle="modal" data-bs-target="#addComment"></i>
                         </div>

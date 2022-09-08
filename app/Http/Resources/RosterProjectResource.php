@@ -19,6 +19,7 @@ class RosterProjectResource extends JsonResource
         return[
             'comment'=> $this->comment,
             'project'=> $this->project_id,
+            'roster'=> $this->is_roster,
             'identity'=>!empty($this->project_users) && !empty($this->project_users->id) ? $this->project_users->id: '',
             'name'=> !empty($this->project_users) && !empty($this->project_users->name) ? $this->project_users->name: ''
         ];
