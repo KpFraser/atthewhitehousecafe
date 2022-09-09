@@ -11,7 +11,56 @@ import commonFunctions from "@/use/common";
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList()
 
+const info = ref({}),
+    reference = ref({}),
+    validationErrors = ref({})
 
+const validation = (post) =>{
+    validationErrors.value = {}
+
+    if(!post.one)
+        validationErrors.value.one = ['* Required field!']
+    if(!post.two)
+        validationErrors.value.two = ['* Required field!']
+    if(!post.three)
+        validationErrors.value.three = ['* Required field!']
+    if(!post.four)
+        validationErrors.value.four = ['* Required field!']
+    if(!post.five)
+        validationErrors.value.five = ['* Required field!']
+    if(!post.six)
+        validationErrors.value.six = ['* Required field!']
+    if(!post.comment)
+        validationErrors.value.comment = ['* Required field!']
+
+    return Object.values(validationErrors.value).length === 0;
+}
+
+const referenceSubmit = (post) =>{
+    const queryString = window.location.href;
+    let data = queryString.split('/');
+
+    info.value.user_id = data[5]
+    info.value.project_id = data[6]
+    info.value.role_id = data[7]
+    info.value.app_id = data[8]
+    info.value.email = data[9]
+
+    let validation_detail = validation (post)
+    if(validation_detail === true) {
+        if (reference.value.dataInfo) return
+        reference.value.dataInfo = true
+        axios
+            .post('/reference-form',{info:info.value, form:reference.value})
+            .then((response)=>{
+                if (response.data.success === true) {
+                    Toast.fire({icon: "success", title: "Information Submitted successfully!"})
+                }
+            })
+            .finally(() => reference.value.dataInfo = false)
+    }
+    reference.value.dataInfo = false
+}
 
 onMounted( ()=> {
 
@@ -32,129 +81,136 @@ onMounted( ()=> {
                         </Link>
                     </div>
                     <BreezeLabel value="1. How long have you known the applicant ?"/>
+                    <div v-if="!reference.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.one">{{ message }}</div>
                     <div class="w-full">
-                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                        <select v-model="reference.one" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option disabled hidden>
+                                 Please Select
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Less than 6 months</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Less than 6 months
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">6 months to a year</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 6 months to a year
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">A year to 18 months</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 A year to 18 months
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">More than 18 months</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 More than 18 months
                             </option>
                         </select>
                     </div>
                     <BreezeLabel value="2. You know the applicant as a ?"/>
+                    <div v-if="!reference.two" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.two">{{ message }}</div>
                     <div class="w-full">
-                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                        <select v-model="reference.two" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option disabled hidden>
+                                Please Select
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Friend</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Friend
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Family</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Family
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Professionally</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Professionally
                             </option>
                         </select>
                     </div>
                     <BreezeLabel value="3. Please tick your views on the following statements-"/>
                     <BreezeLabel value="a. I want to work with the applicant"/>
+                    <div v-if="!reference.three" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.three">{{ message }}</div>
                     <div class="w-full">
-                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                        <select v-model="reference.three" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option disabled hidden>
+                                Please Select
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Strongly Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Disagree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                 Strongly Disagree
                             </option>
                         </select>
                     </div>
                     <BreezeLabel value="b. The applicant can do this role"/>
+                    <div v-if="!reference.four" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.four">{{ message }}</div>
                     <div class="w-full">
-                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                        <select v-model="reference.four" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option disabled hidden>
+                                Please Select
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Strongly Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Disagree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Strongly Disagree
                             </option>
                         </select>
                     </div>
                     <BreezeLabel value="c. The applicant has outstanding leadership skills"/>
+                    <div v-if="!reference.five" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.five">{{ message }}</div>
                     <div class="w-full">
-                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                        <select  v-model="reference.five" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option disabled hidden>
+                                Please Select
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Strongly Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Disagree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Strongly Disagree
                             </option>
                         </select>
                     </div>
                     <BreezeLabel value="d. The applicant has outstanding communication skills"/>
+                    <div v-if="!reference.six" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.six">{{ message }}</div>
                     <div class="w-full">
-                        <select class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Please Select</div>
+                        <select v-model="reference.six" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
+                            <option disabled hidden>
+                                Please Select
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Strongly Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Agree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Agree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Disagree
                             </option>
-                            <option>
-                                <div class="dropdown-item py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100" href="#">Strongly Disagree</div>
+                            <option class="py-2 px-4 w-full bg-transparent text-gray-700 hover:bg-gray-100">
+                                Strongly Disagree
                             </option>
                         </select>
                     </div>
                     <div>
                         <BreezeLabel value="4. Add an additional comment here"/>
-                        <textarea class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
+                        <div v-if="!reference.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.comment">{{ message }}</div>
+                        <textarea v-model="reference.comment" class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                     </div>
 
-                    <button type="button" @click=" " class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]">
+                    <button type="button" @click="referenceSubmit(reference)" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': reference.dataInfo }" :disabled="reference.dataInfo">
                         Submit
                     </button>
                 </form>

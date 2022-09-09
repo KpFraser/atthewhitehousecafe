@@ -4,8 +4,16 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\{ UHealthcareController, SurveySubmissionController, ResultsController, ProjectController,
-    EventController, ProjectUserController, ApplicationController };
+use App\Http\Controllers\{
+    ReferenceController,
+    UHealthcareController,
+    SurveySubmissionController,
+    ResultsController,
+    ProjectController,
+    EventController,
+    ProjectUserController,
+    ApplicationController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +50,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster/{id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/reference', fn ()=> Inertia::render('project/reference') )->name('reference');
+    Route::get('/project/reference/{user_id}/{project_id}/{role_id}/{app_id}/{email}', fn ()=> Inertia::render('project/reference') )->name('references');
 
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
@@ -83,7 +92,10 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 */
     Route::get('/project-roles', [ApplicationController::class, 'show']);
     Route::post('/application-info', [ApplicationController::class, 'store']);
-
+/*
+ *  ReferenceController
+*/
+    Route::post('/reference-form', [ReferenceController::class, 'store']);
 });
 
 Route::get('/diet', fn ()=> Inertia::render('survey/diet') )->name('diet');

@@ -41,7 +41,7 @@ const validation = (info) =>{
 const submitInfo = (info) => {
 
     let validation_detail = validation (info)
-    console.log(validation_detail)
+    // console.log(validation_detail)
 
     if(validation_detail === true) {
         if (information.value.approve) return

@@ -51,10 +51,11 @@ class ApplicationController extends Controller
                 'text2'=> $request->second_txt,
                 'text3'=> $request->third_txt,
             ]);
-
-        Mail::to($data->ref1_email)->send(new Reference($data->email));
+        $status = [url('project/reference/'.auth()->user()->id.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id.'/'.$data->email)];
+//        dd($status);
+        Mail::to($data->ref1_email)->send(new Reference($status));
         if(!empty($data->ref2_email)) {
-            Mail::to($data->ref2_email)->send(new Reference($data->email));
+            Mail::to($data->ref2_email)->send(new Reference($status));
         }
         return response()->success();
     }
