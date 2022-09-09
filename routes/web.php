@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster/{id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/reference', fn ()=> Inertia::render('project/reference') )->name('reference');
-    Route::get('/project/reference/{user_id}/{project_id}/{role_id}/{app_id}/{email}', fn ()=> Inertia::render('project/reference') )->name('references');
+    Route::get('/project/reference/{email}/{project_id}/{role_id}/{app_id}/{user_id}', fn ()=> Inertia::render('project/reference') )->name('references');
 
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);

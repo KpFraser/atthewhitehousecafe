@@ -51,7 +51,7 @@ class ApplicationController extends Controller
                 'text2'=> $request->second_txt,
                 'text3'=> $request->third_txt,
             ]);
-        $status = [url('project/reference/'.auth()->user()->id.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id.'/'.$data->email)];
+        $status = [url('project/reference/'.$data->email.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id.'/'.auth()->user()->id)];
 //        dd($status);
         Mail::to($data->ref1_email)->send(new Reference($status));
         if(!empty($data->ref2_email)) {

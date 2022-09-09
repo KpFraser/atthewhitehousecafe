@@ -12,23 +12,23 @@ const { Toast } = commonFunctions(),
     { footerLists } = useFooterList()
 
 const info = ref({}),
-    reference = ref({}),
+    reference = ref({ one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}),
     validationErrors = ref({})
 
 const validation = (post) =>{
     validationErrors.value = {}
 
-    if(!post.one)
+    if( post.one === 'Please Select')
         validationErrors.value.one = ['* Required field!']
-    if(!post.two)
+    if( post.two === 'Please Select')
         validationErrors.value.two = ['* Required field!']
-    if(!post.three)
+    if( post.three === 'Please Select')
         validationErrors.value.three = ['* Required field!']
-    if(!post.four)
+    if( post.four === 'Please Select')
         validationErrors.value.four = ['* Required field!']
-    if(!post.five)
+    if( post.five === 'Please Select')
         validationErrors.value.five = ['* Required field!']
-    if(!post.six)
+    if( post.six === 'Please Select')
         validationErrors.value.six = ['* Required field!']
     if(!post.comment)
         validationErrors.value.comment = ['* Required field!']
@@ -40,15 +40,15 @@ const referenceSubmit = (post) =>{
     const queryString = window.location.href;
     let data = queryString.split('/');
 
-    info.value.user_id = data[5]
+    info.value.email = data[5]
     info.value.project_id = data[6]
     info.value.role_id = data[7]
     info.value.app_id = data[8]
-    info.value.email = data[9]
+    info.value.user_id = data[9]
 
     let validation_detail = validation (post)
     if(validation_detail === true) {
-        if (reference.value.dataInfo) return
+        if ( reference.value.dataInfo ) return
         reference.value.dataInfo = true
         axios
             .post('/reference-form',{info:info.value, form:reference.value})
@@ -58,6 +58,8 @@ const referenceSubmit = (post) =>{
                 }
             })
             .finally(() => reference.value.dataInfo = false)
+        reference.value = { one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}
+
     }
     reference.value.dataInfo = false
 }
@@ -81,7 +83,7 @@ onMounted( ()=> {
                         </Link>
                     </div>
                     <BreezeLabel value="1. How long have you known the applicant ?"/>
-                    <div v-if="!reference.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.one">{{ message }}</div>
+                    <div class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.one">{{ message }}</div>
                     <div class="w-full">
                         <select v-model="reference.one" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
                             <option disabled hidden>
@@ -102,7 +104,7 @@ onMounted( ()=> {
                         </select>
                     </div>
                     <BreezeLabel value="2. You know the applicant as a ?"/>
-                    <div v-if="!reference.two" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.two">{{ message }}</div>
+                    <div  class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.two">{{ message }}</div>
                     <div class="w-full">
                         <select v-model="reference.two" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
                             <option disabled hidden>
@@ -121,7 +123,7 @@ onMounted( ()=> {
                     </div>
                     <BreezeLabel value="3. Please tick your views on the following statements-"/>
                     <BreezeLabel value="a. I want to work with the applicant"/>
-                    <div v-if="!reference.three" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.three">{{ message }}</div>
+                    <div class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.three">{{ message }}</div>
                     <div class="w-full">
                         <select v-model="reference.three" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
                             <option disabled hidden>
@@ -142,7 +144,7 @@ onMounted( ()=> {
                         </select>
                     </div>
                     <BreezeLabel value="b. The applicant can do this role"/>
-                    <div v-if="!reference.four" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.four">{{ message }}</div>
+                    <div class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.four">{{ message }}</div>
                     <div class="w-full">
                         <select v-model="reference.four" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
                             <option disabled hidden>
@@ -163,7 +165,7 @@ onMounted( ()=> {
                         </select>
                     </div>
                     <BreezeLabel value="c. The applicant has outstanding leadership skills"/>
-                    <div v-if="!reference.five" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.five">{{ message }}</div>
+                    <div class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.five">{{ message }}</div>
                     <div class="w-full">
                         <select  v-model="reference.five" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
                             <option disabled hidden>
@@ -184,7 +186,7 @@ onMounted( ()=> {
                         </select>
                     </div>
                     <BreezeLabel value="d. The applicant has outstanding communication skills"/>
-                    <div v-if="!reference.six" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.six">{{ message }}</div>
+                    <div class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.six">{{ message }}</div>
                     <div class="w-full">
                         <select v-model="reference.six" class="text-[20px] flex justify-between w-full dropdown-toggle px-6 py-2.5 bg-[#639f1e] text-white bg-opacity-75 rounded shadow-md hover:bg-[#639f1e] hover:shadow-lg focus:bg-[#639f1e] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-[#639f1e] transition duration-500 ease-in-out flex items-center">
                             <option disabled hidden>
