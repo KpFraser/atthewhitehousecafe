@@ -7,6 +7,7 @@ import useFooterList from "../../../use/useFooterList";
 import { Link } from '@inertiajs/inertia-vue3';
 import {ref, onMounted } from "vue";
 import commonFunctions from "@/use/common";
+import {Inertia} from "@inertiajs/inertia";
 
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList()
@@ -48,8 +49,8 @@ const referenceSubmit = (post) =>{
 
     let validation_detail = validation (post)
     if(validation_detail === true) {
-        if ( reference.value.dataInfo ) return
-        reference.value.dataInfo = true
+        if ( reference.value.approve ) return
+        reference.value.approve = true
         axios
             .post('/reference-form',{info:info.value, form:reference.value})
             .then((response)=>{
@@ -57,11 +58,14 @@ const referenceSubmit = (post) =>{
                     Toast.fire({icon: "success", title: "Information Submitted successfully!"})
                 }
             })
-            .finally(() => reference.value.dataInfo = false)
-        reference.value = { one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}
+            .finally(() => {
+                reference.value = { approve: false, one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}
+                Inertia.visit('/footer-project')
 
+            })
+    }else {
+        reference.value.approve = false
     }
-    reference.value.dataInfo = false
 }
 
 onMounted( ()=> {
@@ -212,7 +216,7 @@ onMounted( ()=> {
                         <textarea v-model="reference.comment" class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                     </div>
 
-                    <button type="button" @click="referenceSubmit(reference)" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': reference.dataInfo }" :disabled="reference.dataInfo">
+                    <button type="button" @click="referenceSubmit(reference)" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': reference.approve }" :disabled="reference.approve">
                         Submit
                     </button>
                 </form>

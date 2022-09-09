@@ -41,8 +41,6 @@ const validation = (info) =>{
 const submitInfo = (info) => {
 
     let validation_detail = validation (info)
-    // console.log(validation_detail)
-
     if(validation_detail === true) {
         if (information.value.approve) return
         information.value.approve = true
@@ -53,7 +51,9 @@ const submitInfo = (info) => {
                     Toast.fire({icon: "success", title: "Information Submitted successfully!"})
                 }
             })
-            .finally(() => information.value.approve = false)
+            .finally(() => {
+                information.value = { name: '', first_txt: '', second_txt: '', third_txt: '', email: '', ref_one: '', ref_two: '', approve: false }
+            })
     } else {
         information.value.approve = false
     }
@@ -103,10 +103,10 @@ onMounted( ()=> {
                 </div>
                 <div v-if="!information.project_id || !information.role_id" class="mt-2 text-center text-red-700 font-bold text-sm" v-for="message in  validationErrors.selectOption">{{ message }}</div>
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
-                    <div class="flex justify-between mr-4">
-                        <Link :href="route('reference')" class="text-[20px] text-white bg-[#639f1e] p-1 text-center bg-opacity-75">
-                            Reference
-                        </Link>
+                    <div class="flex justify-end mr-4">
+<!--                        <Link :href="route('reference')" class="text-[20px] text-white bg-[#639f1e] p-1 text-center bg-opacity-75">-->
+<!--                            Reference-->
+<!--                        </Link>-->
                         <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
                             <i class="fas fa-home"></i>
                         </Link>
