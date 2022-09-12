@@ -45,7 +45,6 @@ const referenceSubmit = (post) =>{
     info.value.project_id = data[6]
     info.value.role_id = data[7]
     info.value.app_id = data[8]
-    info.value.user_id = data[9]
 
     let validation_detail = validation (post)
     if(validation_detail === true) {

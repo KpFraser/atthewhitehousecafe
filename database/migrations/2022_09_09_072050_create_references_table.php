@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->foreignId('application_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+//            $table->foreignId('user_id')->nullable(true)->constrained()->onDelete('cascade');
             $table->string('payload');
             $table->timestamps();
         });

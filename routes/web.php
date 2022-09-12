@@ -50,7 +50,6 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster/{id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/roster-register/{id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
-    Route::get('/project/reference/{email}/{project_id}/{role_id}/{app_id}/{user_id?}', fn ()=> Inertia::render('project/reference') )->name('references');
 
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
@@ -88,12 +87,10 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/event-name', [EventController::class, 'store']);
     Route::post('/group-comment', [EventController::class, 'update']);
     Route::post('/roster-new/{project_id}', [EventController::class, 'rosterRegister']);
-/*
- *  ReferenceController
-*/
-    Route::post('/reference-form', [ReferenceController::class, 'store']);
-});
 
+});
+Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
+Route::get('/project/reference/{email}/{project_id}/{role_id}/{app_id}', fn ()=> Inertia::render('project/reference') )->name('references');
 Route::get('/diet', fn ()=> Inertia::render('survey/diet') )->name('diet');
 Route::get('/survey', fn ()=> Inertia::render('survey/survey') )->name('survey');
 Route::get('/results', fn ()=> Inertia::render('survey/results') )->name('results');
@@ -105,9 +102,12 @@ Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 /*
 *  ApplicationController
 */
-Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
 Route::get('/project-roles', [ApplicationController::class, 'show']);
 Route::post('/application-info', [ApplicationController::class, 'store']);
+/*
+ *  ReferenceController
+*/
+Route::post('/reference-form', [ReferenceController::class, 'store']);
 
 
 Route::get('/survey-results', [ResultsController::class, 'show']);

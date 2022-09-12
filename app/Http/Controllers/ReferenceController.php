@@ -38,7 +38,6 @@ class ReferenceController extends Controller
         Reference::Create([
             'project_id' => $request->info['project_id'],
             'role_id'=> $request->info['role_id'],
-            'user_id'=> $request->info['user_id'],
             'reference_email'=> $request->info['email'],
             'application_id'=> $request->info['app_id'],
             'payload'=> json_encode($request->form,)

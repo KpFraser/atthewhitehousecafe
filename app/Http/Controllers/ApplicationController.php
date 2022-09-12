@@ -51,13 +51,8 @@ class ApplicationController extends Controller
             'text2'=> $request->second_txt,
             'text3'=> $request->third_txt,
         ]);
-        if(!empty(auth()->user())){
-            $id = auth()->user()->id;
-        }else {
-            $id = '';
-        }
         if(!empty($data)) {
-            $status = [url('project/reference/'.$data->email.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id.'/'.$id)];
+            $status = [url('project/reference/'.$data->email.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id)];
             Mail::to($data->ref1_email)->send(new Reference($status));
             if(!empty($data->ref2_email)) {
                 Mail::to($data->ref2_email)->send(new Reference($status));
