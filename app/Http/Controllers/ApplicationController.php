@@ -40,24 +40,31 @@ class ApplicationController extends Controller
     public function store(Request $request)
     {
         $data = Application::Create([
-                'project_id' => $request->project_id,
-                'role_id'=> $request->role_id,
-                'name'=> $request->name,
-                'created_by'=> auth()->user()->id,
-                'email'=> $request->email,
-                'ref1_email'=> $request->ref_one,
-                'ref2_email'=> $request->ref_two,
-                'text1'=> $request->first_txt,
-                'text2'=> $request->second_txt,
-                'text3'=> $request->third_txt,
-            ]);
-        $status = [url('project/reference/'.$data->email.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id.'/'.auth()->user()->id)];
-//        dd($status);
-        Mail::to($data->ref1_email)->send(new Reference($status));
-        if(!empty($data->ref2_email)) {
-            Mail::to($data->ref2_email)->send(new Reference($status));
+            'project_id' => $request->project_id,
+            'role_id'=> $request->role_id,
+            'name'=> $request->name,
+            'created_by'=> !empty(auth()->user()->id) ? auth()->user()->id: NULL,
+            'email'=> $request->email,
+            'ref1_email'=> $request->ref_one,
+            'ref2_email'=> $request->ref_two,
+            'text1'=> $request->first_txt,
+            'text2'=> $request->second_txt,
+            'text3'=> $request->third_txt,
+        ]);
+        if(!empty(auth()->user())){
+            $id = auth()->user()->id;
+        }else {
+            $id = '';
         }
-        return response()->success();
+        if(!empty($data)) {
+            $status = [url('project/reference/'.$data->email.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id.'/'.$id)];
+            Mail::to($data->ref1_email)->send(new Reference($status));
+            if(!empty($data->ref2_email)) {
+                Mail::to($data->ref2_email)->send(new Reference($status));
+            }
+            return response()->success();
+        } else
+            return response()->error(false, 400);
     }
 
     /**

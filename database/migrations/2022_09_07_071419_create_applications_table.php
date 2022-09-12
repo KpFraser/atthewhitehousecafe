@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('email')->nullable(true);
             $table->string('ref1_email')->nullable(true);
             $table->string('ref2_email')->nullable(true);
-            $table->foreignId('created_by')->references('id')->on('users')->constrained()->onDelete('cascade');
+            $table->foreignId('created_by')->nullable(true)->references('id')->on('users')->constrained()->onDelete('cascade')->nullable(true);
             $table->foreignId('updated_by')->nullable(true)->references('id')->on('users')->constrained();
             $table->timestamps();
         });

@@ -20,7 +20,7 @@ const information = ref ({}),
 
 const validation = (info) =>{
     validationErrors.value = {}
-    if(info.project_id === 0 && info.role_id === 0)
+    if(info.project_id === 0 || info.role_id === 0)
         validationErrors.value.selectOption = ['* Select Project and Role !']
     if(!info.name)
         validationErrors.value.name = ['* Required field!']
