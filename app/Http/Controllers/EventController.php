@@ -5,8 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RosterProjectResource;
 use App\Models\Event;
 use App\Models\ProjectUser;
+use App\Models\User;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+
 
 class EventController extends Controller
 {
@@ -75,11 +82,30 @@ class EventController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Event  $event
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function edit(Event $event)
+    public function rosterRegister(Request $request)
     {
-        //
+        {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            ]);
+
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            ProjectUser::create([
+                'user_id'=> $user->id,
+                'project_id'=>$request->project_id,
+                'is_user'=>1,
+                'is_key'=>1
+            ]);
+          return response()->success();
+        }
     }
 
     /**

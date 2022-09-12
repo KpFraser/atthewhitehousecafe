@@ -44,7 +44,7 @@ const eventName = () =>{
 
 const selectedEvent = (event_id, project_id) =>{
     console.log(event_id, project_id)
-    Inertia.visit('/roster/' + event_id+'-'+project_id)
+    Inertia.visit('/roster/' +event_id+'-'+project_id)
 
 }
 

@@ -5,10 +5,11 @@ import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import BreezeButton from '@/Components/Button.vue';
 import useFooterList from "../../../use/useFooterList";
-import { Head, Link } from '@inertiajs/inertia-vue3';
-import {ref, onMounted, reactive } from "vue";
+import { Link } from '@inertiajs/inertia-vue3';
+import {ref, onMounted } from "vue";
 import axios from "axios";
 import commonFunctions from "@/use/common";
+import {Inertia} from "@inertiajs/inertia";
 
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList()
@@ -32,8 +33,7 @@ const eventInfo = () => {
             info.value.start_time = response.data[3]
             info.value.end_time = response.data[4]
             users.value = response.data[5]
-            console.log(groupComment.value.comment = response.data[6][0].group_comment)
-
+            groupComment.value.comment = response.data[6][0].group_comment;
         })
 }
 
@@ -68,10 +68,10 @@ const rosterComment = (post) =>{
 }
 
 const checkedProject = (one, two, three) =>{
-    console.log(one, two, three)
+    // console.log(one, two, three)
     axios
         .post('/is-roster', { id: one, project_id: two, check: three})
-        .then((response)=>{
+        .then(( )=>{
 
         })
 }
@@ -98,6 +98,13 @@ const groupComments = (post) =>{
     }else {
         groupComment.value.approve = false
     }
+}
+
+const rosterRegister = () =>{
+    const queryString = window.location.href
+    let event_id = queryString.split('/')[4].split('-')[0]
+    let project_id = (queryString.split('/')[4].split('-')[1])
+    Inertia.visit('/roster-register/'+event_id+'-'+project_id)
 }
 
 const commentModal = (user_id, project_id) =>{
@@ -140,11 +147,15 @@ onMounted( ()=> {
                         </div>
                     </div>
                     <BreezeLabel value="Roster"/>
-                    <div class="bg-[#639f1e] py-5 bg-opacity-75">
+                    <div class="bg-[#639f1e] w-full py-5 bg-opacity-75">
                         <div class="flex items-center justify-between mx-5" v-for="user in users">
                             <input @change="checkedProject(user.identity, user.project, $event.target.checked)" :checked ="user.roster === 1 " :value="user.identity" type="checkbox" class="text-[#639f1e] bg-[#cccccc] focus:ring-[#639f1e] transition ease-in-out">
                             <div class="ml-5">{{user.name}}</div>
                             <i @click="commentModal(user.identity, user.project)" class="far fa-pen cursor-pointer" data-bs-toggle="modal" data-bs-target="#addComment"></i>
+                        </div>
+                        <div @click="rosterRegister()" class="flex mx-auto items-center mt-4 space-x-2 border border-white p-0.5 cursor-pointer w-36 justify-center text-[12px]">
+                            <div>Add a Participant</div>
+                            <i class="fa fa-plus"></i>
                         </div>
                     </div>
                     <div class="flex items-center">
@@ -162,7 +173,7 @@ onMounted( ()=> {
                     <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                         <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
                             <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Comment</h5>
-                            <div v-if="!roster.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.rosterComment">{{ message }}</div>
+                            <div v-if="!roster.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.rosterComment">{{ message }}</div>
 
                             <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                         </div>

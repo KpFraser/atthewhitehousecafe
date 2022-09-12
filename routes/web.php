@@ -49,7 +49,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster/{id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
-//    Route::get('/reference', fn ()=> Inertia::render('project/reference') )->name('reference');
+    Route::get('/roster-register/{id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
     Route::get('/project/reference/{email}/{project_id}/{role_id}/{app_id}/{user_id}', fn ()=> Inertia::render('project/reference') )->name('references');
 
 
@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/event-info/{event_id}/{project_id}', [EventController::class, 'showInfo']);
     Route::post('/event-name', [EventController::class, 'store']);
     Route::post('/group-comment', [EventController::class, 'update']);
+    Route::post('/roster-new/{project_id}', [EventController::class, 'rosterRegister']);
 /*
  *  ApplicationController
 */
