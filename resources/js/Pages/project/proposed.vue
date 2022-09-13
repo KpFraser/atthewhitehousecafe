@@ -39,6 +39,19 @@ const updateInfo = () =>{
         .finally(()=> information.value.updating = false)
 }
 
+const saveInfo = () =>{
+    if(information.value.updating) return
+    information.value.updating = true
+    axios
+        .post ('/update-project', information.value)
+        .then((response)=>{
+            if(response.data.success === true)
+                Toast.fire({icon: "success",title: "Project updated successfully!"})
+                Inertia.visit('/projectshome')
+        })
+        .finally(()=> information.value.updating = false)
+}
+
 const approveInfo = () =>{
     if(information.value.approving) return
     information.value.approving = true
@@ -71,34 +84,32 @@ onMounted( ()=> {
                     </div>
                     <div class="flex items-center">
                         <BreezeLabel value="Name" />
-                        <!-- <div v-if="!personal.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div> -->
                     </div>
                     <BreezeInput v-model="information.name"/>
                     <div class="flex items-center">
                         <BreezeLabel value="Possible Location" />
-                        <!-- <div v-if="!personal.phone_number" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.phone_number">{{ message }}</div> -->
                     </div>
                     <BreezeInput v-model="information.location"/>
                     <div class="flex items-center">
                         <BreezeLabel value="Frequency" />
-                        <!-- <div v-if="!personal.address" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.address">{{ message }}</div> -->
                     </div>
                     <BreezeInput v-model="information.frequency"/>
                     <div class="flex items-center">
                         <BreezeLabel value="Requirements" />
-                        <!-- <div v-if="!personal.postcode" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.postcode">{{ message }}</div> -->
                     </div>
                     <BreezeInput v-model="information.requirements"/>
                     <div class="flex items-center">
                         <BreezeLabel value="Leadership" />
-                        <!-- <div v-if="!personal.postcode" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.postcode">{{ message }}</div> -->
                     </div>
                     <BreezeInput v-model="information.leadership"/>
-                    <button type="button" @click="updateInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.updating }" :disabled="information.updating">
+                    <button v-if="information.approve !== 1" type="button" @click="updateInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.updating }" :disabled="information.updating">
                         Update
                     </button>
-                    <button type="button" @click="approveInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
+                    <button v-if="information.approve !== 1" type="button" @click="approveInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
                         Approved
+                    </button>
+                    <button v-if="information.approve === 1" type="button" @click="saveInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
+                        Save
                     </button>
                 </form>
             </div>
