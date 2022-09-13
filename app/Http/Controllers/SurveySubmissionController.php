@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GameName;
 use App\Mail\SurveyMail;
+use App\Models\Project;
 use App\Models\SurveySubmission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -21,7 +22,8 @@ class SurveySubmissionController extends Controller
      */
     public function index()
     {
-        //
+        $data = GameName::select('id', 'name')->get();
+        return response($data);
     }
 
     /**
@@ -29,9 +31,16 @@ class SurveySubmissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function surveyProject(Request $request)
     {
-        //
+        if ($request->check === true) {
+            GameName::updateorcreate([
+                'name' => $request->name
+            ]);
+        }else{
+            $data = GameName::select()->where('name', $request->name)->delete();
+        }
+        return response()->success();
     }
 
     /**
@@ -74,7 +83,7 @@ class SurveySubmissionController extends Controller
      */
     public function show()
     {
-        $data = GameName::with('SurveySubmission')->get();
+        $data = Project::select('id', 'name')->get();
         return response($data);
     }
 

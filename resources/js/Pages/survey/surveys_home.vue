@@ -24,10 +24,10 @@
                 <MasterHeader/>
                 <div class="h-fit flex justify-center text-[30px]">
                     <div class="w-full">
-<!--                        <Link :href="route('diet')" class="flex my-16 items-center justify-start space-x-6 ml-10">-->
-<!--                            <LoginLogo class="max-h-10"/>-->
-<!--                            <div>Diet</div>-->
-<!--                        </Link>-->
+                        <Link :href="route('diet')" class="flex my-16 items-center justify-start space-x-6 ml-10">
+                            <LoginLogo class="max-h-10"/>
+                            <div>Diet</div>
+                        </Link>
                         <Link :href="route('survey')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
                             <div>Survey</div>

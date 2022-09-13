@@ -17,21 +17,21 @@ class GameNameSeeder extends Seeder
     public function run()
     {
         // $this->call(GameNameFactory::class);
-        $names = array(
-            array('name' => 'Canoeing'),
-            array('name' => 'Morning Runs'),
-            array('name' => 'Track Runs'),
-            array('name' => 'Frisbee'),
-            array('name' => 'Cycle Rides'),
-            array('name' => 'Group Walks'),
-            array('name' => 'Cooking'),
-            array('name' => 'Gardening'),
-            array('name' => 'Pickelball'),
-        );
-        foreach ($names as $name) {
-            GameName::create([
-             'name' => $name['name'],
-           ]);
-        }
+//        $names = array(
+//            array('name' => 'Canoeing'),
+//            array('name' => 'Morning Runs'),
+//            array('name' => 'Track Runs'),
+//            array('name' => 'Frisbee'),
+//            array('name' => 'Cycle Rides'),
+//            array('name' => 'Group Walks'),
+//            array('name' => 'Cooking'),
+//            array('name' => 'Gardening'),
+//            array('name' => 'Pickelball'),
+//        );
+//        foreach ($names as $name) {
+//            GameName::create([
+//             'name' => $name['name'],
+//           ]);
+//        }
     }
 }

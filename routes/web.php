@@ -95,8 +95,10 @@ Route::get('/diet', fn ()=> Inertia::render('survey/diet') )->name('diet');
 Route::get('/survey', fn ()=> Inertia::render('survey/survey') )->name('survey');
 Route::get('/results', fn ()=> Inertia::render('survey/results') )->name('results');
 Route::get('/surveys_home', fn ()=> Inertia::render('survey/surveys_home') )->name('surveys_home');
-Route::get('/surveyProjects', [SurveySubmissionController::class, 'show']);
+Route::get('/survey-projects', [SurveySubmissionController::class, 'show']);
+Route::get('/surveyOptions', [SurveySubmissionController::class, 'index']);
 Route::post('/name-edit', [SurveySubmissionController::class, 'update']);
+Route::post('/check-project', [SurveySubmissionController::class, 'surveyProject']);
 Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
 Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 /*

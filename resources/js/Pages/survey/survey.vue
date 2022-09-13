@@ -41,7 +41,7 @@
 
     const surveyProjects = () =>{
         axios
-            .get('/surveyProjects')
+            .get('/surveyOptions')
             .then((response)=>{
                 names.value = response.data
             })
