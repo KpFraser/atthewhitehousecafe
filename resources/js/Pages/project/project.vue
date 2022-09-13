@@ -23,7 +23,6 @@ const projects = () =>{
         .get('/favourite-projects')
         .then((response)=>{
             favourite.value = response.data[0].key_project
-            // console.log(favourite.value.id)
             eventShow.value = response.data[1]
         })
 }

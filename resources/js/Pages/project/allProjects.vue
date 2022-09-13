@@ -5,6 +5,7 @@ import MasterHeader from '@/Components/MasterHeader.vue';
 import useFooterList from "../../../use/useFooterList";
 import {ref, onMounted, reactive } from "vue";
 import commonFunctions from "@/use/common";
+import {Inertia} from "@inertiajs/inertia";
 
 const { Toast } = commonFunctions()
 const { footerLists } = useFooterList()
@@ -19,7 +20,6 @@ const projects = () =>{
     axios
         .get('/projects')
         .then((response)=>{
-            // console.log(response.data.data)
             names.value = response.data.data
             all_names.value = names.value
                 .filter(x => x.is_approved === 1 && x.is_archived !== 1)
@@ -52,10 +52,13 @@ const keyBtn = (id) =>{
     axios
         .post('/favourite-project',{id: id})
         .then((response)=>{
-            console.log(response)
             Toast.fire({icon: "success", title: "Added to Key Project!"})
             projects  ()
         })
+}
+
+const pencilBtn = (id) =>{
+    Inertia.visit('/proposed/'+id)
 }
 
 onMounted( ()=> {
@@ -94,7 +97,10 @@ onMounted( ()=> {
                             <div class="tab-pane fade" id="tabs-profile" role="tabpanel" aria-labelledby="tabs-profile-tab">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
                                     <div :class="!!user.is_key ? `ml-5 text-white font-extrabold` : `ml-5 text-white`">{{user.name}}</div>
-                                    <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
+                                    <div class="flex items-center">
+                                        <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="pencilBtn(user.id)"></i>
+                                        <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
+                                    </div>
                                 </div>
                             <div v-if="user_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
