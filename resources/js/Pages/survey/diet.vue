@@ -49,7 +49,7 @@
                     </div>
                     <div class="flex ml-5 mt-4" v-for="name in names">
                          <div class="flex items-center ml-5 mt-5">
-                            <input @change="checkedProject(name.id, name.name, $event.target.checked)" :value="name.id" type="checkbox" class="text-[16px] hover:text-[#639f1e]">
+                            <input @change="checkedProject(name.id, name.name, $event.target.checked)" :checked="name.is_survey === 1" :value="name.id" type="checkbox" class="text-[16px] hover:text-[#639f1e]">
                             <div class="ml-5 text-[16px]">{{name.name}}</div>
                         </div>
                     </div>

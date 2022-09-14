@@ -28,16 +28,21 @@
     }
 
     const surveyData = (post) =>{
-        if(survey.processing) return
-        survey.processing = true
-        axios
-            .post('/surveyProjects', {survey, selected})
-            .then((response)=>{
-                if(response.data.success === true)
-                    Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
-            })
-            .finally(()=> survey.processing = false)
+
+        let valid = validation (post)
+        if (valid===true){
+            if(survey.processing) return
+            survey.processing = true
+            axios
+                .post('/surveyProjects', {survey, selected})
+                .then((response)=>{
+                    if(response.data.success === true)
+                        Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
+                })
+                .finally(()=> survey.processing = false)
+        }
     }
+
 
     const surveyProjects = () =>{
         axios

@@ -10,7 +10,7 @@ class Project extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'location', 'frequency', 'requirements', 'leadership', 'module', 'is_approved', 'is_archived', 'created_by', 'updated_by'
+        'name', 'location', 'is_survey', 'frequency', 'requirements', 'leadership', 'module', 'is_approved', 'is_archived', 'created_by', 'updated_by'
     ];
 
     public function projectUser(): HasOne

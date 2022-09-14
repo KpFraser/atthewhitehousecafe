@@ -22,7 +22,7 @@ class SurveySubmissionController extends Controller
      */
     public function index()
     {
-        $data = GameName::select('id', 'name')->get();
+        $data = Project::select('id', 'name')->where('is_survey', 1)->get();
         return response($data);
     }
 
@@ -34,13 +34,22 @@ class SurveySubmissionController extends Controller
     public function surveyProject(Request $request)
     {
         if ($request->check === true) {
-            GameName::updateorcreate([
+            Project::updateOrCreate([
+                'id' => $request->id,
                 'name' => $request->name
+            ],[
+                'is_survey' => 1
             ]);
         }else{
-            $data = GameName::select()->where('name', $request->name)->delete();
+            Project::updateOrCreate([
+                'id' => $request->id,
+                'name' => $request->name
+            ],[
+                'is_survey' => 0
+            ]);
         }
-        return response()->success();
+        $data = Project::select('id', 'is_survey')->get();
+        return response()->success($data);
     }
 
     /**
@@ -51,7 +60,7 @@ class SurveySubmissionController extends Controller
      */
     public function store(Request $request)
     {
-
+//dd($request->all());
         $survey_contact = SurveyContact::updateOrCreate([
             'session_id'=> Session::getId(),
         ],[
@@ -64,7 +73,7 @@ class SurveySubmissionController extends Controller
 
             SurveySubmission::updateOrCreate([
                 'session_id'=> Session::getId(),
-                'game_id'=> $key,
+                'project_id'=> $key,
             ],[
                 'options'=> $ans,
                 'survey_contact_id'=> $survey_contact->id,
@@ -83,7 +92,7 @@ class SurveySubmissionController extends Controller
      */
     public function show()
     {
-        $data = Project::select('id', 'name')->get();
+        $data = Project::select('id', 'name', 'is_survey')->get();
         return response($data);
     }
 

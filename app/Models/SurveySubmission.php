@@ -10,7 +10,7 @@ class SurveySubmission extends Model
     use HasFactory;
     protected $fillable = [
         'session_id',
-        'game_id',
+        'project_id',
         'options',
         'survey_contact_id',
     ];
