@@ -15,7 +15,7 @@
     const survey = reactive({}),
         names = ref({}),
         validationErrors = ref({}),
-        selected = reactive({})
+        selected = ref({})
 
     const validation = (post) =>{
         if(!post.name)
@@ -34,12 +34,12 @@
             if(survey.processing) return
             survey.processing = true
             axios
-                .post('/surveyProjects', {survey, selected})
+                .post('/surveyProjects', {survey:survey, selected:selected.value})
                 .then((response)=>{
                     if(response.data.success === true)
                         Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
                 })
-                .finally(()=> survey.processing = false)
+                .finally(()=> survey.processing = false, survey.name='', survey.phone_number='', survey.email= '', selected.value = {} )
         }
     }
 
