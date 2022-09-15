@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
     Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
     Route::get('/new-project', fn ()=> Inertia::render('project/newProject') )->name('new-project');
-    Route::get('/proposed/{id?}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
+    Route::get('/proposed/{slug}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/favourite-project', fn ()=> Inertia::render('project/project') )->name('favourite-project');
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
@@ -65,7 +65,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/projects', [ProjectController::class, 'projects']);
     Route::get('/favourite-info', [ProjectController::class, 'favourite']);
     Route::get('/favourite-projects', [ProjectController::class, 'favourite_info'])->name('favourite_info');
-    Route::get('/new-projects/{id}', [ProjectController::class, 'show']);
+    Route::get('/new-projects/{slug}', [ProjectController::class, 'show']);
     Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
     Route::post('/project-names', [ProjectController::class, 'store']);
     Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);

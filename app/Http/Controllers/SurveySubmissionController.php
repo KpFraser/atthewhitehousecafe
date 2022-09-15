@@ -61,9 +61,9 @@ class SurveySubmissionController extends Controller
     public function store(Request $request)
     {
 //dd($request->all());
-        $survey_contact = SurveyContact::updateOrCreate([
+        $survey_contact = SurveyContact::create([
             'session_id'=> Session::getId(),
-        ],[
+
             'name'=> $request->survey['name'],
             'email'=> $request->survey['email'],
             'phone_number'=> $request->survey['phone_number'],
@@ -71,10 +71,10 @@ class SurveySubmissionController extends Controller
 
         foreach($request->selected as $key=>$ans){
 
-            SurveySubmission::updateOrCreate([
+            SurveySubmission::create([
                 'session_id'=> Session::getId(),
                 'project_id'=> $key,
-            ],[
+
                 'options'=> $ans,
                 'survey_contact_id'=> $survey_contact->id,
             ]);

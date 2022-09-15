@@ -37,12 +37,11 @@
                 .post('/surveyProjects', {survey:survey, selected:selected.value})
                 .then((response)=>{
                     if(response.data.success === true)
-                        Toast.fire({icon: "success",title: "Personal Information updated successfully!"})
+                        Toast.fire({icon: "success",title: "Survey submitted successfully!"})
                 })
                 .finally(()=> survey.processing = false, survey.name='', survey.phone_number='', survey.email= '', selected.value = {} )
         }
     }
-
 
     const surveyProjects = () =>{
         axios

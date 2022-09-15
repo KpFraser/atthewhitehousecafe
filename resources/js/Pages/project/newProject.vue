@@ -8,9 +8,12 @@
     import useFooterList from "../../../use/useFooterList";
     import commonFunctions from "@/use/common";
 
+    const baseUrl = window.location.origin
     const { Toast, ConfirmToast } = commonFunctions()
     const { footerLists  } = useFooterList()
-    const names = ref({}), option = ref(-1), validationErrors = ref({})
+    const names = ref({}),
+        option = ref(-1),
+        validationErrors = ref({})
 
 
     const pencil = (key) => {
@@ -54,6 +57,7 @@
       axios
         .get('/project-names')
         .then((response)=>{
+            console.log(response)
             names.value = response.data
         })
     }
@@ -91,8 +95,8 @@
                     </div>
                     <div class="min-h-[30vh] overflow-y-auto">
                         <div class="flex ml-5 mt-4" v-for="(name,key) in names">
-                            <div class="grid grid-cols-4 w-full flex items-center ml-5 mt-5" v-show="key != option">
-                                <Link :href="route('proposed', name.id)" class="col-span-3 text-[16px]">
+                            <div class="grid grid-cols-4 w-full flex items-center ml-5 mt-5" v-show="key !== option">
+                                <Link :href="baseUrl+'/proposed/'+name.slug" class="col-span-3 text-[16px]">
                                     {{name.name}}
                                 </Link>
                                 <div class="flex justify-center">
@@ -100,7 +104,7 @@
                                     <i class="fas fa-trash text-[20px] hover:text-white rounded px-2 py-1.5 border hover:bg-red-600 mx-5" @click="deleteProject(name.id)"></i>
                                 </div>
                             </div>
-                            <div class="flex ml-5 flex items-center mt-4" v-show="option == key">
+                            <div class="flex ml-5 flex items-center mt-4" v-show="option === key">
                                 <input type="text" v-model="name.name" class="ml-4 h-8 rounded border-[#556553] active:border-[#556553] focus:ring-0 focus:border-[#556553] hover:border-[#556553]">
                                 <i class="far fa-check ml-4 border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="enterNewProject(name)"></i>
                                 <div v-if="!name.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>

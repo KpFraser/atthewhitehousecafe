@@ -8,6 +8,7 @@ use App\Models\ProjectUser;
 use Illuminate\Http\Request;
 use App\Http\Resources\{ ProjectResource, AllProjectResource };
 use Inertia\Inertia;
+use Str;
 
 
 class ProjectController extends Controller
@@ -19,7 +20,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $data = Project::select('id', 'name')->where('is_approved', '!=', 1)->orWhereNull('is_approved')->get();
+        $data = Project::select('id', 'name', 'slug')->where('is_approved', '!=', 1)->orWhereNull('is_approved')->get();
         return response($data);
     }
 
@@ -58,13 +59,13 @@ class ProjectController extends Controller
     public function approve(Request $request)
     {
         Project::updateOrCreate([
-            'id' => $request->identity,
+            'id' => $request->id,
         ],[
             'name'=> $request->name,
             'location'=> $request->location,
             'frequency'=> $request->frequency,
             'requirements'=> $request->requirements,
-            'leadership'=> $request->leadership,
+            'applications'=> $request->applications,
             'is_approved'=> $request->approve,
         ]);
         return response()->success();
@@ -78,9 +79,13 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
         {
+           $request->validate([
+                'name' => 'required|unique:projects,name,'.$request->name['id'],
+           ]);
             Project::updateOrCreate([
                 'id' => $request->name['id'],
             ],[
+                'slug' => Str::slug($request->name['name']),
                 'created_by'=> auth()->user()->id,
                 'name'=> $request->name['name'],
                 'module'=> $request->module,
@@ -94,9 +99,10 @@ class ProjectController extends Controller
      * @return ProjectResource
      */
 
-    public function show (Project $id)
+    public function show ($slug)
     {
-            return new ProjectResource($id);
+        $data = Project::select('id', 'name', 'slug', 'location', 'frequency', 'requirements', 'applications', 'is_approved')->where('slug', $slug)->first();
+        return response()->success($data);
     }
 
     /**
@@ -148,14 +154,17 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
+//        dd($request->all());
         Project::updateOrCreate([
-            'id' => $request->identity,
+            'id' => $request->id,
         ],[
+            'slug' => Str::slug($request->name),
             'name'=> $request->name,
             'location'=> $request->location,
             'frequency'=> $request->frequency,
             'requirements'=> $request->requirements,
-            'leadership'=> $request->leadership,
+            'applications'=> $request->applications,
+
         ]);
         return response()->success();
     }
@@ -168,7 +177,7 @@ class ProjectController extends Controller
      */
     public function projects(Project $project)
     {
-        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived' )->with('projectUser')->get();
+        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived', 'slug' )->with('projectUser')->get();
 
         return AllProjectResource::Collection($data);
     }

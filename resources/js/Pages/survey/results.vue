@@ -40,7 +40,7 @@ const { Toast } = commonFunctions(),
 
         if(!!questionName.value){
             questionName.value.forEach(function(value){
-                results = _.filter(questionData.value, function(o) { return o.game_id === value.id });
+                results = _.filter(questionData.value, function(o) { return o.project_id === value.id });
 
                 if(!!results)
                 {
@@ -117,7 +117,7 @@ const { Toast } = commonFunctions(),
         var dataArray = []
         var data = ''
         questionName.value.forEach(function(value){
-            var result = _.filter(questionData.value, function(o) { return o.game_id === value.id });
+            var result = _.filter(questionData.value, function(o) { return o.project_id === value.id });
             if(!!result)
             {
                 var result2 = _.filter(result, function(obj) { return obj.options === optionValue });

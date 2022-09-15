@@ -14,20 +14,18 @@ import commonFunctions from "@/use/common";
 const { Toast } = commonFunctions()
 const { footerLists } = useFooterList()
 const information = ref({})
-const project_id = ref({})
 
 const projectInfo = () => {
     const queryString = window.location.href;
-    let id = queryString.split('/')[4];
-    project_id.value = id;
+    let slug = queryString.split('/')[4];
     axios
-        .get('/new-projects/'+id)
+        .get('/new-projects/'+slug)
         .then((response)=>{
             information.value= response.data.data
         })
 }
 
-const updateInfo = () =>{
+const updateInfo = (id) =>{
     if(information.value.updating) return
     information.value.updating = true
     axios
@@ -35,19 +33,9 @@ const updateInfo = () =>{
         .then((response)=>{
             if(response.data.success === true)
                 Toast.fire({icon: "success",title: "Project updated successfully!"})
-        })
-        .finally(()=> information.value.updating = false)
-}
-
-const saveInfo = () =>{
-    if(information.value.updating) return
-    information.value.updating = true
-    axios
-        .post ('/update-project', information.value)
-        .then((response)=>{
-            if(response.data.success === true)
-                Toast.fire({icon: "success",title: "Project updated successfully!"})
+            if (id===1){
                 Inertia.visit('/projectshome')
+            }
         })
         .finally(()=> information.value.updating = false)
 }
@@ -99,16 +87,26 @@ onMounted( ()=> {
                     </div>
                     <BreezeInput v-model="information.requirements"/>
                     <div class="flex items-center">
-                        <BreezeLabel value="Leadership" />
+                        <BreezeLabel value="Applications" />
                     </div>
-                    <BreezeInput v-model="information.leadership"/>
-                    <button v-if="information.approve !== 1" type="button" @click="updateInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.updating }" :disabled="information.updating">
+                    <div class="flex border-b-8 border-opacity-75 border-[#639f1e] space-x-4 items-center">
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" name="role" value="1" :checked="information.applications === 1" v-model="information.applications"/>
+                            <BreezeLabel value="Assistant" />
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" name="role" value="2" :checked="information.applications === 2" v-model="information.applications"/>
+                            <BreezeLabel value="Leader" />
+                        </div>
+                    </div>
+
+                    <button v-show="information.is_approved !== 1" type="button" @click="updateInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.updating }" :disabled="information.updating">
                         Update
                     </button>
-                    <button v-if="information.approve !== 1" type="button" @click="approveInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
+                    <button v-show="information.is_approved !== 1" type="button" @click="approveInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
                         Approved
                     </button>
-                    <button v-if="information.approve === 1" type="button" @click="saveInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
+                    <button v-show="information.is_approved === 1" type="button" @click="updateInfo(1)" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.approving }" :disabled="information.approving">
                         Save
                     </button>
                 </form>

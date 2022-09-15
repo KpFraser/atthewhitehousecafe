@@ -57,8 +57,8 @@ const keyBtn = (id) =>{
         })
 }
 
-const pencilBtn = (id) =>{
-    Inertia.visit('/proposed/'+id)
+const pencilBtn = (slug) =>{
+    Inertia.visit('/proposed/'+slug)
 }
 
 onMounted( ()=> {
@@ -98,7 +98,7 @@ onMounted( ()=> {
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
                                     <div :class="!!user.is_key ? `ml-5 text-white font-extrabold` : `ml-5 text-white`">{{user.name}}</div>
                                     <div class="flex items-center">
-                                        <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="pencilBtn(user.id)"></i>
+                                        <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="pencilBtn(user.slug)"></i>
                                         <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
                                     </div>
                                 </div>

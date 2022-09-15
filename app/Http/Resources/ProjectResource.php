@@ -20,7 +20,7 @@ class ProjectResource extends JsonResource
             'location'=> $this->location,
             'frequency'=> $this->frequency,
             'requirements'=> $this->requirements,
-            'leadership'=> $this->leadership,
+            'applications'=> $this->applications,
             'approve'=> $this->is_approved
         ];
     }
