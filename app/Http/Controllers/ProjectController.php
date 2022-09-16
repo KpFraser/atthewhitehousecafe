@@ -20,7 +20,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $data = Project::select('id', 'name', 'slug')->where('is_approved', '!=', 1)->orWhereNull('is_approved')->get();
+        $data = Project::select('id', 'name', 'slug')->where('is_approved', '!=', 1)->orWhereNull('is_approved')->orderBy('name')->get();
         return response($data);
     }
 

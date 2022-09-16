@@ -7,6 +7,7 @@
     import { Head, Link } from '@inertiajs/inertia-vue3';
     import useFooterList from "../../../use/useFooterList";
     import commonFunctions from "@/use/common";
+    import {Inertia} from "@inertiajs/inertia";
 
     const baseUrl = window.location.origin
     const { Toast, ConfirmToast } = commonFunctions()
@@ -16,8 +17,9 @@
         validationErrors = ref({})
 
 
-    const pencil = (key) => {
-        option.value = key
+    const pencil = (slug) => {
+        Inertia.visit('/proposed/'+slug)
+        // option.value = key
     }
 
     const plusbtn = () => {
@@ -100,13 +102,13 @@
                                     {{name.name}}
                                 </Link>
                                 <div class="flex justify-center">
-                                    <i class="far fa-pencil border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="pencil(key)"></i>
-                                    <i class="fas fa-trash text-[20px] hover:text-white rounded px-2 py-1.5 border hover:bg-red-600 mx-5" @click="deleteProject(name.id)"></i>
+                                    <i class="far fa-pencil cursor-pointer border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="pencil(name.slug)"></i>
+                                    <i class="fas fa-trash cursor-pointer text-[20px] hover:text-white rounded px-2 py-1.5 border hover:bg-red-600 mx-5" @click="deleteProject(name.id)"></i>
                                 </div>
                             </div>
                             <div class="flex ml-5 flex items-center mt-4" v-show="option === key">
-                                <input type="text" v-model="name.name" class="ml-4 h-8 rounded border-[#556553] active:border-[#556553] focus:ring-0 focus:border-[#556553] hover:border-[#556553]">
-                                <i class="far fa-check ml-4 border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="enterNewProject(name)"></i>
+                                <input type="text" v-on:keyup.enter="enterNewProject(name)" v-model="name.name" class="ml-4 h-8 rounded border-[#556553] active:border-[#556553] focus:ring-0 focus:border-[#556553] hover:border-[#556553]" autofocus>
+                                <i class="far fa-check cursor-pointer ml-4 border hover:text-white rounded p-1.5 text-[20px] hover:bg-[#639f1e]" @click="enterNewProject(name)"></i>
                                 <div v-if="!name.name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.name">{{ message }}</div>
                             </div>
                         </div>
