@@ -79,9 +79,8 @@ class SurveySubmissionController extends Controller
                 'survey_contact_id'=> $survey_contact->id,
             ]);
         }
+        Mail::to($survey_contact->email)->send(new SurveyMail());
         return response()->success();
-
-        Mail::to('salman9607@gmail.com')->send(new SurveyMail());
     }
 
     /**
