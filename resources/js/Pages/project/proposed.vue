@@ -5,9 +5,9 @@ import BreezeLabel from '@/Components/Label.vue';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import MasterHeader from '@/Components/MasterHeader.vue';
 import useFooterList from "../../../use/useFooterList";
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import { Link } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
-import {ref, onMounted, reactive } from "vue";
+import {ref, onMounted } from "vue";
 import axios from "axios";
 import commonFunctions from "@/use/common";
 
@@ -61,7 +61,6 @@ onMounted( ()=> {
 </script>
 
 <template>
-    <!-- <Head title="Dashboard" /> -->
     <BreezeAuthenticatedLayout>
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full justify-center">
@@ -89,16 +88,22 @@ onMounted( ()=> {
                     <div class="flex items-center">
                         <BreezeLabel value="Applications" />
                     </div>
-                    <div class="flex border-b-8 border-opacity-75 border-[#639f1e] space-x-4 items-center">
-                        <div class="flex items-center space-x-2">
-                            <input type="radio" name="role" value="1" :checked="information.applications === 1" v-model="information.applications"/>
-                            <BreezeLabel value="Assistant" />
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <input type="radio" name="role" value="2" :checked="information.applications === 2" v-model="information.applications"/>
-                            <BreezeLabel value="Leader" />
-                        </div>
+                    <div class="flex justify-around border-b-8 border-opacity-75 border-[#639f1e] space-x-4 items-center">
+                        <a href="#" target="_blank" >
+                            <BreezeLabel value="Assistant" class="cursor-pointer"/>
+                        </a>
+                        <a href="#" target="_blank" class="cursor-pointer">
+                            <BreezeLabel value="Leader" class="cursor-pointer"/>
+                        </a>
                     </div>
+<!--                        <div class="flex  justify-between">-->
+<!--&lt;!&ndash;                            <input type="radio" name="role" value="1" :checked="information.applications === 1" v-model="information.applications"/>&ndash;&gt;-->
+<!--                            <BreezeLabel value="Assistant" />-->
+<!--                        </div>-->
+<!--                        <div class="flex items-center space-x-2">-->
+<!--&lt;!&ndash;                            <input type="radio" name="role" value="2" :checked="information.applications === 2" v-model="information.applications"/>&ndash;&gt;-->
+<!--                            <BreezeLabel value="Leader" />-->
+<!--                        </div>-->
 
                     <button v-show="information.is_approved !== 1" type="button" @click="updateInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.updating }" :disabled="information.updating">
                         Update

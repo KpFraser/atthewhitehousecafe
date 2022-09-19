@@ -163,8 +163,6 @@ class ProjectController extends Controller
             'location'=> $request->location,
             'frequency'=> $request->frequency,
             'requirements'=> $request->requirements,
-            'applications'=> $request->applications,
-
         ]);
         return response()->success();
     }

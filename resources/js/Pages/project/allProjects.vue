@@ -80,36 +80,37 @@ onMounted( ()=> {
                     </Link>
                 </div>
                   <div class="text-black border-4 border-b-4 border-[#20351d] mx-10 border-opacity-75 mb-28 space-y-4 bg-white text-lg">
-                        <ul class="nav w-full nav-tabs flex" id="tabs-tab" role="tablist">
-                            <li class="nav-item w-1/2" role="presentation">
-                                <a href="#tabs-home" @click="(isActive = 1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-center border-opacity-75 border-[#20351d] bg-opacity-75 focus:bg-opacity-75 focus:text-white block font-bold text-xs focus:bg-[#20351d] text-[#20351d] uppercase border-b-2 border-r-2 border-transparent px-6 py-3 active" id="tabs-home-tab" data-bs-toggle="pill" data-bs-target="#tabs-home" role="tab" aria-controls="tabs-home"
-                                   aria-selected="true">All</a>
+                        <ul class="w-full flex">
+                            <li class="nav-item w-1/2">
+                                <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-center border-opacity-75 border-[#20351d] bg-opacity-75 focus:bg-opacity-75 focus:text-white block font-bold text-xs focus:bg-[#20351d] text-[#20351d] uppercase border-b-2 border-r-2 border-transparent px-6 py-3 active">All</a>
                             </li>
-                            <li class="nav-item w-1/2" role="presentation">
-                                <a href="#tabs-profile" @click="(isActive = 2)" :class="{'bg-[#20351d] !text-white': isActive === 2 }" class="text-center border-opacity-75 border-[#20351d] bg-opacity-75 focus:bg-opacity-75 focus:text-white block font-bold text-xs  focus:bg-[#20351d] text-[#20351d] uppercase border-b-2 border-transparent px-6 py-3 " id="tabs-profile-tab" data-bs-toggle="pill" data-bs-target="#tabs-profile" role="tab"
-                                   aria-controls="tabs-profile" aria-selected="false">User</a>
+                            <li class="nav-item w-1/2">
+                                <a @click="(isActive=2)" :class="{'bg-[#20351d] !text-white': isActive === 2 }" class="text-center border-opacity-75 border-[#20351d] bg-opacity-75 focus:bg-opacity-75 focus:text-white block font-bold text-xs  focus:bg-[#20351d] text-[#20351d] uppercase border-b-2 border-transparent px-6 py-3">
+                                    <i class="mr-1 fas fa-user"></i>
+                                    User
+                                </a>
                             </li>
                         </ul>
-                        <div class="tab-content bg-white items-center max-w-lg mx-auto" id="tabs-tabContent">
-                            <div class="tab-pane fade show active" id="tabs-home" role="tabpanel" aria-labelledby="tabs-home-tab">
-                                <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
+                        <div class="bg-white items-center max-w-lg mx-auto">
+                            <div>
+                                <div :class="{'hidden': isActive === 2 }" class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
                                     <div :class="!!all.is_user ? `ml-5 text-white font-extrabold`: `ml-5 text-white`">{{all.name}}</div>
-                                    <div >
+                                    <div>
                                         <i class="fas cursor-pointer text-[30px] mr-2 fa-plus-circle" @click="plusBtn(all.id)"></i>
                                         <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(all.id)"></i>
                                     </div>
                                 </div>
                                 <div v-if="all_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
-                            <div class="tab-pane fade" id="tabs-profile" role="tabpanel" aria-labelledby="tabs-profile-tab">
-                                <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
+                            <div>
+                                <div :class="{'hidden': isActive === 1 }" class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
                                     <div :class="!!user.is_key ? `ml-5 text-white font-extrabold` : `ml-5 text-white`">{{user.name}}</div>
                                     <div class="flex items-center">
                                         <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="pencilBtn(user.slug)"></i>
                                         <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
                                     </div>
                                 </div>
-                            <div v-if="user_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
+                                <div v-if="user_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
                         </div>
                     </div>
