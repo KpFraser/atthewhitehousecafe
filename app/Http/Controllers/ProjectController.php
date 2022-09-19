@@ -65,7 +65,6 @@ class ProjectController extends Controller
             'location'=> $request->location,
             'frequency'=> $request->frequency,
             'requirements'=> $request->requirements,
-            'applications'=> $request->applications,
             'is_approved'=> $request->approve,
         ]);
         return response()->success();
@@ -88,7 +87,7 @@ class ProjectController extends Controller
                 'slug' => Str::slug($request->name['name']),
                 'created_by'=> auth()->user()->id,
                 'name'=> $request->name['name'],
-                'module'=> $request->module,
+                //'module'=> $request->module,
             ]);
             return response()->success();
         }
@@ -101,7 +100,7 @@ class ProjectController extends Controller
 
     public function show ($slug)
     {
-        $data = Project::select('id', 'name', 'slug', 'location', 'frequency', 'requirements', 'applications', 'is_approved')->where('slug', $slug)->first();
+        $data = Project::select('id', 'name', 'slug', 'location', 'frequency', 'requirements', 'is_approved')->where('slug', $slug)->first();
         return response()->success($data);
     }
 

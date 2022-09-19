@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
+use App\Models\Project;
 use App\Models\Reference;
+use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ReferenceController extends Controller
 {
@@ -35,14 +39,33 @@ class ReferenceController extends Controller
      */
     public function store(Request $request)
     {
-        Reference::Create([
-            'project_id' => $request->info['project_id'],
-            'role_id'=> $request->info['role_id'],
-            'reference_email'=> $request->info['email'],
-            'application_id'=> $request->info['app_id'],
-            'payload'=> json_encode($request->form,)
-        ]);
-        return response()->success();
+
+        if(!empty($request->info['project_slug']) && !empty($request->info['role']) && !empty($request->info['app_slug'])){
+            $project_slug = $request->info['project_slug'];
+            $role = $this->StringConverter($request->info['role']);
+            $app_slug = $this->StringConverter($request->info['app_slug']);
+             if(!empty($project_slug) && !empty($role) && !empty($app_slug)){
+                 if(!empty($project_slug))
+                     $project=Project::select('id','slug')->where('slug', $project_slug)->first();
+
+                 if(!empty($role))
+                     $role=Role::select('id','name')->where('name', $role)->first();
+
+                 if(!empty($app_slug))
+                     $application=Application::select('id','name')->where('name', $app_slug)->first();
+
+                 Reference::Create([
+                     'project_id' => $project->id,
+                     'role_id'=> $role->id,
+                     'reference_email'=> $request->info['email'],
+                     'application_id'=> $application->id,
+                     'payload'=> json_encode($request->form,)
+                 ]);
+                 return response()->success();
+             }
+
+        }
+        return response()->error();
     }
 
     /**
@@ -88,5 +111,10 @@ class ReferenceController extends Controller
     public function destroy(Reference $reference)
     {
         //
+    }
+
+    public function StringConverter($slug)
+    {
+        return Str::title(str_replace('-', ' ', $slug));
     }
 }

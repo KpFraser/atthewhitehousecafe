@@ -42,9 +42,9 @@ const referenceSubmit = (post) =>{
     let data = queryString.split('/');
 
     info.value.email = data[5]
-    info.value.project_id = data[6]
-    info.value.role_id = data[7]
-    info.value.app_id = data[8]
+    info.value.project_slug = data[6]
+    info.value.role = data[7]
+    info.value.app_slug = data[8]
 
     let validation_detail = validation (post)
     if(validation_detail === true) {
@@ -55,11 +55,12 @@ const referenceSubmit = (post) =>{
             .then((response)=>{
                 if (response.data.success === true) {
                     Toast.fire({icon: "success", title: "Information Submitted successfully!"})
+                    reference.value = { approve: false, one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}
+                    Inertia.visit('/footer-project')
                 }
             })
             .finally(() => {
-                reference.value = { approve: false, one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}
-                Inertia.visit('/footer-project')
+
 
             })
     }else {

@@ -13,15 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('survey_submissions', function (Blueprint $table) {
-            $table->id();
-//            $table->foreignId('user_id')->nullable(true)->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('survey_contact_id')->constrained()->onDelete('cascade');
-            $table->string('session_id');
-            $table->foreignId('project_id')->nullable(false)->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->tinyInteger('options')->comment("0 forNever, 1 for participant, 2 for assistant, 3 for Leader");
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('survey_submissions')) {
+            Schema::create('survey_submissions', function (Blueprint $table) {
+                $table->id();
+                //            $table->foreignId('user_id')->nullable(true)->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+                $table->foreignId('survey_contact_id')->constrained()->onDelete('cascade');
+                $table->string('session_id');
+                $table->foreignId('project_id')->nullable(false)->constrained()->onDelete('cascade')->onUpdate('cascade');
+                $table->tinyInteger('options')->comment("0 forNever, 1 for participant, 2 for assistant, 3 for Leader");
+                $table->timestamps();
+            });
+        }
     }
 
     /**

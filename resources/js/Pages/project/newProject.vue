@@ -29,8 +29,8 @@
             option.value = names.value.length-1;
         }
         else {
-            let last_id = names.value[names.value.length-1].id;
-            if(last_id !== '') {
+            let last_id = names.value[names.value.length-1]?.id;
+            if(!!last_id) {
                 names.value.push({id: '', name: ''});
                 option.value = names.value.length-1;
             }

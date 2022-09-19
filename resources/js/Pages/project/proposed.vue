@@ -8,7 +8,6 @@ import useFooterList from "../../../use/useFooterList";
 import { Link } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
 import {ref, onMounted } from "vue";
-import axios from "axios";
 import commonFunctions from "@/use/common";
 
 const { Toast } = commonFunctions()
@@ -57,6 +56,7 @@ const approveInfo = () =>{
 
 onMounted( ()=> {
     projectInfo ()
+
 })
 </script>
 
@@ -89,7 +89,9 @@ onMounted( ()=> {
                         <BreezeLabel value="Applications" />
                     </div>
                     <div class="flex justify-around border-b-8 border-opacity-75 border-[#639f1e] space-x-4 items-center">
-                        <a href="#" target="_blank" >
+<!--                        <router-link to="/dashboard" >Assistant</router-link>-->
+<!--                        <Link  href="/dashboard" target="_blank">Assistant</Link>-->
+                        <a  href="/dashboard" target="_blank" >
                             <BreezeLabel value="Assistant" class="cursor-pointer"/>
                         </a>
                         <a href="#" target="_blank" class="cursor-pointer">

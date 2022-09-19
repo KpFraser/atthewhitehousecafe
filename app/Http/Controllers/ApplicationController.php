@@ -8,6 +8,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Reference;
+use Illuminate\Support\Str;
 
 class ApplicationController extends Controller
 {
@@ -39,6 +40,7 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
+
         $data = Application::Create([
             'project_id' => $request->project_id,
             'role_id'=> $request->role_id,
@@ -51,8 +53,14 @@ class ApplicationController extends Controller
             'text2'=> $request->second_txt,
             'text3'=> $request->third_txt,
         ]);
-        if(!empty($data)) {
-            $status = [url('project/reference/'.$data->email.'/'.$data->project_id.'/'.$data->role_id.'/'.$data->id)];
+        if(!empty($request->project_id))
+            $project=Project::select('id','slug')->where('id', $request->project_id)->first();
+
+        if(!empty($request->role_id))
+            $role=Role::select('id','name')->where('id', $request->role_id)->first();
+
+        if(!empty($data) && !empty($project->slug) && !empty($role->name)) {
+            $status = [url('project/reference/'.$data->email.'/'.$project->slug.'/'.$this->SlugCreate($role->name).'/'.$this->SlugCreate($data->name))];
             Mail::to($data->ref1_email)->send(new Reference($status));
             if(!empty($data->ref2_email)) {
                 Mail::to($data->ref2_email)->send(new Reference($status));
@@ -108,5 +116,8 @@ class ApplicationController extends Controller
     public function destroy(Application $application)
     {
         //
+    }
+    public function SlugCreate($title){
+        return Str::slug($title);
     }
 }
