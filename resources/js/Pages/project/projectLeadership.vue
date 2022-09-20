@@ -14,11 +14,18 @@
     const answer = ref({})
     const appAnswer = ref({})
 
-    const answers = () =>{
-        axios.get('application-answers')
-            .then((response)=>{
-                answer.value = !!response.data? response.data: ''
-            })
+    const answers = (slug) =>{
+        if (!!slug){
+            if (slug === 'assistant'){
+                var id = 3
+            } else{
+                var id = 2
+            }
+            axios.get('/application-answers/'+id)
+                .then((response)=>{
+                    answer.value = !!response.data? response.data: ''
+                })
+        }
     }
 
     const applicationRole = (id) =>{
@@ -29,7 +36,10 @@
     }
 
     onMounted( ()=> {
-        answers ()
+        const queryString = window.location.href
+        let slug = queryString.split('/')[4].split('-')[0]
+        // console.log(slug)
+        answers (slug)
     })
 </script>
 

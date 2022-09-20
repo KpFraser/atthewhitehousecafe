@@ -19,7 +19,7 @@ class ApplicationController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -121,13 +121,17 @@ class ApplicationController extends Controller
         return Str::slug($title);
     }
 
-    public function answers()
+    public function answers($id)
     {
-        $data = Application::select('id', 'role_id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')->get();
-        if (!empty($data)){
-            return response($data);
+        if (!empty($id)){
+            $data = Application::select('id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')->where('role_id', $id)->get();
+            if (!empty($data)){
+                return response($data);
+            } else {
+                return response()->error('Not found', 220);
+            }
         } else {
-            return response('error');
+            return response()->error('Not found', 220);
         }
     }
 }

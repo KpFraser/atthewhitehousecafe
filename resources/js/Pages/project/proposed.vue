@@ -89,10 +89,10 @@ onMounted( ()=> {
                         <BreezeLabel value="Applications" />
                     </div>
                     <div class="flex justify-around border-b-8 border-opacity-75 border-[#639f1e] space-x-4 items-center">
-                        <a  href="/project-leadership" target="_blank" >
+                        <a href="/project-leadership/assistant" target="_blank">
                             <BreezeLabel value="Assistant" class="cursor-pointer"/>
                         </a>
-                        <a href="/project-leadership" target="_blank" class="cursor-pointer">
+                        <a href="/project-leadership/leader" target="_blank">
                             <BreezeLabel value="Leader" class="cursor-pointer"/>
                         </a>
                     </div>
