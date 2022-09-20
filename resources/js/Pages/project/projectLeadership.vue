@@ -63,10 +63,10 @@
                     </div>
                     <div class="space-y-2 font-sans mx-auto w-3/4">
                         <div v-for="info in answer" class="flex justify-between items-center pr-6 py-1.5 bg-[#639f1e] bg-opacity-75 text-black text-xs leading-tight rounded shadow-md font-bold transition duration-150 ease-in-out flex items-center whitespace-nowrap">
-                            <span @click="applicationRole(info.id)" class="px-6 py-2 text-[16px] font-bold">{{ info.name }}</span>
+                            <span class="px-6 py-2 text-[16px] font-bold">{{ info.name }}</span>
                             <span class="flex">
-                                <i class="fas border-2 border-black flex justify-center items-center fa-plus fa-2x w-8 ml-3 h-8 bg-white rounded-full text-black py-1"></i>
-                                <i class="fas fa-star fa-2x w-8 ml-3 flex justify-center items-center h-8 bg-white rounded-full text-black py-1"></i>
+                                <i @click="applicationRole(info.id)" class="fas border-2 cursor-pointer border-black flex justify-center items-center fa-plus fa-2x w-8 ml-3 h-8 bg-white rounded-full text-black py-1"></i>
+                                <i class="fas fa-star fa-2x w-8 ml-3 flex justify-center cursor-pointer items-center h-8 bg-white rounded-full text-black py-1"></i>
                             </span>
                         </div>
                         <div v-show="answer.length === 0" class="bg-white py-4 border-t-2 border-opacity-75 font-bold flex items-center justify-center border-[#639f1e] text-center">Empty!</div>
@@ -105,7 +105,7 @@
                             </div>
                         </div>
                         <div class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-                            <button type="button" class="px-6 py-2.5  bg-[#639f1e] bg-opacity-75 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0  active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="px-6 py-2.5  bg-[#639f1e] bg-opacity-75 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0  active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
