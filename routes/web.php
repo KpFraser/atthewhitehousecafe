@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/roster-new/{project_id}', [EventController::class, 'rosterRegister']);
 
 });
+Route::get('/project-leadership', fn ()=> Inertia::render('project/projectLeadership') )->name('projectLeadership');
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
 Route::get('/project/reference/{email}/{project_id}/{role_id}/{app_id}', fn ()=> Inertia::render('project/reference') )->name('references');
 Route::get('/diet', fn ()=> Inertia::render('survey/diet') )->name('diet');
@@ -105,6 +106,7 @@ Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 *  ApplicationController
 */
 Route::get('/project-roles', [ApplicationController::class, 'show']);
+Route::get('/application-answers', [ApplicationController::class, 'answers']);
 Route::post('/application-info', [ApplicationController::class, 'store']);
 /*
  *  ReferenceController

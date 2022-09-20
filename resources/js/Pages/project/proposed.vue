@@ -89,24 +89,13 @@ onMounted( ()=> {
                         <BreezeLabel value="Applications" />
                     </div>
                     <div class="flex justify-around border-b-8 border-opacity-75 border-[#639f1e] space-x-4 items-center">
-<!--                        <router-link to="/dashboard" >Assistant</router-link>-->
-<!--                        <Link  href="/dashboard" target="_blank">Assistant</Link>-->
-                        <a  href="/dashboard" target="_blank" >
+                        <a  href="/project-leadership" target="_blank" >
                             <BreezeLabel value="Assistant" class="cursor-pointer"/>
                         </a>
-                        <a href="#" target="_blank" class="cursor-pointer">
+                        <a href="/project-leadership" target="_blank" class="cursor-pointer">
                             <BreezeLabel value="Leader" class="cursor-pointer"/>
                         </a>
                     </div>
-<!--                        <div class="flex  justify-between">-->
-<!--&lt;!&ndash;                            <input type="radio" name="role" value="1" :checked="information.applications === 1" v-model="information.applications"/>&ndash;&gt;-->
-<!--                            <BreezeLabel value="Assistant" />-->
-<!--                        </div>-->
-<!--                        <div class="flex items-center space-x-2">-->
-<!--&lt;!&ndash;                            <input type="radio" name="role" value="2" :checked="information.applications === 2" v-model="information.applications"/>&ndash;&gt;-->
-<!--                            <BreezeLabel value="Leader" />-->
-<!--                        </div>-->
-
                     <button v-show="information.is_approved !== 1" type="button" @click="updateInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.updating }" :disabled="information.updating">
                         Update
                     </button>

@@ -14,7 +14,6 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/index.min.css" />
         <!-- Scripts -->
 
-
         @routes
         @vite('resources/js/app.js')
         @inertiaHead

@@ -120,4 +120,14 @@ class ApplicationController extends Controller
     public function SlugCreate($title){
         return Str::slug($title);
     }
+
+    public function answers()
+    {
+        $data = Application::select('id', 'role_id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')->get();
+        if (!empty($data)){
+            return response($data);
+        } else {
+            return response('error');
+        }
+    }
 }

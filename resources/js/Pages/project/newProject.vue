@@ -4,7 +4,7 @@
     import MasterHeader from '@/Components/MasterHeader.vue';
     import { ref , onMounted} from 'vue';
     import axios from 'axios';
-    import { Head, Link } from '@inertiajs/inertia-vue3';
+    import { Link } from '@inertiajs/inertia-vue3';
     import useFooterList from "../../../use/useFooterList";
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
