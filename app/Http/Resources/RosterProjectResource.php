@@ -15,7 +15,6 @@ class RosterProjectResource extends JsonResource
     public function toArray($request)
     {
 //        dd($request->all());
-
         return[
             'comment'=> $this->comment,
             'project'=> $this->project_id,

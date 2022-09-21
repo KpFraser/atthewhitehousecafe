@@ -91,7 +91,7 @@ class SurveySubmissionController extends Controller
      */
     public function show()
     {
-        $data = Project::select('id', 'name', 'is_survey')->get();
+        $data = Project::select('id', 'name', 'is_survey')->orderBy('name')->get();
         return response($data);
     }
 

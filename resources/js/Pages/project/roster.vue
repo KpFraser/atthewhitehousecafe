@@ -7,7 +7,6 @@ import BreezeButton from '@/Components/Button.vue';
 import useFooterList from "../../../use/useFooterList";
 import { Link } from '@inertiajs/inertia-vue3';
 import {ref, onMounted } from "vue";
-import axios from "axios";
 import commonFunctions from "@/use/common";
 import {Inertia} from "@inertiajs/inertia";
 
@@ -22,9 +21,10 @@ const info = ref({}),
 
 const eventInfo = () => {
     const queryString = window.location.href
-    let event_id = queryString.split('/')[4].split('-')[0]
-    let project_id = (queryString.split('/')[4].split('-')[1])
+    let event_id = queryString.split('/')[4].split('.')[0]
+    let project_id = (queryString.split('/')[4].split('.')[1])
     groupComment.value.event_id = event_id
+    console.log(groupComment.value.event_id)
 
     axios
         .get('/event-info/'+event_id+'/'+project_id)
@@ -75,6 +75,7 @@ const checkedProject = (one, two, three) =>{
 
         })
 }
+
 const validationError = (post) =>{
     errors.value = {}
     if(!post.comment)
@@ -102,9 +103,9 @@ const groupComments = (post) =>{
 
 const rosterRegister = () =>{
     const queryString = window.location.href
-    let event_id = queryString.split('/')[4].split('-')[0]
-    let project_id = (queryString.split('/')[4].split('-')[1])
-    Inertia.visit('/roster-register/'+event_id+'-'+project_id)
+    let event_id = queryString.split('/')[4].split('.')[0]
+    let project_id = (queryString.split('/')[4].split('.')[1])
+    Inertia.visit('/roster-register/'+event_id+'.'+project_id)
 }
 
 const commentModal = (user_id, project_id) =>{

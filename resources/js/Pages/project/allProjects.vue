@@ -1,23 +1,24 @@
 <script setup>
-import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-import MasterFooter from '@/Components/MasterFooter.vue';
-import MasterHeader from '@/Components/MasterHeader.vue';
-import useFooterList from "../../../use/useFooterList";
-import {ref, onMounted, reactive } from "vue";
-import { Link } from '@inertiajs/inertia-vue3';
-import commonFunctions from "@/use/common";
-import {Inertia} from "@inertiajs/inertia";
+    import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
+    import MasterFooter from '@/Components/MasterFooter.vue';
+    import MasterHeader from '@/Components/MasterHeader.vue';
+    import useFooterList from "../../../use/useFooterList";
+    import {ref, onMounted } from "vue";
+    import { Link } from '@inertiajs/inertia-vue3';
+    import commonFunctions from "@/use/common";
+    import {Inertia} from "@inertiajs/inertia";
 
-const { Toast } = commonFunctions()
-const { footerLists } = useFooterList()
-const all_names = ref([])
-const user_names = ref([])
-const names = ref([])
-const isActive = ref(1)
-const classObject = reactive({
-    active: true,
-    'text-danger': false
-})
+const { Toast } = commonFunctions(),
+    { footerLists } = useFooterList(),
+    all_names = ref([]),
+    user_names = ref([]),
+    names = ref([]),
+    isActive = ref(1)
+    // classObject = reactive({
+    //     active: true,
+    //     'text-danger': false
+    // })
+
 const projects = () =>{
     axios
         .get('/projects')
@@ -66,6 +67,7 @@ const pencilBtn = (slug) =>{
 onMounted( ()=> {
     projects ()
 })
+
 </script>
 
 <template>

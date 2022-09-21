@@ -13,7 +13,7 @@ class ProjectUser extends Model
     ];
     public function key_project()
     {
-        return $this->belongsTo(Project::class,'project_id', 'id')->select( 'id', 'name', 'frequency');
+        return $this->belongsTo(Project::class,'project_id', 'id')->select( 'id', 'name', 'frequency', 'slug');
     }
     public function project_users()
     {

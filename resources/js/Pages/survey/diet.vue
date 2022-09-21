@@ -6,6 +6,7 @@
     import axios from 'axios';
     import useFooterList from "../../../use/useFooterList";
     import commonFunctions from "@/use/common";
+    import BreezeCheckbox from '@/Components/Checkbox.vue';
 
     const { Toast } = commonFunctions()
     const { footerLists  } = useFooterList()
@@ -49,8 +50,8 @@
                     </div>
                     <div class="flex ml-5 mt-4" v-for="name in names">
                          <div class="flex items-center ml-5 mt-5">
-                            <input @change="checkedProject(name.id, name.name, $event.target.checked)" :checked="name.is_survey === 1" :value="name.id" type="checkbox" class="text-[16px] hover:text-[#639f1e]">
-                            <div class="ml-5 text-[16px]">{{name.name}}</div>
+                             <BreezeCheckbox @change="checkedProject(name.id, name.name, $event.target.checked)" :checked="name.is_survey === 1" :value="name.id" type="checkbox" class="accent-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
+                             <div class="ml-5 text-[16px]">{{name.name}}</div>
                         </div>
                     </div>
                 </div>

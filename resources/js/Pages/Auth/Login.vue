@@ -8,7 +8,6 @@ import LoginRegisterHeader from '@/Components/LoginRegisterHeader.vue';
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 import { Head, Link, useForm, } from '@inertiajs/inertia-vue3';
 import MasterFooter from '@/Components/MasterFooter.vue';
-import { VueElement } from 'vue';
 import useFooterList from "../../../use/useFooterList";
 
 const { footerLists } = useFooterList()
@@ -54,7 +53,6 @@ const PasswordView = (e) => {
                             <i @click="PasswordView" class="cursor-pointer fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>
                         </div>
                         <BreezeInput id="password" type="password" v-model="form.password" required autocomplete="current-password" />
-                        <BreezeValidationErrors class="mb-4" />
                         <div class="flex justify-between items-center py-5">
                             <label class="flex items-center">
                                 <BreezeCheckbox class="accent-[#639f1e] w-6 h-6 mr-2" name="remember" v-model:checked="form.remember" />
@@ -64,6 +62,7 @@ const PasswordView = (e) => {
                                 Forgot your password?
                             </Link>
                         </div>
+                        <BreezeValidationErrors class="mb-4" />
                         <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center font-bold text-[25px]" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                             Log In
                         </BreezeButton>

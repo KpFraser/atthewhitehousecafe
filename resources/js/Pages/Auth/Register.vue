@@ -42,7 +42,6 @@
 <template>
     <BreezeGuestLayout>
         <Head title="Register" />
-        <BreezeValidationErrors class="mb-4" />
         <div class="min-h-screen flex justify-center items-center max-w-lg mx-auto font-serif">
             <div class="w-full mb-28 justify-center">
                 <LoginRegisterHeader/>
@@ -75,12 +74,14 @@
                     <Link :href="route('login')" class="text-center flex justify-center mt-5 underline text-sm text-gray-600 hover:text-gray-900">
                         Already registered?
                     </Link>
+                    <BreezeValidationErrors class="mb-4" />
                     <div class="flex items-center justify-end mt-4">
                         <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                             Register
                         </BreezeButton>
                     </div>
                 </form>
+
             </div>
             <MasterFooter
                 :footerLists="footerLists"

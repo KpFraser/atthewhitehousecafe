@@ -124,7 +124,8 @@ class ApplicationController extends Controller
     public function answers($id)
     {
         if (!empty($id)){
-            $data = Application::select('id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')->where('role_id', $id)->get();
+            $data = Application::select('id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')
+                ->where('role_id', $id)->get();
             if (!empty($data)){
                 return response($data);
             } else {
