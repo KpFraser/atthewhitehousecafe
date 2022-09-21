@@ -1,6 +1,12 @@
 <script setup>
 import CompanyLogo from '@/Components/Logo.vue';
-
+import {defineProps} from "vue";
+const props = defineProps({
+    status:{
+        type: String,
+        default: ''
+    }
+})
 </script>
 <template>
     <div class="justify-center flex">
