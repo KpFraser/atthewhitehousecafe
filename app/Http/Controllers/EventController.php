@@ -6,9 +6,12 @@ use App\Http\Resources\RosterProjectResource;
 use App\Mail\ParticipantMail;
 use App\Models\Event;
 use App\Models\Project;
+use Illuminate\Validation\Rules;
 use App\Models\ProjectUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Str;
 
@@ -87,37 +90,48 @@ class EventController extends Controller
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function rosterRegister(Request $request, $project_slug)
+    public function rosterRegister(Request $request)
     {
-        if(!empty($project_slug)){
+//        dd($form = $request->all());
+        if (!empty($request->project_slug)) {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
             ]);
 
-            $participant = url('roster-confirmation/'.$request->email.'/'.$project_slug.'/'.$request->name.'/');
-
+            $participant = url('roster-confirmation/' . $request->email . '/' . $request->project_slug . '/' . $request->name . '/' .$request->event_slug.'/');
             Mail::to($request->email)->send(new ParticipantMail($participant));
-
-//            $request->validate([
-//                'name' => 'required|string|max:255',
-//                'email' => 'required|string|email|max:255|unique:users',
-//                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-//            ]);
-//
-//            $user = User::create([
-//                'name' => $request->name,
-//                'email' => $request->email,
-//                'password' => Hash::make($request->password),
-//            ]);
-//            $project_id = Project::select('id')->where('slug', $project_slug)->get();
-//            ProjectUser::create([
-//                'user_id' => $user->id,
-//                'project_id' => $project_id[0]->id,
-//                'is_user' => 1,
-//                'is_key' => 1
-//            ]);
             return response()->success();
+        } else {
+            return response()->error('Request Failed', 500);
+        }
+    }
+    public function RosterConfirm(Request $request)
+    {
+//        dd($request->all());
+        $project_id = Project::select('id')->where('slug', $request->project_slug)->first();
+        if (!empty($project_id)) {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            ]);
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            if (!empty($user->id)){
+                ProjectUser::create([
+                    'user_id' => $user->id,
+                    'project_id' => $project_id->id,
+                    'is_user' => 1,
+                    'is_key' => 1
+                ]);
+            }
+            return response()->success();
+        }else{
+            return response()->error('Request Failed', 500);
         }
     }
 
