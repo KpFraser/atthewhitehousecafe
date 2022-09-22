@@ -134,7 +134,27 @@ class EventController extends Controller
             return response()->error('Request Failed', 500);
         }
     }
+    public function addParticipant(Request $request)
+    {
+        if (!empty($request->email)){
 
+            $user_id = User::select('id')->where('email', $request->email)->first();
+//            dd(!empty( $user_id));
+
+            if (!empty( $user_id)) {
+                $project_id = Project::select('id')->where('slug', $request->project_slug)->first();
+                ProjectUser::updateOrCreate([
+                    'project_id' => $project_id->id,
+                    'user_id'=> $user_id->id,
+                    'is_user'=> 1,
+                    'is_key'=> 1,
+                ]);
+                return response()->success();
+            } else {
+                return response()->error('Email does not exist !', 500);
+            }
+        }
+    }
     /**
      * Update the specified resource in storage.
      *

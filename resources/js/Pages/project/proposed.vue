@@ -67,7 +67,7 @@ onMounted( ()=> {
                 <MasterHeader/>
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
                     <div class="flex justify-end mr-4">
-                        <Link :href="route('new-project')" class="text-[25px] bg-[#639f1e] px-1 text-center font-bold bg-opacity-75">X</Link>
+                        <Link :href="route('all-project')" class="text-[25px] bg-[#639f1e] px-1 text-center font-bold bg-opacity-75">X</Link>
                     </div>
                     <div class="flex items-center">
                         <BreezeLabel value="Name" />

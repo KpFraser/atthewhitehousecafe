@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/event-name', [EventController::class, 'store']);
     Route::post('/group-comment', [EventController::class, 'update']);
     Route::post('/roster-new', [EventController::class, 'rosterRegister']);
+    Route::post('/add-participant', [EventController::class, 'addParticipant']);
     Route::post('/roster-register-confirm', [EventController::class, 'RosterConfirm']);
 
 });

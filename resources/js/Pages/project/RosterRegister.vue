@@ -10,104 +10,135 @@ import BreezeCheckbox from '@/Components/Checkbox.vue';
 import { Link, useForm } from '@inertiajs/inertia-vue3';
 import useFooterList from "../../../use/useFooterList";
 import { ref } from "vue";
+import {Inertia} from "@inertiajs/inertia";
 import commonFunctions from "@/use/common";
 
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList(),
     sendEmail = ref(true),
-    formInfo = ref({})
+    formInfo = ref({}),
+    slug = ref({}),
+    validationErrors = ref({}),
+    emailError = ref([])
 
 const errors = ref({}),
-    alreadyRegister = ref (0)
+    alreadyRegister = ref (false)
 
-const submit = () => {
-    if (!!formInfo.value.name && !!formInfo.value.email) {
+const validation = (post) =>{
+    if(!post.name)
+        validationErrors.value.name = '*Name is required !'
+    if(!post.email)
+        validationErrors.value.email = '*Email is required !'
+
+    return Object.values(validationErrors.value).length === 0;
+}
+
+const submit = (Info) => {
+    const valid = validation (Info)
+    console.log(valid)
+    if (valid === true) {
+        if (!!formInfo.value.name && !!formInfo.value.email) {
+            formInfo.value.processing = true
+            const queryString = window.location.href
+            let event_slug = queryString.split('/')[4].split('.')[0]
+            let project_slug = queryString.split('/')[4].split('.')[1]
+            console.log(event_slug, project_slug)
+
+            axios
+                .post('/roster-new', {
+                    event_slug: event_slug,
+                    project_slug: project_slug,
+                    email: formInfo.value.email,
+                    name: formInfo.value.name
+                })
+                .then((response) => {
+                    if (response.data.success) {
+                        formInfo.value.processing = false
+                        sendEmail.value = false
+                        Toast.fire({icon: "success", title: "Email Sent Successfully!"})
+                    }
+                }).catch((response) => {
+                errors.value = response.response.data.errors
+                formInfo.value.processing = false
+            });
+        }
+    }
+}
+
+const addParticipant = () =>{
+    if (!!formInfo.value.email) {
+        validationErrors.value = {}
+        emailError.value = {}
         formInfo.value.processing = true
         const queryString = window.location.href
         let event_slug = queryString.split('/')[4].split('.')[0]
         let project_slug = queryString.split('/')[4].split('.')[1]
-        console.log(event_slug, project_slug)
-
         axios
-            .post('/roster-new', {event_slug:event_slug, project_slug:project_slug,email: formInfo.value.email, name: formInfo.value.name})
+            .post('/add-participant', {event_slug:event_slug, project_slug:project_slug, email: formInfo.value.email})
             .then((response) => {
-                if (response.data.success) {
+                if (response.data.success === true) {
+                    Toast.fire({icon: "success", title: "Participant added Successfully!"})
                     formInfo.value.processing = false
-                    sendEmail.value = false
-                    Toast.fire({icon: "success", title: "Email Sent Successfully!"})
+                    Inertia.visit('/roster/' + event_slug + '.' + project_slug)
                 }
             }).catch((response) => {
-            errors.value = response.response.data.errors
+            emailError.value[0] = response.response.data.error
             formInfo.value.processing = false
         });
+    } else {
+        emailError.value[0] = '*Email Required !'
     }
 }
 
-// const checkRegister = () => {
-//     if (alreadyRegister.value === 1){
-//         alreadyRegister.value = 0
-//     }else {
-//     alreadyRegister.value = 1
-// }
-// }
-// const eye_one = (e) => {
-//     const password = document.querySelector("#password")
-//
-//     const type = password.getAttribute("type") === "password" ? "text" : "password"
-//     password.setAttribute("type", type)
-//     e.target.classList.toggle('fa-eye-slash')
-// }
-// const eye_two = (e) => {
-//     const password = document.querySelector("#password_confirmation")
-//
-//     const type = password.getAttribute("type") === "password" ? "text" : "password"
-//     password.setAttribute("type", type)
-//     e.target.classList.toggle('fa-eye-slash')
-// }
+const checkRegister = () => {
+    emailError.value = []
+    if (alreadyRegister.value === true){
+        alreadyRegister.value = false
+    }else {
+    alreadyRegister.value = true
+    }
+}
 </script>
 
 <template>
     <BreezeGuestLayout>
-        <div class="pt-8">
+        <div class="py-8">
             <LoginRegisterHeader />
         </div>
         <BreezeValidationErrors class="mb-4" />
-        <div class="min-h-screen flex justify-center items-center max-w-lg mx-auto font-serif">
+        <div class="flex justify-center items-center max-w-lg mx-auto font-serif">
             <div class="w-full mb-28 justify-center">
-                <form v-if="sendEmail === true" @submit.prevent="submit" class="text-[22px] mx-10">
+                <form v-if="sendEmail === true" class="text-[22px] mx-10">
                     <div class="flex items-center my-5">
                         <BreezeCheckbox @change="checkRegister()" class="accent-[#639f1e] w-5 h-5 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                         <BreezeLabel for="name" class="ml-2 text-black" value="Already a Member?" />
                     </div>
-                    <div v-show="alreadyRegister !== 1">
-                        <BreezeLabel for="name" class="text-black" value="Name" />
+                    <div v-show="alreadyRegister !== true">
+                        <div class="flex items-center">
+                            <BreezeLabel for="name" class="text-black" value="Name" />
+                            <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.name }}</div>
+                        </div>
                         <BreezeInput id="name" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.name" required autofocus autocomplete="name" />
                     </div>
-
                     <div class="mt-4">
-                        <BreezeLabel for="email" value="Email" />
+                        <div class="flex items-center">
+                            <div class="flex items-center">
+                                <BreezeLabel for="email" value="Email" />
+                                <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.email }}</div>
+                            </div>
+                            <div v-if="emailError.length !== 0" class="ml-2 text-red-700 font-bold text-sm" >{{emailError[0]}}</div>
+                        </div>
                         <div v-if="!!errors" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.email">{{ message }}</div>
                         <BreezeInput id="email" type="email" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="formInfo.email" required autocomplete="username" />
                     </div>
-<!--                    <div class="mt-4">-->
-<!--                        <div class="flex mt-2 justify-between">-->
-<!--                            <BreezeLabel for="password" value="Password" />-->
-<!--                            <i @click="eye_one" class="fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>-->
-<!--                        </div>-->
-<!--                        <div v-if="!!errors" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.password">{{ message }}</div>-->
-<!--                        <BreezeInput id="password" type="password" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="form.password" required autocomplete="new-password" />-->
-<!--                    </div>-->
-
-<!--                    <div class="mt-4">-->
-<!--                        <div class="flex mt-2 justify-between">-->
-<!--                            <BreezeLabel for="password_confirmation" value="Confirm Password" />-->
-<!--                            <i @click="eye_two" class="fa fa-eye fa-lg mt-2 mr-4 text-[#639f1e]"></i>-->
-<!--                        </div>-->
-<!--                        <BreezeInput id="password_confirmation" type="password" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="form.password_confirmation" required autocomplete="new-password" />-->
-<!--                    </div>-->
-                    <div class="flex items-center justify-end mt-4">
-                        <BreezeButton class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
+                    <div v-show="alreadyRegister !== true" class="flex items-center justify-end mt-4">
+                        <BreezeButton @click="submit(formInfo)" class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
                             Send Email
+                        </BreezeButton>
+                    </div>
+                    <div v-show="alreadyRegister === true" class="flex items-center justify-end mt-4">
+                        <BreezeButton @click="addParticipant()" class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
+                            Add a Participant
                         </BreezeButton>
                     </div>
                 </form>
