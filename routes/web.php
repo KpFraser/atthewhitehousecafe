@@ -47,10 +47,10 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/favourite-project', fn ()=> Inertia::render('project/project') )->name('favourite-project');
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
-    Route::get('/roster/{id}', fn ()=> Inertia::render('project/roster') )->name('roster');
+    Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/roster-confirmation/{email}/{project_slug}/{name}/{event_slug}', fn ()=> Inertia::render('project/rosterRegisterConfirmation') )->name('roster-confirmation');
-    Route::get('/roster-register/{id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
+    Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
     Route::get('/project-leadership/leader', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
 
