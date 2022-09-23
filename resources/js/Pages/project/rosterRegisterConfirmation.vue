@@ -26,12 +26,12 @@ const submit = () => {
         registerInfo.value.event_slug = queryString.split('/')[7]
 
         axios
-            .post('/roster-register-confirm/', registerInfo.value)
+            .post('/roster-register-confirm', registerInfo.value)
             .then((response) => {
                 if (response.data.success === true) {
                     registerInfo.value.processing = false
                     Toast.fire({icon: "success", title: "Participant Added!"})
-                    Inertia.visit('/roster/' +registerInfo.value.event_slug+'.'+registerInfo.value.project_slug)
+                    Inertia.visit('/roster/' +registerInfo.value.event_slug+'/'+registerInfo.value.project_slug)
                 }
             }).catch((response) => {
             errors.value = response.response.data.errors

@@ -35,6 +35,9 @@ Route::middleware('guest')->get('/', function () {
     ]);
 });
 
+Route::get('/roster-confirmation/{email}/{project_slug}/{name}/{event_slug}', fn ()=> Inertia::render('project/rosterRegisterConfirmation') )->name('roster-confirmation');
+Route::post('/roster-register-confirm', [EventController::class, 'RosterConfirm']);
+
 Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
@@ -49,7 +52,6 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
-    Route::get('/roster-confirmation/{email}/{project_slug}/{name}/{event_slug}', fn ()=> Inertia::render('project/rosterRegisterConfirmation') )->name('roster-confirmation');
     Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
     Route::get('/project-leadership/leader', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
@@ -90,7 +92,6 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/group-comment', [EventController::class, 'update']);
     Route::post('/roster-new', [EventController::class, 'rosterRegister']);
     Route::post('/add-participant', [EventController::class, 'addParticipant']);
-    Route::post('/roster-register-confirm', [EventController::class, 'RosterConfirm']);
 
 });
 
