@@ -21,7 +21,17 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('password.email'));
+    form.post(route('password.email'),{
+    onFinish: () => {
+
+          if(form.wasSuccessful === true){
+              form.email = ''
+          }
+
+
+    }
+    });
+
 };
 </script>
 

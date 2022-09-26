@@ -40,9 +40,8 @@ const submit = (Info) => {
         if (!!formInfo.value.name && !!formInfo.value.email) {
             formInfo.value.processing = true
             const queryString = window.location.href
-            let event_slug = queryString.split('/')[4].split('.')[0]
-            let project_slug = queryString.split('/')[4].split('.')[1]
-            console.log(event_slug, project_slug)
+            let event_slug = queryString.split('/')[4]
+            let project_slug = queryString.split('/')[5]
 
             axios
                 .post('/roster-new', {
@@ -71,8 +70,8 @@ const addParticipant = () =>{
         emailError.value = {}
         formInfo.value.processing = true
         const queryString = window.location.href
-        let event_slug = queryString.split('/')[4].split('.')[0]
-        let project_slug = queryString.split('/')[4].split('.')[1]
+        let event_slug = queryString.split('/')[4]
+        let project_slug = queryString.split('/')[5]
         axios
             .post('/add-participant', {event_slug:event_slug, project_slug:project_slug, email: formInfo.value.email})
             .then((response) => {
@@ -115,7 +114,7 @@ const checkRegister = () => {
                     </div>
                     <div v-show="alreadyRegister !== true">
                         <div class="flex items-center">
-                            <BreezeLabel for="name" class="text-black" value="Name" />
+                            <BreezeLabel for="name" class="text-black" value="Name *" />
                             <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.name }}</div>
                         </div>
                         <BreezeInput id="name" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.name" required autofocus autocomplete="name" />
@@ -123,7 +122,7 @@ const checkRegister = () => {
                     <div class="mt-4">
                         <div class="flex items-center">
                             <div class="flex items-center">
-                                <BreezeLabel for="email" value="Email" />
+                                <BreezeLabel for="email" value="Email *" />
                                 <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.email }}</div>
                             </div>
                             <div v-if="emailError.length !== 0" class="ml-2 text-red-700 font-bold text-sm" >{{emailError[0]}}</div>

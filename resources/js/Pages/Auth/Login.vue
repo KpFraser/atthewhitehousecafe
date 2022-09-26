@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import BreezeButton from '@/Components/Button.vue';
 import BreezeCheckbox from '@/Components/Checkbox.vue';
 import BreezeGuestLayout from '@/Layouts/Guest.vue';
@@ -6,15 +7,16 @@ import BreezeInput from '@/Components/Input.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import LoginRegisterHeader from '@/Components/LoginRegisterHeader.vue';
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
-import { Head, Link, useForm, } from '@inertiajs/inertia-vue3';
+import { Head, Link, useForm} from '@inertiajs/inertia-vue3';
 import MasterFooter from '@/Components/MasterFooter.vue';
 import useFooterList from "../../../use/useFooterList";
 
 const { footerLists } = useFooterList()
-defineProps({
-    canResetPassword: Boolean,
+const props = defineProps({
     status: String,
 });
+
+const canResetPassword = ref(false)
 
 const form = useForm({
     email: '',
@@ -24,7 +26,14 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+        onFinish: () => {
+
+            form.reset('password')
+            if(!!form.errors?.email)
+                canResetPassword.value = true
+            else
+                canResetPassword.value = false
+        },
     });
 };
 

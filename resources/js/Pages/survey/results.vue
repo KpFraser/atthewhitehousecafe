@@ -160,21 +160,25 @@ const { Toast } = commonFunctions(),
             data: {
                 labels: await graphLabel(questionName.value),
                 datasets: [{
+                    type: 'bar',
                     label: 'Lead',
                     data: scoreData(3),
                     backgroundColor: "#639f1e",
                     hoverBackgroundColor: "#00ee97"
                 },{
+                    type: 'bar',
                     label: 'Assist',
                     data: scoreData(2),
                     backgroundColor: "#7FFF00",
                     hoverBackgroundColor: "#00ee97"
                 },{
+                    type: 'bar',
                     label: 'Participate',
                     data: scoreData(1),
                     backgroundColor: "#ADFF2F",
                     hoverBackgroundColor: "#00ee97"
                 },{
+                    type: 'bar',
                     label: 'Never',
                     data: scoreData(0),
                     backgroundColor: "#32CD32",
@@ -247,9 +251,9 @@ const { Toast } = commonFunctions(),
         </div>
     </BreezeAuthenticatedLayout>
 </template>
-<style scoped>
+<!--<style scoped>
     canvas{
             width:450px !important;
             height:400px !important;
         }
-</style>
+</style>-->

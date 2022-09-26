@@ -21,8 +21,8 @@ const info = ref({}),
 
 const eventInfo = () => {
     const queryString = window.location.href
-    let event_id = queryString.split('/')[4].split('.')[0]
-    let project_id = (queryString.split('/')[4].split('.')[1])
+    let event_id = queryString.split('/')[4]
+    let project_id = queryString.split('/')[5]
     groupComment.value.event_id = event_id
     console.log(groupComment.value.event_id)
 
@@ -103,9 +103,9 @@ const groupComments = (post) =>{
 
 const rosterRegister = () =>{
     const queryString = window.location.href
-    let event_id = queryString.split('/')[4].split('.')[0]
-    let project_id = (queryString.split('/')[4].split('.')[1])
-    Inertia.visit('/roster-register/'+event_id+'.'+project_id)
+    let event_id = queryString.split('/')[4]
+    let project_id = queryString.split('/')[5]
+    Inertia.visit('/roster-register/'+event_id+'/'+project_id)
 }
 
 const commentModal = (user_id, project_id) =>{
