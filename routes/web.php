@@ -48,13 +48,15 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/new-project', fn ()=> Inertia::render('project/newProject') )->name('new-project');
     Route::get('/proposed/{slug}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
-    Route::get('/favourite-project', fn ()=> Inertia::render('project/project') )->name('favourite-project');
+    Route::get('/favourite-project/{slug?}', fn ()=> Inertia::render('project/project') )->name('favourite-project');
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
     Route::get('/project-leadership/leader', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
+    Route::get('/bike-project', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
+    Route::get('/bike-all-projects', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
     Route::get('/emailShow', [RegisteredUserController::class, 'show']);
@@ -68,7 +70,8 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/project-names', [ProjectController::class, 'index']);
     Route::get('/projects', [ProjectController::class, 'projects']);
     Route::get('/favourite-info', [ProjectController::class, 'favourite']);
-    Route::get('/favourite-projects', [ProjectController::class, 'favourite_info'])->name('favourite_info');
+    Route::get('/favourite-projects', [ProjectController::class, 'favouriteInfo'])->name('favourite_info');
+    Route::get('/edit-favourite-projects/{slug}', [ProjectController::class, 'editFavouriteInfo'])->name('favourite_info');
     Route::get('/new-projects/{slug}', [ProjectController::class, 'show']);
     Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
     Route::post('/project-names', [ProjectController::class, 'store']);
@@ -117,8 +120,9 @@ Route::post('/application-info', [ApplicationController::class, 'store']);
  *  ReferenceController
 */
 Route::post('/reference-form', [ReferenceController::class, 'store']);
-
-
+/*
+ *  ResultsController
+*/
 Route::get('/survey-results', [ResultsController::class, 'show']);
 
 require __DIR__.'/auth.php';

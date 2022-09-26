@@ -19,13 +19,24 @@ const favourite = ref([]),
     eventValue = ref (-1)
 
 const projects = () =>{
-    axios
+    const slug = window.location.href.split('/')[4]
+    if(slug!==''){
+        axios
+        .get('/edit-favourite-projects/'+ slug)
+        .then((response)=>{
+            favourite.value = response.data[0].key_project
+            eventShow.value = response.data[1]
+            console.log(favourite.value, eventShow.value)
+        })
+    } else {
+        axios
         .get('/favourite-projects')
         .then((response)=>{
             favourite.value = response.data[0].key_project
             eventShow.value = response.data[1]
             console.log(favourite.value, eventShow.value)
         })
+    }
 }
 
 const eventName = () =>{
@@ -49,7 +60,6 @@ const selectedEvent = (event_id, project_id) =>{
 }
 
 onMounted( ()=> {
-    projects ()
     projects ()
 })
 

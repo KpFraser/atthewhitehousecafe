@@ -26,6 +26,8 @@ const projects = () =>{
             names.value = response.data.data
             all_names.value = names.value
                 .filter(x => x.is_approved === 1 && x.is_archived !== 1)
+            console.log(all_names.value)
+
             user_names.value = all_names.value
                 .filter(x => x.is_user === 1)
 
@@ -60,8 +62,12 @@ const keyBtn = (id) =>{
         })
 }
 
-const pencilBtn = (slug) =>{
+const allPencilBtn = (slug) =>{
     Inertia.visit('/proposed/'+slug)
+}
+
+const userPencilBtn = (slug) =>{
+    Inertia.visit('/favourite-project/'+slug)
 }
 
 onMounted( ()=> {
@@ -98,7 +104,8 @@ onMounted( ()=> {
                                 <div :class="{'hidden': isActive === 2 }" class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
                                     <div :class="!!all.is_user ? `ml-5 text-white font-extrabold`: `ml-5 text-white`">{{all.name}}</div>
                                     <div>
-                                        <i class="fas cursor-pointer text-[30px] mr-2 fa-plus-circle" @click="plusBtn(all.id)"></i>
+                                        <i class="far fa-pencil text-[26px] mr-4 cursor-pointer text-[30px]"  @click="allPencilBtn(all.slug)"></i>
+                                        <i class="fas cursor-pointer text-[30px] mr-4 fa-plus-circle" @click="plusBtn(all.id)"></i>
                                         <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(all.id)"></i>
                                     </div>
                                 </div>
@@ -108,7 +115,7 @@ onMounted( ()=> {
                                 <div :class="{'hidden': isActive === 1 }" class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
                                     <div :class="!!user.is_key ? `ml-5 text-white font-extrabold` : `ml-5 text-white`">{{user.name}}</div>
                                     <div class="flex items-center">
-                                        <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="pencilBtn(user.slug)"></i>
+                                        <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>
                                         <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
                                     </div>
                                 </div>

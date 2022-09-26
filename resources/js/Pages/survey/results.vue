@@ -160,29 +160,29 @@ const { Toast } = commonFunctions(),
             data: {
                 labels: await graphLabel(questionName.value),
                 datasets: [{
-                    type: 'bar',
+                    // type: 'bar',
                     label: 'Lead',
                     data: scoreData(3),
                     backgroundColor: "#639f1e",
                     hoverBackgroundColor: "#00ee97"
                 },{
-                    type: 'bar',
+                    // type: 'bar',
                     label: 'Assist',
                     data: scoreData(2),
                     backgroundColor: "#7FFF00",
                     hoverBackgroundColor: "#00ee97"
                 },{
-                    type: 'bar',
+                    // type: 'bar',
                     label: 'Participate',
                     data: scoreData(1),
-                    backgroundColor: "#ADFF2F",
-                    hoverBackgroundColor: "#00ee97"
-                },{
-                    type: 'bar',
-                    label: 'Never',
-                    data: scoreData(0),
                     backgroundColor: "#32CD32",
                     hoverBackgroundColor: "#00ee97"
+                // },{
+                //     // type: 'bar',
+                //     label: 'Never',
+                //     data: scoreData(0),
+                //     backgroundColor: "#32CD32",
+                //     hoverBackgroundColor: "#00ee97"
                 }]
             },
             options: {
@@ -217,7 +217,7 @@ const { Toast } = commonFunctions(),
                             <thead>
                                 <tr>
                                     <th :class="tbHeaderTh"></th>
-                                    <th :class="tbHeaderTh">None</th>
+                                    <!-- <th :class="tbHeaderTh">None</th> -->
                                     <th :class="tbHeaderTh">Participant</th>
                                     <th :class="tbHeaderTh">Assistant</th>
                                     <th :class="tbHeaderTh">Leader</th>
@@ -226,9 +226,9 @@ const { Toast } = commonFunctions(),
                             <tbody class="bg-white divide-y divide-gray-200 divide-solid">
                                 <tr v-for="row in questionName">
                                     <td :class="tbHeaderTh">{{ row.name }}</td>
-                                    <td :class="tbBodyTd">
+                                    <!-- <td :class="tbBodyTd">
                                         {{ getName(0, row.id) }}
-                                    </td>
+                                    </td> -->
                                     <td :class="tbBodyTd">
                                         {{ getName(1, row.id) }}
                                     </td>
