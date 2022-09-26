@@ -54,13 +54,19 @@ class ApplicationController extends Controller
             'text3'=> $request->third_txt,
         ]);
         if(!empty($request->project_id))
-            $project=Project::select('id','slug')->where('id', $request->project_id)->first();
+            $project=Project::select('id','slug', 'name')->where('id', $request->project_id)->first();
 
         if(!empty($request->role_id))
             $role=Role::select('id','name')->where('id', $request->role_id)->first();
 
         if(!empty($data) && !empty($project->slug) && !empty($role->name)) {
-            $status = [url('project/reference/'.$data->email.'/'.$project->slug.'/'.$this->SlugCreate($role->name).'/'.$this->SlugCreate($data->name))];
+            $status = [
+                'url'=>url('project/reference/'.$data->email.'/'.$project->slug.'/'.$this->SlugCreate($role->name).'/'.$this->SlugCreate($data->name)),
+                'name'=> $data->name,
+                'email'=> $data->email,
+                'role' => $role->name,
+                'project'=> $project->name,
+            ];
             Mail::to($data->ref1_email)->send(new Reference($status));
             if(!empty($data->ref2_email)) {
                 Mail::to($data->ref2_email)->send(new Reference($status));

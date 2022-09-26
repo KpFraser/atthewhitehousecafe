@@ -174,7 +174,7 @@ class ProjectController extends Controller
      */
     public function projects(Project $project)
     {
-        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived', 'slug' )->with('projectUser')->get();
+        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived', 'slug' )->with('projectUser')->orderBy('name')->get();
 
         return AllProjectResource::Collection($data);
     }

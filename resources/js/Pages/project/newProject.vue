@@ -120,7 +120,7 @@
                     </div>
                     <div class="mx-auto flex mt-5 justify-center">
                         <div class="w-60 cursor-pointer p-4 bg-[#639f1e] justify-between items-center flex" @click="plusbtn()">
-                            <div class="text-xl ">Proposed An Activity</div>
+                            <div class="text-xl ">Propose an activity</div>
                             <i class="text-xl fas fa-plus-circle"></i>
                         </div>
                     </div>

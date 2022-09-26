@@ -8,9 +8,9 @@
 <body>
 <div role="article" aria-roledescription="email" lang="en">
     <div>
-        <div>hi,</div><br><br>
-        <div>The community interest company, Community Team has received an application from salman9607@gmail.com to be a Leader for Maryhill.</div><br>
-        <div>salman9607@gmail.com has asked us to email you for a reference. You can complete this online by clicking <a href="{{$reference[0]}}" >here</a> and it should take you no more than a few minutes to complete</div><br>
+        <div>Dear Referee,</div><br><br>
+        <div>Free Wheel North has received an application from {{$reference['name']}} ({{$reference['email']}}) to be a {{$reference['role']}} for {{$reference['project']}}.</div><br>
+        <div>{{$reference['name']}} has asked us to email you for a reference. You can complete this online by clicking <a href="{{$reference['url']}}" >here</a> and it should take you no more than a few minutes to complete</div><br>
         <div>Thank you for your support,</div><br><br>
         <div>ATWHC,</div>
     </div>
