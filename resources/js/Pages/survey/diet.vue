@@ -8,7 +8,7 @@
     import commonFunctions from "@/use/common";
     import BreezeCheckbox from '@/Components/Checkbox.vue';
 
-    const { Toast } = commonFunctions()
+    const { Toast, ConfirmToast } = commonFunctions()
     const { footerLists  } = useFooterList()
     const names = ref({})
     const option = ref({})
@@ -32,6 +32,21 @@
             })
     }
 
+    const deleteProject = (id) =>{
+        if (!!id){
+            ConfirmToast.fire({}).then((confirmed) => {
+                if (confirmed.isConfirmed === true) {
+                    axios
+                        .delete('/delete-project/' + id)
+                        .then((response) => {
+                            Toast.fire({icon: "success", title: "Deleted Successfully!"})
+                            surveyProjects()
+                        })
+                }
+            })
+        }
+    }
+
     onMounted( ()=> {
         surveyProjects ()
     })
@@ -48,10 +63,13 @@
                         <h1 class="text-3xl font-sans text-center bg-opacity-75 p-3">PROPOSED</h1>
                         <div class="text-center">Diet of Activities</div>
                     </div>
-                    <div class="flex ml-5 mt-4" v-for="name in names">
-                         <div class="flex items-center ml-5 mt-5">
+                    <div class="flex items-center justify-between ml-5 my-4" v-for="name in names">
+                         <div class="flex items-center ml-5">
                              <BreezeCheckbox @change="checkedProject(name.id, name.name, $event.target.checked)" :checked="name.is_survey === 1" :value="name.id" type="checkbox" class="accent-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                              <div class="ml-5 text-[16px]">{{name.name}}</div>
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-trash cursor-pointer text-[20px] hover:text-white rounded px-2 py-1.5 border hover:bg-red-600 mx-5" @click="deleteProject(name.id)"></i>
                         </div>
                     </div>
                 </div>

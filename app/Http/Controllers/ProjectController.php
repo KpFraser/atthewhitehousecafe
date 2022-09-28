@@ -91,15 +91,16 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
         {
+//            dd($request->all());
            $request->validate([
-                'name' => 'required|unique:projects,name,'.$request->name['id'],
+                'name' => 'required|unique:projects,name,'.$request->id,
            ]);
             Project::updateOrCreate([
-                'id' => $request->name['id'],
+                'id' => $request->id,
             ],[
-                'slug' => Str::slug($request->name['name']),
+                'slug' => Str::slug($request->name),
                 'created_by'=> auth()->user()->id,
-                'name'=> $request->name['name'],
+                'name'=> $request->name,
                 //'module'=> $request->module,
             ]);
             return response()->success();

@@ -57,6 +57,9 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
     Route::get('/bike-project', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
     Route::get('/bike-all-projects', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
+    Route::get('/question-first', fn ()=> Inertia::render('project/questionFirst') )->name('question-first');
+    Route::get('/question-second', fn ()=> Inertia::render('project/questionSecond') )->name('question-second');
+    Route::get('/question-third', fn ()=> Inertia::render('project/questionThird') )->name('question-third');
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
     Route::get('/emailShow', [RegisteredUserController::class, 'show']);
