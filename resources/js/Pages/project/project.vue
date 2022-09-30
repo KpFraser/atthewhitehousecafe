@@ -20,7 +20,7 @@ const favourite = ref([]),
 
 const projects = () =>{
     const slug = window.location.href.split('/')[4]
-    if(slug!==''){
+    if(!!slug){
         axios
         .get('/edit-favourite-projects/'+ slug)
         .then((response)=>{

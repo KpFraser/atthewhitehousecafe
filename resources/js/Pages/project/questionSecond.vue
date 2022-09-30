@@ -13,12 +13,12 @@ const { footerLists  } = useFooterList()
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full mb-28 justify-center">
                 <MasterHeader/>
-                <div class="max-w-lg mx-auto border-2 border-[#556553] border-opacity-75 p-2">
+                <div class="max-w-lg mt-2 mx-auto border-2 border-[#556553] border-opacity-75 p-2">
                     <div>
                         <h3 class="font-bold">Dear Community Coach,</h3>
-                        <p class="text-xs">tdis questionnaire will help us better understand volunteer coaches.
-                            Be assured tdat all information will remain <a href="" class="underline font-semibold">anonymous and
-                                confidential.</a></p>
+                        <p class="text-xs">this questionnaire will help us better understand volunteer coaches. Be assured that all information will remain
+                            <a href="" class="underline font-semibold">anonymous and confidential.</a>
+                        </p>
                     </div>
 
                     <div class="w-full bg-[#639f1e] bg-opacity-75 text-white p-2">
@@ -26,39 +26,29 @@ const { footerLists  } = useFooterList()
                     </div>
 
                     <div class=" border-2 border-[#556553] border-opacity-75 p-2 mt-2">
-                        <p>Which of tde following would best describe you:</p>
-                        <div class="flex justify-between">
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-[#556553] bg-opacity-75 checked:border-[#556553] border-opacity-75 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                    type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault1">
-                                    A member of tde local community
+                        <p>Which of the following would best describe you:</p>
+                        <div class="grid grid-cols-2">
+                            <div class="flex text-xs items-center my-1">
+                                <input class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] cursor-pointer" type="radio" name="profession">
+                                <label class="mx-1.5 inline-block text-gray-800">
+                                    A member of the local community
                                 </label>
                             </div>
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-[#556553] bg-opacity-75 checked:border-[#556553] border-opacity-75 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                    type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault2">
+                            <div class="flex text-xs items-center my-1">
+                                <input class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] cursor-pointer" type="radio" name="profession">
+                                <label class="mx-1.5 inline-block text-gray-800">
                                     A local professional
                                 </label>
                             </div>
-                        </div>
-                        <div class="flex justify-between">
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-[#556553] bg-opacity-75 checked:border-[#556553] border-opacity-75 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                    type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault1">
+                            <div class="flex text-xs items-center my-1">
+                                <input class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] cursor-pointer" type="radio" name="profession">
+                                <label class="mx-1.5 inline-block text-gray-800">
                                     A student
                                 </label>
                             </div>
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-[#556553] bg-opacity-75 checked:border-[#556553] border-opacity-75 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                    type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault2">
+                            <div class="flex text-xs items-center my-1">
+                                <input class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] cursor-pointer" type="radio" name="profession">
+                                <label class="mx-1.5 inline-block text-gray-800">
                                     A teacher
                                 </label>
                             </div>
@@ -69,15 +59,13 @@ const { footerLists  } = useFooterList()
                                 <input
                                     class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-[#556553] bg-opacity-75 checked:border-[#556553] border-opacity-75 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                     type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault1">
+                                <label class="mx-1.5 inline-block text-gray-800">
                                     Age
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input
-                                    class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-[#556553] bg-opacity-75 checked:border-[#556553] border-opacity-75 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                    type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault2">
+                                <input class="text-[#20351d] bg-[#cccccc] focus:ring-[#20351d] cursor-pointer" type="radio" name="secondQuestion7">
+                                <label class="mx-1.5 inline-block text-gray-800">
                                     Gender
                                 </label>
                             </div>
@@ -363,7 +351,7 @@ const { footerLists  } = useFooterList()
                     <div class="w-full inline-block bg-[#639f1e] bg-opacity-75 text-white p-2 mt-2">
                         <h1 class="text-xs">4. Your comments, particularly regarding re-volunteering, are valued.</h1>
                         <textarea name="" class="w-full text-black" id="" cols="30" rows="10"></textarea>
-                        <p class="text-center text-xs">We tdank you for taking time for filling out tdis questionnaire!</p>
+                        <p class="text-center text-xs">We tdank you for taking time for filling out this questionnaire!</p>
                     </div>
 
                 </div>

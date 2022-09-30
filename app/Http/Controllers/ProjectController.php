@@ -39,6 +39,7 @@ class ProjectController extends Controller
 
     public function editFavouriteInfo($slug)
     {
+//        dd($slug);
         if(!empty($slug)){
             $project_id = Project::select('id')->where('slug', $slug)->first();
             $data1 = ProjectUser::select('id', 'project_id')->where(array('project_id'=> $project_id->id, 'user_id'=> auth()->user()->id))->with('key_project')->first();

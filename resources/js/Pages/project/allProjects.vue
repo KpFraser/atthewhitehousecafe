@@ -70,6 +70,10 @@ const userPencilBtn = (slug) =>{
     Inertia.visit('/favourite-project/'+slug)
 }
 
+const bikeProject = (slug) =>{
+    Inertia.visit('/bike-all-projects/'+slug)
+}
+
 onMounted( ()=> {
     projects ()
 })
@@ -113,7 +117,7 @@ onMounted( ()=> {
                             </div>
                             <div>
                                 <div :class="{'hidden': isActive === 1 }" class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
-                                    <div :class="!!user.is_key ? `ml-5 text-white font-extrabold` : `ml-5 text-white`">{{user.name}}</div>
+                                    <div @click="bikeProject(user.slug)" :class="!!user.is_key ? `ml-5 text-white cursor-pointer font-extrabold` : `ml-5 cursor-pointer text-white`">{{user.name}}</div>
                                     <div class="flex items-center">
                                         <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>
                                         <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>

@@ -4,7 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\{
+use App\Http\Controllers\{BikeController,
+    GoalController,
     ReferenceController,
     UHealthcareController,
     SurveySubmissionController,
@@ -12,8 +13,7 @@ use App\Http\Controllers\{
     ProjectController,
     EventController,
     ProjectUserController,
-    ApplicationController
-};
+    ApplicationController};
 
 /*
 |--------------------------------------------------------------------------
@@ -55,8 +55,8 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
     Route::get('/project-leadership/leader', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
-    Route::get('/bike-project', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
-    Route::get('/bike-all-projects', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
+    Route::get('/bike-project/{slug}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
+    Route::get('/bike-all-projects/{slug}', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
     Route::get('/question-first', fn ()=> Inertia::render('project/questionFirst') )->name('question-first');
     Route::get('/question-second', fn ()=> Inertia::render('project/questionSecond') )->name('question-second');
     Route::get('/question-third', fn ()=> Inertia::render('project/questionThird') )->name('question-third');
@@ -74,7 +74,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/projects', [ProjectController::class, 'projects']);
     Route::get('/favourite-info', [ProjectController::class, 'favourite']);
     Route::get('/favourite-projects', [ProjectController::class, 'favouriteInfo'])->name('favourite_info');
-    Route::get('/edit-favourite-projects/{slug}', [ProjectController::class, 'editFavouriteInfo'])->name('favourite_info');
+    Route::get('/edit-favourite-projects/{slug?}', [ProjectController::class, 'editFavouriteInfo'])->name('favourite_info');
     Route::get('/new-projects/{slug}', [ProjectController::class, 'show']);
     Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
     Route::post('/project-names', [ProjectController::class, 'store']);
@@ -98,7 +98,15 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/group-comment', [EventController::class, 'update']);
     Route::post('/roster-new', [EventController::class, 'rosterRegister']);
     Route::post('/add-participant', [EventController::class, 'addParticipant']);
+/*
+ *  GoalsController
+*/
+    Route::get('/bike-show', [GoalController::class, 'show']);
 
+/*
+ *  BikesController
+*/
+    Route::post('/bike-all-information', [BikeController::class, 'store']);
 });
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
