@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\{BikeController,
+    BikeItemsController,
     GoalController,
     ReferenceController,
     UHealthcareController,
@@ -102,11 +103,15 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
  *  GoalsController
 */
     Route::get('/bike-show', [GoalController::class, 'show']);
-
 /*
  *  BikesController
 */
     Route::post('/bike-all-information', [BikeController::class, 'store']);
+/*
+ *  BikeItemsController
+*/
+    Route::post('/estimate-cost', [BikeItemsController::class, 'store']);
+    Route::post('/actual-cost', [BikeItemsController::class, 'storefinal']);
 });
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');

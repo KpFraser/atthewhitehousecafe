@@ -9,14 +9,12 @@ import useFooterList from "../../../use/useFooterList";
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import {ref, onMounted, reactive } from "vue";
 import commonFunctions from "@/use/common";
-import axios from 'axios';
-import {Inertia} from "@inertiajs/inertia";
 
 const { Toast } = commonFunctions()
 
-const { footerLists } = useFooterList()
-const personal = ref({})
-const validationErrors = ref({})
+const { footerLists } = useFooterList(),
+    personal = ref({}),
+    validationErrors = ref({})
 
 const validation = (post) =>{
 
