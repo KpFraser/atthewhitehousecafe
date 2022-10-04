@@ -35,13 +35,7 @@ class BikeItemsController extends Controller
      */
     public function store(Request $request)
     {
-//         dd($request->all);
-         foreach ($request->all() as $data){
-             foreach ($data as $row){
-                 echo '<pre>';
-                 echo $row;
-             }
-         }
+
     }
 
     public function storefinal(Request $request)

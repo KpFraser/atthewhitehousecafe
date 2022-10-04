@@ -107,11 +107,6 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
  *  BikesController
 */
     Route::post('/bike-all-information', [BikeController::class, 'store']);
-/*
- *  BikeItemsController
-*/
-    Route::post('/estimate-cost', [BikeItemsController::class, 'store']);
-    Route::post('/actual-cost', [BikeItemsController::class, 'storefinal']);
 });
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');

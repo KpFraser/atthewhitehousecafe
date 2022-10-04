@@ -19,7 +19,7 @@ return new class extends Migration
             $table->tinyInteger('stage_id')->comment('1 for stage one, 2 for stage two');
             $table->string('item_name');
             $table->integer('cost');
-            $table->string('comment');
+            $table->string('comment')->nullable(true);
             $table->timestamps();
         });
     }

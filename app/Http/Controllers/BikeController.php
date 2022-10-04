@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Bike, BikeOption, Project};
+use App\Models\{Bike, BikeItems, BikeOption, Project};
 use Illuminate\Http\Request;
 
 class BikeController extends Controller
@@ -35,11 +35,22 @@ class BikeController extends Controller
      */
     public function store(Request $request)
     {
-        if(!empty($request->bike && $request->check)){
+
+        if(!empty($request->bike && $request->check && $request->estimate && $request->actual)){
             $project_id = Project::select('id')->where(array('slug'=> $request->bike['project_slug']))->first();
-            $data = Bike::updateOrCreate([
-                'id' => $request->bike['id']
-            ],[
+
+//            if($request->hasFile('image'))
+//            {
+//                $file1 = $request->file('image')->getClientOriginalName();
+//                $filename1 = pathinfo($file1, PATHINFO_FILENAME);
+//                $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
+//                $image = $filename1.'-'.time().'.'.$extension1;
+//                $request->file('image')->move(public_path('images'), $image);
+//            }else{
+//                $image = $request->image;
+//            }
+
+            $bike_data = Bike::Create([
                 'project_id' => $project_id->id,
                 'name' => $request->bike['name'],
                 'mobile' => $request->bike['phone'],
@@ -47,30 +58,47 @@ class BikeController extends Controller
                 'assistant' => $request->bike['assistant'],
                 'estimated_cost' => $request->bike['estimated_cost'],
                 'actual_cost' => $request->bike['actual_cost'],
-                'image_name' => $request->bike['image'],
+                'image_name' => $image,
                 'system_name' => $request->bike['image'],
             ]);
-//            dd($request->check);
             foreach ($request->check as $key => $row ) {
                 if ($row === true) {
                     BikeOption::updateOrCreate([
                         'goal_id' => $key
                     ], [
-                        'bike_id' => $data->id,
+                        'bike_id' => $bike_data->id,
                         'status' => 1,
                     ]);
                 } else{
                     BikeOption::updateOrCreate([
                         'goal_id' => $key
                     ], [
-                        'bike_id' => $data->id,
+                        'bike_id' => $bike_data->id,
                         'status' => 2,
                     ]);
                 }
             }
-            return response()->success($data);
+            foreach ($request->estimate as $row) {
+                BikeItems::updateOrCreate([
+                    'bike_id' => $bike_data->id,
+                ], [
+                    'stage_id' => 1,
+                    'item_name' => $row['item'],
+                    'cost' => $row['cost'],
+                ]);
+            }
+            foreach ($request->actual as $row) {
+                BikeItems::updateOrCreate([
+                    'bike_id' => $bike_data->id,
+                ], [
+                    'stage_id' => 2,
+                    'item_name' => $row['item'],
+                    'cost' => $row['cost'],
+                ]);
+            }
+            return response()->success();
         }else{
-            return response()->error('data not found', 500);
+            return response()->error('Data not saved!', 500);
         }
     }
 
@@ -82,7 +110,12 @@ class BikeController extends Controller
      */
     public function show(Bike $bike)
     {
-        //
+//        foreach ($request->all() as $data){
+//            foreach ($data as $row){
+//                echo '<pre>';
+//                echo $row;
+//            }
+//        }
     }
 
     /**

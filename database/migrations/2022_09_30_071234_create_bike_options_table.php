@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('bike_id')->constrained()->onDelete('cascade');
             $table->foreignId('goal_id')->constrained()->onDelete('cascade');
+            $table->boolean('status')->comment('1 for select, 2 for unselect');
             $table->timestamps();
         });
     }

@@ -104,8 +104,8 @@ onMounted( ()=> {
                             </li>
                         </ul>
                         <div class="bg-white items-center max-w-lg mx-auto">
-                            <div>
-                                <div :class="{'hidden': isActive === 2 }" class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
+                            <div :class="{'hidden': isActive === 2 }">
+                                <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
                                     <div :class="!!all.is_user ? `ml-5 text-white font-extrabold`: `ml-5 text-white`">{{all.name}}</div>
                                     <div>
                                         <i class="far fa-pencil text-[26px] mr-4 cursor-pointer text-[30px]"  @click="allPencilBtn(all.slug)"></i>
@@ -115,8 +115,8 @@ onMounted( ()=> {
                                 </div>
                                 <div v-if="all_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
-                            <div>
-                                <div :class="{'hidden': isActive === 1 }" class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
+                            <div :class="{'hidden': isActive === 1 }">
+                                <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
                                     <div @click="bikeProject(user.slug)" :class="!!user.is_key ? `ml-5 text-white cursor-pointer font-extrabold` : `ml-5 cursor-pointer text-white`">{{user.name}}</div>
                                     <div class="flex items-center">
                                         <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>

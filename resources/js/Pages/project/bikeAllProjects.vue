@@ -24,7 +24,6 @@ const newBike = () =>{
 
 <template>
     <!-- <Head title="Dashboard" /> -->
-    <BreezeAuthenticatedLayout>
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full">
                 <MasterHeader/>
@@ -81,5 +80,4 @@ const newBike = () =>{
                 :footerLists="footerLists"
             />
         </div>
-    </BreezeAuthenticatedLayout>
 </template>

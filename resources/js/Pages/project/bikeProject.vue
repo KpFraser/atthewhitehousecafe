@@ -10,7 +10,7 @@
     import {onMounted, reactive, ref} from "vue";
     import BreezeButton from '@/Components/Button.vue';
     import commonFunctions from "@/use/common";
-    import axios from "axios";
+    import {Inertia} from "@inertiajs/inertia";
 
     const { Toast } = commonFunctions()
     const { footerLists } = useFooterList();
@@ -28,8 +28,9 @@
 
     const onFileChange = (e) =>{
         const file = e.target.files[0];
-        bikeInformation.value.image = file.name
+        bikeInformation.value.image = file
         url.value = URL.createObjectURL(file);
+        errors.image = ''
     }
 
     const bikeInfo = () =>{
@@ -41,37 +42,64 @@
     }
 
     const validation = (post) =>{
-        console.log(post)
-            if(!post.name)
-                errors.name = '* Name is required field!'
-            if(!post.image)
-                errors.image = '* Image is required field!'
-            if(!post.phone)
-                errors.phone = '* Image is required field!'
-            if(!post.estimated_cost && !post.actual_cost)
-                errors.cost = '* Write Estimated and Actual Cost!'
-            if(!post.assistant && !post.leader)
-                errors.roles = '* Write Assistant and Leader!'
-
-            return Object.values(errors).length === 0;
+            errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = "", errors.actualCost = ''
+        if(!post.name)
+            errors.name = '* Name is required field!'
+        /*if(!post.image)
+            errors.image = '* Image is required field!'*/
+        if(!post.phone)
+            errors.phone = '* Image is required field!'
+        if(!post.estimated_cost && !post.actual_cost)
+            errors.cost = '* Write Estimated and Actual Cost!'
+        if(!post.assistant && !post.leader)
+            errors.roles = '* Write Assistant and Leader!'
+        if(estimated_costs.value[0].item === '' || estimated_costs.value[0].cost ===  '')
+            errors.estimatedCost = '* Fillup item name and cost'
+        if(actual_costs.value[0].item === '' || actual_costs.value[0].cost ===  '')
+            errors.actualCost = '* Fillup item name and cost'
+        return errors.name === '' && errors.image === '' && errors.phone === '' && errors.cost === '' && errors.roles === '' && errors.estimatedCost === "" && errors.actualCost === ''
+            // return Object.values(errors).length === 0;
     }
     const bikeAllInfo = (post) =>{
+
         btnProcessing.value.processing = true
         const queryString = window.location.href.split('/')[4]
         bikeInformation.value.project_slug = queryString
         let valid = validation(post)
-        console.log(valid)
+        console.log(post['estimated_cost'])
+
+        const formData = new FormData();
+        for (let item in post) {
+
+            if(post.hasOwnProperty(item)){
+                console.log(item)
+                console.log(post[item])
+
+                formData.append(item, post[item]);
+                console.log(post[item])
+                console.log(formData)
+
+            }
+        }
+
+        console.log(formData)
         if (valid===true) {
             axios
-                .post('/bike-all-information', {bike: bikeInformation.value, check: checkGoals.value})
+                .post('/bike-all-information', {
+                    formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
                 .then((response) => {
                     if( response.data.success === true){
                         btnProcessing.value.processing = false
-                        errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = ''
+                        errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = '', errors.actualCost = ''
                         Toast.fire({icon: "success",title: "Project created successfully!"})
-                        // bikeInformation.value = {id: '', image: ''}
+                        Inertia.visit('/bike-all-projects/'+queryString)
                     }
                 })
+            btnProcessing.value.processing = false
         } else {
             btnProcessing.value.processing = false
         }
@@ -106,11 +134,7 @@
              total+= parseInt(value.cost)
         }
         bikeInformation.value.estimated_cost = total
-        axios
-            .post('/estimate-cost', estimated_costs.value)
-            .then((response)=>{
-                console.log(response)
-            })
+        estimated_costs.value.stage_id = 1
     }
 
     const totalActual = () => {
@@ -120,15 +144,12 @@
             total+= parseInt(value.cost)
         }
         bikeInformation.value.actual_cost = total
-        axios
-            .post('/actual-cost', actual_costs.value)
-            .then((response)=>{
-                console.log(response)
-            })
+        actual_costs.value.stage_id = 2
     }
 
     onMounted(()=>{
         bikeInfo ()
+
     })
 </script>
 <template>
@@ -141,7 +162,7 @@
                         <div class="flex justify-between p-5">
                             <div class="relative flex cursor-pointer overflow-hidden ">
                                 <label class="cursor-pointer bg-[#639f1e] bg-opacity-75" for="bikeinput">
-                                    <input class="hidden" @change="onFileChange" id="bikeinput" type="file">
+<!--                                    <input class="hidden" @change="onFileChange" id="bikeinput" type="file">-->
                                     <div>
                                         <div class="absolute ml-[48px] mt-[57px]">
                                             <i class="fas text-[24px] fa-bicycle"></i>
@@ -202,43 +223,51 @@
                                 <div class="h-80 bg-white border-8 border-[#639f1e] border-opacity-75">
                                     <div class="max-w-lg mx-auto">
                                         <div class="h-72 overflow-y-auto" :class="{'hidden': isActive === 2 || isActive === 3 || isActive === 4 }">
-                                            <div class="grid grid-cols-2 py-5 px-10" v-for="items in estimated_costs">
-                                                <div class="">
-                                                    <BreezeLabel value="ITEM" />
-                                                    <BreezeInput placeholder="name" v-model="items.item" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                            <div class="flex px-5 items-end">
+                                                <div class="px-5">
+                                                    <div class="grid grid-cols-2 py-5" v-for="items in estimated_costs">
+                                                        <div class="">
+                                                            <BreezeLabel value="ITEM" />
+                                                            <BreezeInput placeholder="name" v-model="items.item" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                        </div>
+                                                        <div class="ml-2">
+                                                            <BreezeLabel value="Cost(£)" />
+                                                            <BreezeInput @change="totalEstimate()" placeholder="" type="number" v-model="items.cost" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="ml-2">
-                                                    <BreezeLabel value="Cost(£)" />
-                                                    <BreezeInput placeholder="" type="number" v-model="items.cost" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
-                                                </div>
+                                                <i @click="estimatedPlusBtn()" class="fas cursor-pointer mb-5 fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
                                             </div>
                                             <div v-show="errors.estimatedCost !== ''" class="flex col-span-2 pl-10 pb-4 items-center">
                                                 <div  class="text-red-600 font-bold text-[14px]">{{ errors.estimatedCost }}</div>
                                             </div>
-                                            <div class="px-10 flex items-end space-x-6">
-                                                <BreezeLabel class="bg-[#639f1e] opacity-75 hover:opacity-100 text-white p-2 rounded cursor-pointer" @click="totalEstimate()" value="Total(£):" />
-                                                <BreezeInput disabled v-model="bikeInformation.estimated_cost" type="number" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
-                                                <i @click="estimatedPlusBtn()" class="fas cursor-pointer fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
+                                            <div class="flex mx-10 items-center">
+                                                <BreezeLabel class="mr-2 text-[#639f1e] text-opacity-75 font-bold rounded" value="Total(£):" />
+                                                <BreezeInput disabled v-model="bikeInformation.estimated_cost" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
                                         <div class="h-72 overflow-y-auto" :class="{'hidden': isActive === 1 || isActive === 3 || isActive === 4 }">
-                                            <div class="grid grid-cols-2 gap-4 py-5 px-10" v-for="items in actual_costs">
-                                                <div class="">
-                                                    <BreezeLabel value="ITEM" />
-                                                    <BreezeInput type="text" v-model="items.item" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                            <div class="flex px-5 items-end">
+                                                <div class="px-5">
+                                                    <div class="grid grid-cols-2 py-5" v-for="items in actual_costs">
+                                                        <div class="">
+                                                            <BreezeLabel value="ITEM" />
+                                                            <BreezeInput type="text" v-model="items.item" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                        </div>
+                                                        <div class="ml-2">
+                                                            <BreezeLabel value="Cost(£)" />
+                                                            <BreezeInput @change="totalActual()" type="number" v-model="items.cost" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="">
-                                                    <BreezeLabel value="Cost(£)" />
-                                                    <BreezeInput type="number" v-model="items.cost" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
-                                                </div>
+                                                <i @click="actualPlusBtn()" class="fas cursor-pointer fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
                                             </div>
                                             <div v-show="errors.actualCost !== ''" class="flex col-span-2 pl-10 pb-4 items-center">
                                                 <div  class="text-red-600 font-bold text-[14px]">{{ errors.actualCost }}</div>
                                             </div>
-                                            <div class="px-10 pb-2 flex space-x-6 items-end">
-                                                <BreezeLabel class="bg-[#639f1e] opacity-75 hover:opacity-100 text-white p-2 rounded cursor-pointer" @click="totalActual()" value="Total(£):" />
-                                                <BreezeInput type="number" disabled v-model="bikeInformation.actual_cost" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
-                                                <i @click="actualPlusBtn()" class="fas cursor-pointer fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
+                                            <div class="flex mx-10 items-center">
+                                                <BreezeLabel class="mr-2 text-[#639f1e] text-opacity-75 font-bold rounded" value="Total(£):" />
+                                                <BreezeInput disabled v-model="bikeInformation.actual_cost" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
                                         <div :class="{'hidden': isActive === 1 || isActive === 2 || isActive === 4 }">
