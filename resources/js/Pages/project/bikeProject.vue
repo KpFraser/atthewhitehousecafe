@@ -3,7 +3,7 @@
     import MasterFooter from '@/Components/MasterFooter.vue';
     import MasterHeader from '@/Components/MasterHeader.vue';
     import useFooterList from "../../../use/useFooterList";
-    import BreezeInput from '@/Components/input.vue';
+    import BreezeInput from '@/Components/Input.vue';
     import BreezeCheckbox from '@/Components/Checkbox.vue';
     import BreezeLabel from '@/Components/Label.vue';
     import { Link } from '@inertiajs/inertia-vue3';
