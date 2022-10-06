@@ -11,7 +11,8 @@
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList(),
     names = ref([]),
-    isActive = ref(1)
+    isActive = ref(1),
+    projects = ref({})
 
 const newBike = () =>{
     const queryString = window.location.href.split('/')[4]
@@ -19,6 +20,19 @@ const newBike = () =>{
     Inertia.visit('/bike-project/'+queryString)
 }
 
+const project = () =>{
+    const queryString = window.location.href.split('/')[4]
+    axios
+        .get('/bike-projects/'+queryString)
+        .then((response)=>{
+            console.log(projects.value = response.data.data)
+            console.log(projects.value)
+        })
+}
+
+onMounted(()=>{
+    project ()
+})
 
 </script>
 
@@ -52,26 +66,28 @@ const newBike = () =>{
                                 </a>
                             </li>
                         </ul>
-                        <div class="bg-white items-center max-w-lg mx-auto">
-                            <div :class="{'hidden': isActive === 2 }">
-<!--                                <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center">-->
-<!--                                    <div class="ml-2">-->
-<!--                                        <p class="font-normal py-1 text-[18px] self-center leading-tight">Name</p>-->
-<!--                                        <p class="font-normal py-1 text-[18px] self-center leading-tight">Phone number</p>-->
-<!--                                    </div>-->
-<!--                                    <i class="fa-3x mr-2 fal fa-bicycle"></i>-->
-<!--                                </div>-->
-                                <div class="bg-white pb-3 text-center">Empty!</div>
+                        <div class="bg-white max-w-lg mx-auto">
+                            <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 2 }" >
+                                <div v-for="data in projects">
+                                    <div class="flex p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
+                                        <div class="ml-2">
+                                            <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.name }}</p>
+                                            <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.mobile }}</p>
+                                        </div>
+                                        <i class="fa-3x mr-2 fal fa-bicycle"></i>
+                                    </div>
+                                </div>
                             </div>
-                            <div :class="{'hidden': isActive === 1 }">
-<!--                                <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center">-->
-<!--                                    <div class="ml-2">-->
-<!--                                        <p class="font-bold py-1 text-[18px] self-center leading-tight">Name</p>-->
-<!--                                        <p class="font-bold py-1 text-[18px] self-center leading-tight">Phone number</p>-->
-<!--                                    </div>-->
-<!--                                    <i class="fa-3x mr-2 fal fa-bicycle"></i>-->
-<!--                                </div>-->
-                                <div class="bg-white pb-3 text-center">Empty!</div>
+                            <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 1 }">
+                                <div>
+                                    <div class="flex p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
+                                        <div class="ml-2">
+                                            <p class="font-bold py-1 text-[18px] self-center leading-tight">Name</p>
+                                            <p class="font-bold py-1 text-[18px] self-center leading-tight">Phone number</p>
+                                        </div>
+                                        <i class="fa-3x mr-2 fal fa-bicycle"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

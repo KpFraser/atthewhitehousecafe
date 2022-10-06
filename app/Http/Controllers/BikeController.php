@@ -35,7 +35,7 @@ class BikeController extends Controller
      */
     public function store(Request $request)
     {
-
+        dd($request->all());
         if(!empty($request->bike && $request->check && $request->estimate && $request->actual)){
             $project_id = Project::select('id')->where(array('slug'=> $request->bike['project_slug']))->first();
 
@@ -108,14 +108,11 @@ class BikeController extends Controller
      * @param  \App\Models\Bike  $bike
      * @return \Illuminate\Http\Response
      */
-    public function show(Bike $bike)
+    public function show($slug)
     {
-//        foreach ($request->all() as $data){
-//            foreach ($data as $row){
-//                echo '<pre>';
-//                echo $row;
-//            }
-//        }
+        $project_id = Project::select('id')->where('slug', $slug)->first();
+        $data = Bike::select('id', 'name', 'mobile')->where('project_id', $project_id->id)->get();
+        return response()->success($data);
     }
 
     /**

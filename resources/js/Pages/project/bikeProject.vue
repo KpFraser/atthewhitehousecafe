@@ -21,6 +21,7 @@
         checkGoals = ref({}),
         btnProcessing = ref({ processing: false }),
         isActive = ref(1),
+        star = 0,
         errors = reactive({}),
         estimated_costs = ref([{item: '', cost: ''}]),
         actual_costs = ref([{item: '', cost: ''}]),
@@ -41,7 +42,7 @@
             })
     }
 
-    const validation = (post) =>{
+    const validation = (post) => {
             errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = "", errors.actualCost = ''
         if(!post.name)
             errors.name = '* Name is required field!'
@@ -60,33 +61,33 @@
         return errors.name === '' && errors.image === '' && errors.phone === '' && errors.cost === '' && errors.roles === '' && errors.estimatedCost === "" && errors.actualCost === ''
             // return Object.values(errors).length === 0;
     }
-    const bikeAllInfo = (post) =>{
+    const bikeAllInfo = (post) => {
 
         btnProcessing.value.processing = true
         const queryString = window.location.href.split('/')[4]
         bikeInformation.value.project_slug = queryString
         let valid = validation(post)
-        console.log(post['estimated_cost'])
+        // console.log(post['estimated_cost'])
+        //
+        // const formData = new FormData();
+        // for (let item in post) {
+        //
+        //     if(post.hasOwnProperty(item)){
+        //         console.log(item)
+        //         console.log(post[item])
+        //
+        //         formData.append(item, post[item]);
+        //         console.log(post[item])
+        //         console.log(formData)
+        //
+        //     }
+        // }
+        //
+        // console.log(formData)
 
-        const formData = new FormData();
-        for (let item in post) {
-
-            if(post.hasOwnProperty(item)){
-                console.log(item)
-                console.log(post[item])
-
-                formData.append(item, post[item]);
-                console.log(post[item])
-                console.log(formData)
-
-            }
-        }
-
-        console.log(formData)
-        if (valid===true) {
+        if (valid === true) {
             axios
-                .post('/bike-all-information', {
-                    formData,
+                .post('/bike-all-information', post, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -162,7 +163,7 @@
                         <div class="flex justify-between p-5">
                             <div class="relative flex cursor-pointer overflow-hidden ">
                                 <label class="cursor-pointer bg-[#639f1e] bg-opacity-75" for="bikeinput">
-<!--                                    <input class="hidden" @change="onFileChange" id="bikeinput" type="file">-->
+                                    <input class="hidden" @change="onFileChange" id="bikeinput" type="file">
                                     <div>
                                         <div class="absolute ml-[48px] mt-[57px]">
                                             <i class="fas text-[24px] fa-bicycle"></i>
@@ -242,7 +243,7 @@
                                                 <div  class="text-red-600 font-bold text-[14px]">{{ errors.estimatedCost }}</div>
                                             </div>
                                             <div class="flex mx-10 items-center">
-                                                <BreezeLabel class="mr-2 text-[#639f1e] text-opacity-75 font-bold rounded" value="Total(£):" />
+                                                <BreezeLabel class="mr-2 font-bold rounded" value="Total(£):" />
                                                 <BreezeInput disabled v-model="bikeInformation.estimated_cost" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
@@ -266,7 +267,7 @@
                                                 <div  class="text-red-600 font-bold text-[14px]">{{ errors.actualCost }}</div>
                                             </div>
                                             <div class="flex mx-10 items-center">
-                                                <BreezeLabel class="mr-2 text-[#639f1e] text-opacity-75 font-bold rounded" value="Total(£):" />
+                                                <BreezeLabel class="mr-2 font-bold rounded" value="Total(£):" />
                                                 <BreezeInput disabled v-model="bikeInformation.actual_cost" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
@@ -281,7 +282,13 @@
                                         <div :class="{'hidden': isActive === 1 || isActive === 2 || isActive === 3 }">
                                             <div class="p-10">
                                                 <BreezeLabel value="Customer Comment:" />
-                                                <BreezeInput placeholder="comment..." v-model="bikeItem.comment" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                <div class="flex text-[45px] p-10 items-center justify-between space-x-2">
+                                                    <i :class="{'fas' : star >= 1 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=1)"></i>
+                                                    <i :class="{'fas' : star >= 2 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=2)"></i>
+                                                    <i :class="{'fas' : star >= 3 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=3)"></i>
+                                                    <i :class="{'fas' : star >= 4 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=4)"></i>
+                                                </div>
+<!--                                                <BreezeInput placeholder="comment..." v-model="bikeItem.comment" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>-->
                                             </div>
                                         </div>
                                     </div>

@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 /*
  *  BikesController
 */
+    Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
     Route::post('/bike-all-information', [BikeController::class, 'store']);
 });
 
