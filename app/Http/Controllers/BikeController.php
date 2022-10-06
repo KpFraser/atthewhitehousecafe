@@ -35,71 +35,87 @@ class BikeController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
-        if(!empty($request->bike && $request->check && $request->estimate && $request->actual)){
-            $project_id = Project::select('id')->where(array('slug'=> $request->bike['project_slug']))->first();
+        $check = json_decode($request->checkGoals, true);
+        $estimate = json_decode($request->estimated_costs, true);
+        $actual = json_decode($request->actual_costs, true);
 
-//            if($request->hasFile('image'))
-//            {
-//                $file1 = $request->file('image')->getClientOriginalName();
-//                $filename1 = pathinfo($file1, PATHINFO_FILENAME);
-//                $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
-//                $image = $filename1.'-'.time().'.'.$extension1;
-//                $request->file('image')->move(public_path('images'), $image);
-//            }else{
-//                $image = $request->image;
-//            }
+        $project_id = Project::select('id')->where(array('slug'=> $request->project_slug))->first();
 
-            $bike_data = Bike::Create([
-                'project_id' => $project_id->id,
-                'name' => $request->bike['name'],
-                'mobile' => $request->bike['phone'],
-                'leader' => $request->bike['leader'],
-                'assistant' => $request->bike['assistant'],
-                'estimated_cost' => $request->bike['estimated_cost'],
-                'actual_cost' => $request->bike['actual_cost'],
-                'image_name' => $image,
-                'system_name' => $request->bike['image'],
-            ]);
-            foreach ($request->check as $key => $row ) {
-                if ($row === true) {
-                    BikeOption::updateOrCreate([
-                        'goal_id' => $key
-                    ], [
-                        'bike_id' => $bike_data->id,
-                        'status' => 1,
-                    ]);
-                } else{
-                    BikeOption::updateOrCreate([
-                        'goal_id' => $key
-                    ], [
-                        'bike_id' => $bike_data->id,
-                        'status' => 2,
-                    ]);
+        if ($request->hasFile('image')) {
+            $file1 = $request->file('image')->getClientOriginalName();
+            $filename1 = pathinfo($file1, PATHINFO_FILENAME);
+            $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
+            $image = $filename1.'-'.time().'.'.$extension1;
+            $request->file('image')->move(public_path('images'), $image);
+        }
+
+        $bike_data = Bike::Create([
+            'project_id' => $project_id->id,
+            'name' => $request->name,
+            'mobile' => $request->phone,
+            'leader' => $request->leader,
+            'assistant' => $request->assistant,
+            'estimated_cost' => $request->estimated_total,
+            'actual_cost' => $request->actual_total,
+            'image_name' => $image,
+            'system_name' => $image,
+        ]);
+
+        if(!empty($bike_data) && !empty($bike_data->id)) {
+            if(!empty($check) && count($check) > 0) {
+                foreach ($check as $key => $row ) {
+                    if ($row === true) {
+                        BikeOption::updateOrCreate([
+                            'goal_id' => $key
+                        ], [
+                            'bike_id' => $bike_data->id,
+                            'status' => 1,
+                        ]);
+                    } else {
+                        BikeOption::updateOrCreate([
+                            'goal_id' => $key
+                        ], [
+                            'bike_id' => $bike_data->id,
+                            'status' => 2,
+                        ]);
+                    }
                 }
             }
-            foreach ($request->estimate as $row) {
-                BikeItems::updateOrCreate([
-                    'bike_id' => $bike_data->id,
-                ], [
-                    'stage_id' => 1,
-                    'item_name' => $row['item'],
-                    'cost' => $row['cost'],
-                ]);
+
+            if (!empty($estimate) && count($estimate) > 0) {
+                foreach ($estimate as $row) {
+                    print_r($row);
+                    if(!empty($row['item']) && !empty($row['cost'])) {
+                        BikeItems::updateOrCreate([
+                            'bike_id' => $bike_data->id,
+                        ], [
+                            'stage_id' => 1,
+                            'item_name' => $row['item'],
+                            'cost' => $row['cost'],
+                        ]);
+                    }
+                }
             }
-            foreach ($request->actual as $row) {
-                BikeItems::updateOrCreate([
-                    'bike_id' => $bike_data->id,
-                ], [
-                    'stage_id' => 2,
-                    'item_name' => $row['item'],
-                    'cost' => $row['cost'],
-                ]);
+
+            if (!empty($actual) && count($actual) > 0) {
+                foreach ($actual as $row) {
+                    if(!empty($row['item']) && !empty($row['cost'])) {
+                        BikeItems::updateOrCreate([
+                            'bike_id' => $bike_data->id,
+                        ], [
+                            'stage_id' => 2,
+                            'item_name' => $row['item'],
+                            'cost' => $row['cost'],
+                        ]);
+                    }
+                }
             }
+
             return response()->success();
-        }else{
-            return response()->error('Data not saved!', 500);
+        } else {
+            return response()->error(false, 500);
         }
+
     }
 
     /**
