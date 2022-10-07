@@ -6,27 +6,20 @@
     import BreezeInput from '@/Components/Input.vue';
     import BreezeCheckbox from '@/Components/Checkbox.vue';
     import BreezeLabel from '@/Components/Label.vue';
-    import { Link } from '@inertiajs/inertia-vue3';
     import {onMounted, reactive, ref} from "vue";
     import BreezeButton from '@/Components/Button.vue';
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
 
-    const { Toast } = commonFunctions()
-    const { footerLists } = useFooterList();
+    const { Toast } = commonFunctions(),
+        { footerLists } = useFooterList();
 
-    const goals = ref({})
     const bike  = ref({id: '', image: '', name: '', project_slug: '', phone: '', estimated_total: '', actual_total: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item: '', cost: ''}], actual_costs: [{item: '', cost: ''}]}),
-
-        // bikeInformation = ref({id: '', image: ''}),
-        // bikeItem = ref({}),
-        // checkGoals = ref({}),
         btnProcessing = ref({ processing: false }),
+        goals = ref({}),
         isActive = ref(1),
-        star = 0,
+        star = ref(0),
         errors = reactive({}),
-        // estimated_costs = ref([{item: '', cost: ''}]),
-        // actual_costs = ref([{item: '', cost: ''}]),
         url =  ref()
 
     const onFileChange = (e) => {
@@ -46,7 +39,6 @@
 
     const validation = (post) => {
 
-        console.log(post)
             errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = "", errors.actualCost = ''
         if(!post.name)
             errors.name = '* Name is required field!'
@@ -54,7 +46,7 @@
             errors.image = '* Image is required field!'
         if(!post.phone)
             errors.phone = '* Image is required field!'
-        if(!post.estimated_total && !post.actual_total)
+        if(!post.estimated_total || !post.actual_total)
             errors.cost = '* Write Estimated and Actual Cost!'
         if(!post.assistant && !post.leader)
             errors.roles = '* Write Assistant and Leader!'
@@ -98,10 +90,17 @@
                         btnProcessing.value.processing = false
                         errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = '', errors.actualCost = ''
                         Toast.fire({icon: "success",title: "Project created successfully!"})
-                        Inertia.visit('/bike-all-projects/'+queryString)
+                        bikeAllRedirect ()
                     }
                 }).finally(btnProcessing.value.processing = false)
         }
+    }
+
+    const bikeAllRedirect = () =>{
+
+        const queryString = window.location.href.split('/')[4]
+        bike.value.project_slug = queryString
+        Inertia.visit('/bike-all-projects/'+queryString)
     }
 
     const estimatedPlusBtn = () => {
@@ -185,12 +184,12 @@
                             </div>
                             <div class="flex flex-col my-3 justify-between">
                                 <div class="bg-[#639f1e] bg-opacity-75">
-                                    <Link :href="route('projectshome')" class="text-[28px] flex justify-center p-1 text-center font-bold">
+                                    <div @click="bikeAllRedirect()" class="text-[28px] flex justify-center p-1 text-center font-bold">
                                         <i class="fas fa-home"></i>
-                                    </Link>
+                                    </div>
                                 </div>
                                 <div class="bg-[#639f1e] bg-opacity-75">
-                                    <div  class="cursor-pointer text-[28px] flex justify-center p-1 text-center font-bold">
+                                    <div class="cursor-pointer text-[28px] flex justify-center p-1 text-center font-bold">
                                         <i class="fal fa-save"></i>
                                     </div>
                                 </div>
@@ -225,7 +224,7 @@
                                 </ul>
                                 <div class="h-80 bg-white border-8 border-[#639f1e] border-opacity-75">
                                     <div class="max-w-lg mx-auto">
-                                        <div class="h-72 overflow-y-auto" :class="{'hidden': isActive === 2 || isActive === 3 || isActive === 4 }">
+                                        <div class="h-72 overflow-y-auto" :class="{'hidden': isActive !== 1 }">
                                             <div class="flex px-5 items-end">
                                                 <div class="px-5">
                                                     <div class="grid grid-cols-2 py-5" v-for="items in bike.estimated_costs">
@@ -249,7 +248,7 @@
                                                 <BreezeInput disabled v-model="bike.estimated_total" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
-                                        <div class="h-72 overflow-y-auto" :class="{'hidden': isActive === 1 || isActive === 3 || isActive === 4 }">
+                                        <div class="h-72 overflow-y-auto" :class="{'hidden': isActive !== 2 }">
                                             <div class="flex px-5 items-end">
                                                 <div class="px-5">
                                                     <div class="grid grid-cols-2 py-5" v-for="items in bike.actual_costs">
@@ -273,7 +272,7 @@
                                                 <BreezeInput disabled v-model="bike.actual_total" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
-                                        <div :class="{'hidden': isActive === 1 || isActive === 2 || isActive === 4 }">
+                                        <div :class="{'hidden': isActive !== 3 }">
                                             <div class="p-10 space-y-6">
                                                 <BreezeLabel value="Time" />
                                                 <BreezeInput class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
@@ -281,7 +280,7 @@
                                                 <BreezeInput class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
-                                        <div :class="{'hidden': isActive === 1 || isActive === 2 || isActive === 3 }">
+                                        <div :class="{'hidden': isActive !== 4 }">
                                             <div class="p-10">
                                                 <BreezeLabel value="Customer Comment:" />
                                                 <div class="flex text-[45px] p-10 items-center justify-between space-x-2">

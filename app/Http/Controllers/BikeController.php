@@ -46,7 +46,7 @@ class BikeController extends Controller
             $filename1 = pathinfo($file1, PATHINFO_FILENAME);
             $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
             $image = $filename1.'-'.time().'.'.$extension1;
-            $request->file('image')->move(public_path('images'), $image);
+            $request->file('image')->move(public_path('storage/images'), $image);
         }
 
         $bike_data = Bike::Create([
@@ -84,11 +84,9 @@ class BikeController extends Controller
 
             if (!empty($estimate) && count($estimate) > 0) {
                 foreach ($estimate as $row) {
-                    print_r($row);
                     if(!empty($row['item']) && !empty($row['cost'])) {
-                        BikeItems::updateOrCreate([
+                        BikeItems::Create([
                             'bike_id' => $bike_data->id,
-                        ], [
                             'stage_id' => 1,
                             'item_name' => $row['item'],
                             'cost' => $row['cost'],
@@ -100,9 +98,8 @@ class BikeController extends Controller
             if (!empty($actual) && count($actual) > 0) {
                 foreach ($actual as $row) {
                     if(!empty($row['item']) && !empty($row['cost'])) {
-                        BikeItems::updateOrCreate([
+                        BikeItems::Create([
                             'bike_id' => $bike_data->id,
-                        ], [
                             'stage_id' => 2,
                             'item_name' => $row['item'],
                             'cost' => $row['cost'],
