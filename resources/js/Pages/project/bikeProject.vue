@@ -37,12 +37,11 @@
 
     const bikeInfo = () =>{
         const queryString = window.location.href.split('/')[5]
-        if (queryString === ''){
-            axios
-                .get('/bike-show/'+queryString)
-                .then((response)=>{
-
-                    if(response.data.bike !== '' && response.data.bike_items && response.data.goals !== '' && response.data.bike_option){
+        axios
+            .get('/bike-show/'+queryString)
+            .then((response)=>{
+                if (queryString !== ''){
+                    if(response.data.bike !== '' && response.data.bike_items && response.data.bike_option){
                         bike.value.show = true
                         bike.value.id = response.data.bike.id
                         bike.value.phone = response.data.bike.mobile
@@ -56,8 +55,6 @@
                         bike.value.estimated_costs = response.data.bike_items.filter(x => x.stage_id === 1)
                         bike.value.actual_costs = response.data.bike_items.filter(x => x.stage_id === 2)
 
-                        goals.value = response.data.goal
-
                         _.forEach(response.data.bike_option, function(value, key) {
                             if(value.status === 1) {
                                 bike.value.checkGoals[value.goal_id] = true
@@ -66,9 +63,11 @@
                             }
                         });
                     }
-                })
-        }
-
+                }
+                if(response.data.goals !== ''){
+                    goals.value = response.data.goal
+                }
+            })
     }
 
     const validation = (post) => {
@@ -127,6 +126,8 @@
                         bikeAllRedirect ()
                     }
                 }).finally(btnProcessing.value.processing = false)
+        }else {
+            window.scrollTo({ top: 0, behavior: "smooth" })
         }
     }
 

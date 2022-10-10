@@ -56,7 +56,8 @@ class GoalController extends Controller
             $goal = Goal::select('id', 'name')->get();
             return response()->json(array('bike' => $bike, 'bike_items' => $bike_items, 'bike_option' => $bike_option, 'goal' => $goal));
         } else {
-            return response()->error('data not available');
+            $goal = Goal::select('id', 'name')->get();
+            return response()->json(array('goal' => $goal));
         }
     }
 
