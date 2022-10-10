@@ -49,7 +49,7 @@ onMounted(()=>{
                     </Link>
                 </div>
                 <div class="flex justify-end my-6">
-                    <div @click="newBike()" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
+                    <div @click="newBike()" class="text-[25px] bg-[#639f1e] cursor-pointer p-1 text-center font-bold bg-opacity-75">
                         <i class="fas fa-plus px-1.5"></i>
                     </div>
                 </div>
@@ -57,12 +57,12 @@ onMounted(()=>{
               <div class="text-black border-4 border-b-4 border-[#20351d] mx-10 border-opacity-75 mb-28 space-y-4 bg-white text-lg">
                     <ul class="w-full uppercase flex">
                         <li class="nav-item w-1/2">
-                            <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-[15px] text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3 active">
+                            <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3 active">
                                 Active
                             </a>
                         </li>
                         <li class="nav-item w-1/2">
-                            <a @click="(isActive=2)" :class="{'bg-[#20351d] !text-white': isActive === 2 }" class="text-[15px] text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3">
+                            <a @click="(isActive=2)" :class="{'bg-[#20351d] !text-white': isActive === 2 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3">
                                 Archieved
                             </a>
                         </li>

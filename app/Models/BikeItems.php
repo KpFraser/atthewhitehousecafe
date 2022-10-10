@@ -9,6 +9,6 @@ class BikeItems extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'bike_id', 'stage_id', 'item_name', 'cost', 'comment'
+        'bike_id', 'stage_id', 'item_name', 'cost'
     ];
 }

@@ -40,6 +40,7 @@ class BikeController extends Controller
 //        dd($request->all());
         $check = json_decode($request->checkGoals, true);
         $estimate = json_decode($request->estimated_costs, true);
+        $middle = json_decode($request->middle_costs, true);
         $actual = json_decode($request->actual_costs, true);
 
         $project_id = Project::select('id')->where(array('slug'=> $request->project_slug))->first();
@@ -104,12 +105,30 @@ class BikeController extends Controller
 
             if (!empty($estimate) && count($estimate) > 0) {
                 foreach ($estimate as $row) {
-                    if(!empty($row['item']) && !empty($row['cost'])) {
+                    if(!empty($row['item_name']) && !empty($row['cost'])) {
                         BikeItems::updateOrCreate([
                             'bike_id' => $bike_data->id,
+                            'stage_id' => 1,
+
                         ], [
                             'stage_id' => 1,
-                            'item_name' => $row['item'],
+                            'item_name' => $row['item_name'],
+                            'cost' => $row['cost'],
+                        ]);
+                    }
+                }
+            }
+
+            if (!empty($middle) && count($middle) > 0) {
+                foreach ($middle as $row) {
+                    if(!empty($row['item_name']) && !empty($row['cost'])) {
+                        BikeItems::updateOrCreate([
+                            'bike_id' => $bike_data->id,
+                            'stage_id' => 2,
+
+                        ], [
+                            'stage_id' => 2,
+                            'item_name' => $row['item_name'],
                             'cost' => $row['cost'],
                         ]);
                     }
@@ -118,12 +137,13 @@ class BikeController extends Controller
 
             if (!empty($actual) && count($actual) > 0) {
                 foreach ($actual as $row) {
-                    if(!empty($row['item']) && !empty($row['cost'])) {
+                    if(!empty($row['item_name']) && !empty($row['cost'])) {
                         BikeItems::updateOrCreate([
                             'bike_id' => $bike_data->id,
+                            'stage_id' => 3,
                         ], [
-                            'stage_id' => 2,
-                            'item_name' => $row['item'],
+                            'stage_id' => 3,
+                            'item_name' => $row['item_name'],
                             'cost' => $row['cost'],
                         ]);
                     }

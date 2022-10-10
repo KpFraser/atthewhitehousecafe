@@ -14,8 +14,8 @@
     const { Toast } = commonFunctions(),
         { footerLists } = useFooterList();
 
-    const bike = ref({id: '', image: '', system_name: '', name: '', project_slug: '', phone: '', estimated_total: '', actual_total: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item_name: '', cost: ''}], actual_costs: [{item_name: '', cost: ''}]}),
-        btnProcessing = ref({ processing: false }),
+    const bike = ref({id: '', image: '', system_name: '', name: '', project_slug: '', phone: '', estimated_total: '', middle_total: '', actual_total: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item_name: '', cost: ''}], middle_costs: [{item_name: '', cost: ''}], actual_costs: [{item_name: '', cost: ''}]}),
+        processing = reactive ({process: false}),
         goals = ref({}),
         isActive = ref(1),
         star = ref(0),
@@ -36,7 +36,7 @@
     }
 
     const bikeInfo = () =>{
-        const queryString = window.location.href.split('/')[5]
+        let queryString = window.location.href.split('/')[5]
         axios
             .get('/bike-show/'+queryString)
             .then((response)=>{
@@ -53,7 +53,8 @@
                         bike.value.estimated_total = response.data.bike.estimated_cost
                         bike.value.actual_total = response.data.bike.actual_cost
                         bike.value.estimated_costs = response.data.bike_items.filter(x => x.stage_id === 1)
-                        bike.value.actual_costs = response.data.bike_items.filter(x => x.stage_id === 2)
+                        bike.value.middle_costs = response.data.bike_items.filter(x => x.stage_id === 2)
+                        bike.value.actual_costs = response.data.bike_items.filter(x => x.stage_id === 3)
 
                         _.forEach(response.data.bike_option, function(value, key) {
                             if(value.status === 1) {
@@ -93,6 +94,7 @@
 
     const bikeAllInfo = (post) => {
 
+        processing.process = true
         const queryString = window.location.href.split('/')[4]
         bike.value.project_slug = queryString
 
@@ -102,7 +104,7 @@
 
         for (let item in post) {
             if(post.hasOwnProperty(item)) {
-                if(item === "checkGoals" || item === "estimated_costs" || item === "actual_costs") {
+                if(item === "checkGoals" || item === "estimated_costs" || item === "actual_costs" || item === "middle_costs") {
                     formData.append(item,  JSON.stringify(post[item]));
                 } else {
                     formData.append(item, post[item]);
@@ -111,7 +113,6 @@
         }
 
         if (valid) {
-            btnProcessing.value.processing = true
             axios
                 .post('/bike-all-information', formData , {
                     headers: {
@@ -120,14 +121,15 @@
                 })
                 .then((response) => {
                     if( response.data.success === true){
-                        btnProcessing.value.processing = false
+                        processing.process = false
                         errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = '', errors.actualCost = ''
                         Toast.fire({icon: "success",title: "Project created successfully!"})
                         bikeAllRedirect ()
                     }
-                }).finally(btnProcessing.value.processing = false)
+                })
         }else {
             window.scrollTo({ top: 0, behavior: "smooth" })
+            processing.process = false
         }
     }
 
@@ -148,6 +150,19 @@
             bike.value.estimated_costs.push({item_name: '', cost:''});
         }else {
             errors.estimatedCost = '* Fillup item name and cost'
+        }
+    }
+
+    const middlePlusBtn = () => {
+        errors.middleCost = ''
+
+        let last_item = bike.value.middle_costs[bike.value.middle_costs.length-1].item_name;
+        var last_cost = bike.value.middle_costs[bike.value.middle_costs.length-1].cost;
+
+        if(last_item !== '' && last_cost !== ''){
+            bike.value.middle_costs.push({item_name: '', cost:''});
+        }else {
+            errors.middleCost = '* Fillup item name and cost'
         }
     }
 
@@ -172,6 +187,16 @@
              total+= parseInt(value.cost)
         }
         bike.value.estimated_total = total
+    }
+
+    const totalMiddle = () => {
+        let total = 0
+        bike.value.middle_costs.map(myFunction);
+
+        function myFunction(value, index, array) {
+            total+= parseInt(value.cost)
+        }
+        bike.value.middle_total = total
     }
 
     const totalActual = () => {
@@ -209,10 +234,10 @@
                                         <i class="fal fa-camera fa-6x mx-4 my-4"></i>
                                     </div>
                                 </label>
-                                <div id="preview" class="ml-4">
+                                <a v-if="url || bike.show"  target="_blank" :href="baseUrl+'/storage/images/'+bike.image" id="preview" class="ml-4">
                                     <img class="w-32 h-32" v-if="url" :src="url" />
                                     <img class="w-32 h-32" v-if="bike.show" :src="baseUrl+'/storage/images/'+bike.image" />
-                                </div>
+                                </a>
                                 <div v-show="errors.image !== ''" class="flex items-center">
                                     <div  class="text-red-600 font-bold text-[14px]">{{ errors.image }}</div>
                                 </div>
@@ -234,7 +259,7 @@
                             <BreezeInput v-model="bike.name" type="text" placeholder="Name*" :class="{ 'placeholder-red-600' : !!errors.name && errors.name!=='' }" class="w-full p-2 bg-[#639f1e] bg-opacity-75"/>
                             <BreezeInput v-model="bike.phone" type="number" placeholder="Phone Number*" :class="{'placeholder-red-600': !!errors.phone && errors.phone !== '' }" class="w-full p-2 bg-[#639f1e] bg-opacity-75 mt-4"/>
                             <div class="bg-[#639f1e] bg-opacity-75 w-full h-auto mt-5">
-                                <h3 class="font-semibold p-2">stages</h3>
+                                <h3 class="font-semibold p-2">Stages</h3>
                                 <ul class="w-full uppercase flex">
                                     <li class="cursor-pointer w-1/4">
                                         <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-[15px] text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3 active">
@@ -265,7 +290,7 @@
                                                     <div class="grid grid-cols-2 py-5" v-for="items in bike.estimated_costs">
                                                         <div class="">
                                                             <BreezeLabel value="ITEM" />
-                                                            <BreezeInput placeholder="name" v-model="items.item_name" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                            <BreezeInput v-model="items.item_name" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
                                                         </div>
                                                         <div class="ml-2">
                                                             <BreezeLabel value="Cost(£)" />
@@ -276,7 +301,7 @@
                                                 <i @click="estimatedPlusBtn()" class="fas cursor-pointer mb-5 fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
                                             </div>
                                             <div v-show="errors.estimatedCost !== ''" class="flex col-span-2 pl-10 pb-4 items-center">
-                                                <div  class="text-red-600 font-bold text-[14px]">{{ errors.estimatedCost }}</div>
+                                                <div class="text-red-600 font-bold text-[14px]">{{ errors.estimatedCost }}</div>
                                             </div>
                                             <div class="flex mx-10 items-center">
                                                 <BreezeLabel class="mr-2 font-bold rounded" value="Total(£):" />
@@ -284,6 +309,30 @@
                                             </div>
                                         </div>
                                         <div class="h-72 overflow-y-auto" :class="{'hidden': isActive !== 2 }">
+                                            <div class="flex px-5 items-end">
+                                                <div class="px-5">
+                                                    <div class="grid grid-cols-2 py-5" v-for="items in bike.middle_costs">
+                                                        <div class="">
+                                                            <BreezeLabel value="ITEM" />
+                                                            <BreezeInput type="text" v-model="items.item_name" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                        </div>
+                                                        <div class="ml-2">
+                                                            <BreezeLabel value="Cost(£)" />
+                                                            <BreezeInput @change="totalMiddle()" type="number" v-model="items.cost" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <i @click="middlePlusBtn()" class="fas cursor-pointer mb-5 fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
+                                            </div>
+                                            <div v-show="errors.middleCost !== ''" class="flex col-span-2 pl-10 pb-4 items-center">
+                                                <div class="text-red-600 font-bold text-[14px]">{{ errors.middleCost }}</div>
+                                            </div>
+                                            <div class="flex mx-10 items-center">
+                                                <BreezeLabel class="mr-2 font-bold rounded" value="Total(£):" />
+                                                <BreezeInput disabled v-model="bike.middle_total" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
+                                            </div>
+                                        </div>
+                                        <div class="h-72 overflow-y-auto" :class="{'hidden': isActive !== 3 }">
                                             <div class="flex px-5 items-end">
                                                 <div class="px-5">
                                                     <div class="grid grid-cols-2 py-5" v-for="items in bike.actual_costs">
@@ -297,7 +346,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <i @click="actualPlusBtn()" class="fas cursor-pointer fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
+                                                <i @click="actualPlusBtn()" class="fas cursor-pointer mb-5 fa-plus p-2 bg-[#639f1e] opacity-75 hover:opacity-100 text-white"></i>
                                             </div>
                                             <div v-show="errors.actualCost !== ''" class="flex col-span-2 pl-10 pb-4 items-center">
                                                 <div  class="text-red-600 font-bold text-[14px]">{{ errors.actualCost }}</div>
@@ -305,14 +354,6 @@
                                             <div class="flex mx-10 items-center">
                                                 <BreezeLabel class="mr-2 font-bold rounded" value="Total(£):" />
                                                 <BreezeInput disabled v-model="bike.actual_total" type="number" class="w-40 text-center !placeholder-gray-400 bg-[#639f1e] bg-opacity-75"/>
-                                            </div>
-                                        </div>
-                                        <div :class="{'hidden': isActive !== 3 }">
-                                            <div class="p-10 space-y-6">
-                                                <BreezeLabel value="Time" />
-                                                <BreezeInput class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
-                                                <BreezeLabel value="Material" />
-                                                <BreezeInput class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
                                             </div>
                                         </div>
                                         <div :class="{'hidden': isActive !== 4 }">
@@ -363,10 +404,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h3 class="font-semibold p-2">Other</h3>
-                                <div class="w-72 mx-auto">
-                                    <input type="text" class="border-2 border-black outline-0 focus:border-white focus:ring focus:ring-[#639f1e] focus:ring-opacity-50 bg-[#20351d] bg-opacity-75 w-full focus:ring-0 rounded-md text-white p-1">
-                                </div>
                             </div>
                             <div class="bg-[#639f1e] bg-opacity-75 w-full h-auto mt-5 pb-2">
                                 <div class="flex items-center">
@@ -389,7 +426,7 @@
                         </div>
                     </form>
                     <div class="px-5">
-                        <BreezeButton @click="bikeAllInfo(bike)" class="bg-[#639f1e] bg-opacity-75 text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': btnProcessing.processing }" :disabled="btnProcessing.processing">
+                        <BreezeButton @click="bikeAllInfo(bike)" class="bg-[#639f1e] bg-opacity-75 text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': processing.process === true }" :disabled="processing.process === true">
                             Save
                         </BreezeButton>
                     </div>

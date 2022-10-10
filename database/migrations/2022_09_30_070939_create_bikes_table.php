@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('leader');
             $table->string('assistant');
             $table->string('image_name');
+            $table->tinyInteger('rating')->nullable(true)->comment('1 for one star rating so on upto 5');
             $table->string('system_name');
             $table->integer('estimated_cost');
             $table->integer('actual_cost');
