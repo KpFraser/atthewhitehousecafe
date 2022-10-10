@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\{Bike, BikeItems, BikeOption, Project};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Str;
 
 class BikeController extends Controller
 {
@@ -35,6 +37,7 @@ class BikeController extends Controller
      */
     public function store(Request $request)
     {
+//        dd($request->all());
         $check = json_decode($request->checkGoals, true);
         $estimate = json_decode($request->estimated_costs, true);
         $actual = json_decode($request->actual_costs, true);
@@ -46,12 +49,27 @@ class BikeController extends Controller
             $filename1 = pathinfo($file1, PATHINFO_FILENAME);
             $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
             $image = $filename1.'-'.time().'.'.$extension1;
-            $request->file('image')->move(public_path('storage/images'), $image);
+            $image_path = $request->file('image')->move(public_path('storage/images'), $image);
+
+            if (!empty($request->system_name) && !empty($image_path)){
+                if(File::exists(storage_path('/app/public/images/').$request->system_name)){
+                    File::delete(storage_path('/app/public/images/').$request->system_name);
+                }
+            }
+        }else{
+            $image = $request->system_name;
         }
 
-        $bike_data = Bike::Create([
+        $request->validate([
+            'name' => 'required|unique:bikes,name,'.$request->id,
+        ]);
+
+        $bike_data = Bike::updateOrCreate([
+            'id'=> $request->id,
+            ],[
             'project_id' => $project_id->id,
             'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'mobile' => $request->phone,
             'leader' => $request->leader,
             'assistant' => $request->assistant,
@@ -66,14 +84,16 @@ class BikeController extends Controller
                 foreach ($check as $key => $row ) {
                     if ($row === true) {
                         BikeOption::updateOrCreate([
-                            'goal_id' => $key
+                            'goal_id' => $key,
+                            'bike_id' => $bike_data->id,
                         ], [
                             'bike_id' => $bike_data->id,
                             'status' => 1,
                         ]);
                     } else {
                         BikeOption::updateOrCreate([
-                            'goal_id' => $key
+                            'goal_id' => $key,
+                            'bike_id' => $bike_data->id,
                         ], [
                             'bike_id' => $bike_data->id,
                             'status' => 2,
@@ -85,8 +105,9 @@ class BikeController extends Controller
             if (!empty($estimate) && count($estimate) > 0) {
                 foreach ($estimate as $row) {
                     if(!empty($row['item']) && !empty($row['cost'])) {
-                        BikeItems::Create([
+                        BikeItems::updateOrCreate([
                             'bike_id' => $bike_data->id,
+                        ], [
                             'stage_id' => 1,
                             'item_name' => $row['item'],
                             'cost' => $row['cost'],
@@ -98,8 +119,9 @@ class BikeController extends Controller
             if (!empty($actual) && count($actual) > 0) {
                 foreach ($actual as $row) {
                     if(!empty($row['item']) && !empty($row['cost'])) {
-                        BikeItems::Create([
+                        BikeItems::updateOrCreate([
                             'bike_id' => $bike_data->id,
+                        ], [
                             'stage_id' => 2,
                             'item_name' => $row['item'],
                             'cost' => $row['cost'],
@@ -124,7 +146,7 @@ class BikeController extends Controller
     public function show($slug)
     {
         $project_id = Project::select('id')->where('slug', $slug)->first();
-        $data = Bike::select('id', 'name', 'mobile')->where('project_id', $project_id->id)->get();
+        $data = Bike::select('id', 'name', 'slug', 'mobile')->where('project_id', $project_id->id)->get();
         return response()->success($data);
     }
 

@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/project-leadership/leader', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
     Route::get('/bike-project/{slug}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
+    Route::get('/bike-project/{project_slug}/{bike_slug?}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project-edit');
     Route::get('/bike-all-projects/{slug}', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
     Route::get('/question-first', fn ()=> Inertia::render('project/questionFirst') )->name('question-first');
     Route::get('/question-second', fn ()=> Inertia::render('project/questionSecond') )->name('question-second');
@@ -102,7 +103,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 /*
  *  GoalsController
 */
-    Route::get('/bike-show', [GoalController::class, 'show']);
+    Route::get('/bike-show/{bike_slug?}', [GoalController::class, 'show']);
 /*
  *  BikesController
 */

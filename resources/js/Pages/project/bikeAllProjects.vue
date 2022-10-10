@@ -1,5 +1,4 @@
 <script setup>
-    import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import MasterFooter from '@/Components/MasterFooter.vue';
     import MasterHeader from '@/Components/MasterHeader.vue';
     import useFooterList from "../../../use/useFooterList";
@@ -16,7 +15,6 @@ const { Toast } = commonFunctions(),
 
 const newBike = () =>{
     const queryString = window.location.href.split('/')[4]
-    console.log(queryString)
     Inertia.visit('/bike-project/'+queryString)
 }
 
@@ -28,6 +26,12 @@ const project = () =>{
             console.log(projects.value = response.data.data)
             console.log(projects.value)
         })
+}
+
+const editBike = (slug) =>{
+    const queryString = window.location.href.split('/')[4]
+    console.log(slug)
+    Inertia.visit('/bike-project/'+queryString+'/'+slug)
 }
 
 onMounted(()=>{
@@ -69,7 +73,7 @@ onMounted(()=>{
                         <div class="bg-white max-w-lg mx-auto">
                             <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 2 }" >
                                 <div v-for="data in projects">
-                                    <div class="flex p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
+                                    <div @click="editBike(data.slug)" class="flex cursor-pointer p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
                                         <div class="ml-2">
                                             <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.name }}</p>
                                             <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.mobile }}</p>

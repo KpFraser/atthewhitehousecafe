@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->string('name')->length(100);
+            $table->string('slug');
             $table->string('mobile');
             $table->string('leader');
             $table->string('assistant');

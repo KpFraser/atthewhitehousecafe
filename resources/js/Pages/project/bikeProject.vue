@@ -2,39 +2,73 @@
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import MasterFooter from '@/Components/MasterFooter.vue';
     import MasterHeader from '@/Components/MasterHeader.vue';
-    import useFooterList from "../../../use/useFooterList";
     import BreezeInput from '@/Components/Input.vue';
     import BreezeCheckbox from '@/Components/Checkbox.vue';
     import BreezeLabel from '@/Components/Label.vue';
-    import {onMounted, reactive, ref} from "vue";
     import BreezeButton from '@/Components/Button.vue';
+    import useFooterList from "../../../use/useFooterList";
+    import {onMounted, reactive, ref} from "vue";
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
 
     const { Toast } = commonFunctions(),
         { footerLists } = useFooterList();
 
-    const bike  = ref({id: '', image: '', name: '', project_slug: '', phone: '', estimated_total: '', actual_total: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item: '', cost: ''}], actual_costs: [{item: '', cost: ''}]}),
+    const bike = ref({id: '', image: '', system_name: '', name: '', project_slug: '', phone: '', estimated_total: '', actual_total: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item_name: '', cost: ''}], actual_costs: [{item_name: '', cost: ''}]}),
         btnProcessing = ref({ processing: false }),
         goals = ref({}),
         isActive = ref(1),
         star = ref(0),
         errors = reactive({}),
-        url =  ref()
+        url =  ref(),
+        baseUrl = window.location.origin
 
     const onFileChange = (e) => {
+
         const file = e.target.files[0];
         bike.value.image = file
         url.value = URL.createObjectURL(file);
+        bike.value.show = false
         errors.image = ''
+        if(bike.value.system_name === ''){
+
+        }
     }
 
     const bikeInfo = () =>{
-        axios
-            .get('/bike-show')
-            .then((response)=>{
-                goals.value = response.data
-            })
+        const queryString = window.location.href.split('/')[5]
+        if (queryString === ''){
+            axios
+                .get('/bike-show/'+queryString)
+                .then((response)=>{
+
+                    if(response.data.bike !== '' && response.data.bike_items && response.data.goals !== '' && response.data.bike_option){
+                        bike.value.show = true
+                        bike.value.id = response.data.bike.id
+                        bike.value.phone = response.data.bike.mobile
+                        bike.value.name = response.data.bike.name
+                        bike.value.leader = response.data.bike.leader
+                        bike.value.assistant = response.data.bike.assistant
+                        bike.value.system_name = response.data.bike.system_name
+                        bike.value.image = response.data.bike.image_name
+                        bike.value.estimated_total = response.data.bike.estimated_cost
+                        bike.value.actual_total = response.data.bike.actual_cost
+                        bike.value.estimated_costs = response.data.bike_items.filter(x => x.stage_id === 1)
+                        bike.value.actual_costs = response.data.bike_items.filter(x => x.stage_id === 2)
+
+                        goals.value = response.data.goal
+
+                        _.forEach(response.data.bike_option, function(value, key) {
+                            if(value.status === 1) {
+                                bike.value.checkGoals[value.goal_id] = true
+                            }else if(value.status === 2) {
+                                bike.value.checkGoals[value.goal_id] = false
+                            }
+                        });
+                    }
+                })
+        }
+
     }
 
     const validation = (post) => {
@@ -50,9 +84,9 @@
             errors.cost = '* Write Estimated and Actual Cost!'
         if(!post.assistant && !post.leader)
             errors.roles = '* Write Assistant and Leader!'
-        if(post.estimated_costs[0].item === '' || post.estimated_costs[0].cost ===  '')
+        if(post.estimated_costs[0].item_name === '' || post.estimated_costs[0].cost ===  '')
             errors.estimatedCost = '* Fillup item name and cost'
-        if(post.actual_costs[0].item === '' || post.actual_costs[0].cost ===  '')
+        if(post.actual_costs[0].item_name === '' || post.actual_costs[0].cost ===  '')
             errors.actualCost = '* Fillup item name and cost'
         return errors.name === '' && errors.image === '' && errors.phone === '' && errors.cost === '' && errors.roles === '' && errors.estimatedCost === "" && errors.actualCost === ''
 
@@ -106,11 +140,11 @@
     const estimatedPlusBtn = () => {
         errors.estimatedCost = ''
 
-        let last_item = bike.value.estimated_costs[bike.value.estimated_costs.length-1].item;
+        let last_item = bike.value.estimated_costs[bike.value.estimated_costs.length-1].item_name;
         let last_cost = bike.value.estimated_costs[bike.value.estimated_costs.length-1].cost;
 
         if(last_item !== '' && last_cost !== ''){
-            bike.value.estimated_costs.push({item: '', cost:''});
+            bike.value.estimated_costs.push({item_name: '', cost:''});
         }else {
             errors.estimatedCost = '* Fillup item name and cost'
         }
@@ -119,11 +153,11 @@
     const actualPlusBtn = () => {
         errors.actualCost = ''
 
-        let last_item = bike.value.actual_costs[bike.value.actual_costs.length-1].item;
+        let last_item = bike.value.actual_costs[bike.value.actual_costs.length-1].item_name;
         var last_cost = bike.value.actual_costs[bike.value.actual_costs.length-1].cost;
 
         if(last_item !== '' && last_cost !== ''){
-            bike.value.actual_costs.push({item: '', cost:''});
+            bike.value.actual_costs.push({item_name: '', cost:''});
         }else {
             errors.actualCost = '* Fillup item name and cost'
         }
@@ -151,7 +185,6 @@
 
     onMounted(()=>{
         bikeInfo ()
-
     })
 </script>
 <template>
@@ -176,7 +209,8 @@
                                     </div>
                                 </label>
                                 <div id="preview" class="ml-4">
-                                    <img  class="w-32 h-32" v-if="url" :src="url" />
+                                    <img class="w-32 h-32" v-if="url" :src="url" />
+                                    <img class="w-32 h-32" v-if="bike.show" :src="baseUrl+'/storage/images/'+bike.image" />
                                 </div>
                                 <div v-show="errors.image !== ''" class="flex items-center">
                                     <div  class="text-red-600 font-bold text-[14px]">{{ errors.image }}</div>
@@ -230,7 +264,7 @@
                                                     <div class="grid grid-cols-2 py-5" v-for="items in bike.estimated_costs">
                                                         <div class="">
                                                             <BreezeLabel value="ITEM" />
-                                                            <BreezeInput placeholder="name" v-model="items.item" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                            <BreezeInput placeholder="name" v-model="items.item_name" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
                                                         </div>
                                                         <div class="ml-2">
                                                             <BreezeLabel value="Cost(£)" />
@@ -254,7 +288,7 @@
                                                     <div class="grid grid-cols-2 py-5" v-for="items in bike.actual_costs">
                                                         <div class="">
                                                             <BreezeLabel value="ITEM" />
-                                                            <BreezeInput type="text" v-model="items.item" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                                            <BreezeInput type="text" v-model="items.item_name" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
                                                         </div>
                                                         <div class="ml-2">
                                                             <BreezeLabel value="Cost(£)" />
@@ -289,7 +323,6 @@
                                                     <i :class="{'fas' : star >= 3 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=3)"></i>
                                                     <i :class="{'fas' : star >= 4 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=4)"></i>
                                                 </div>
-<!--                                                <BreezeInput placeholder="comment..." v-model="bikeItem.comment" type="text" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>-->
                                             </div>
                                         </div>
                                     </div>
@@ -322,7 +355,7 @@
                                         <div class="flex justify-center">
                                             <form class="grid grid-cols-2">
                                                 <div class="flex mx-2 items-center space-y-2" v-for="goal in goals">
-                                                    <BreezeCheckbox v-model="bike.checkGoals[goal.id]" id="{{goal.id}}" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
+                                                    <BreezeCheckbox v-model="bike.checkGoals[goal.id]" :checked="bike.checkGoals[goal.id] === true ? true: false" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                                                     <label class="block font-medium text-gray-700 text-[14px]">{{goal.name}}</label>
                                                 </div>
                                             </form>
