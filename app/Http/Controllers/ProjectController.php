@@ -43,7 +43,7 @@ class ProjectController extends Controller
         if(!empty($slug)){
             $project_id = Project::select('id')->where('slug', $slug)->first();
             $data1 = ProjectUser::select('id', 'project_id')->where(array('project_id'=> $project_id->id, 'user_id'=> auth()->user()->id))->with('key_project')->first();
-            $data2 = Event::select('id', 'name', 'slug')->get();
+            $data2 = Event::select('id', 'name', 'slug')->where('project_id', $project_id->id)->get();
             return response([$data1, $data2]);
         } else{
             return response()->error('Data not available!', 500);

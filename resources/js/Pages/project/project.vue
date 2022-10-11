@@ -15,6 +15,7 @@ const { Toast } = commonFunctions(),
 
 const favourite = ref([]),
     event = ref ({}),
+    errors = ref ({}),
     eventShow = ref ({}),
     eventValue = ref (-1)
 
@@ -40,16 +41,21 @@ const projects = () =>{
 }
 
 const eventName = () =>{
+    errors.value.duplicate = ''
     if (!!event.value.name) {
+        let slug = window.location.href.split('/')[4]
         axios
-            .post('event-name', event.value)
+            .post('/event-name', {name: event.value.name, slug: slug})
             .then((response) => {
                 if(response.data.success === true) {
                     event.value = {}
                     Toast.fire({icon: "success", title: "Event Added!"})
                     projects()
+                    $(".modal").modal('hide')
                 }
-            })
+            }).catch((response)=>{
+                console.log(errors.value.duplicate = response.response.data.message)
+        })
     }
 }
 
@@ -115,14 +121,18 @@ onMounted( ()=> {
                 <div class="modal-dialog relative w-auto pointer-events-none">
                     <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
                         <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-                            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Add Event</h5>
+                            <div class="flex items-center">
+                                <h5 class="text-xl mr-2 font-medium leading-normal text-gray-800" id="exampleModalLabel">Add Event</h5>
+                                <div class="font-bold text-red-700" v-if="errors.duplicate !== ''">* {{errors.duplicate}}</div>
+                            </div>
+
                             <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                         </div>
                         <div class="modal-body relative p-4">
                             <BreezeInput v-model="event.name" placeholder="Write Event Name.."/>
                         </div>
                         <div class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-                            <button @click="eventName" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" data-bs-dismiss="modal">Submit</button>
+                            <button @click="eventName" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" >Submit</button>
                         </div>
                     </div>
                 </div>
