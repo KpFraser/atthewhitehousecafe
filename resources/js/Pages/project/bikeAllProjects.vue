@@ -54,44 +54,41 @@ onMounted(()=>{
                     </div>
                 </div>
             </div>
-              <div class="text-black border-4 border-b-4 border-[#20351d] mx-10 border-opacity-75 mb-28 space-y-4 bg-white text-lg">
-                    <ul class="w-full uppercase flex">
-                        <li class="nav-item w-1/2">
-                            <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3 active">
-                                Active
-                            </a>
-                        </li>
-                        <li class="nav-item w-1/2">
-                            <a @click="(isActive=2)" :class="{'bg-[#20351d] !text-white': isActive === 2 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3">
-                                Archieved
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="bg-white max-w-lg mx-auto">
-                        <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 2 }" >
-                            <div v-for="data in projects">
-                                <div @click="editBike(data.slug)" class="flex cursor-pointer p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
-                                    <div class="ml-2">
-                                        <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.name }}</p>
-                                        <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.mobile }}</p>
-                                    </div>
-                                    <i class="fa-3x mr-2 fal fa-bicycle"></i>
+            <div class="text-black border-4 border-b-4 border-[#20351d] mx-10 border-opacity-75 mb-28 space-y-4 bg-white text-lg">
+                <ul class="w-full uppercase flex">
+                    <li class="nav-item w-1/2">
+                        <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3 active">
+                            Active
+                        </a>
+                    </li>
+                    <li class="nav-item w-1/2">
+                        <a @click="(isActive=2)" :class="{'bg-[#20351d] !text-white': isActive === 2 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3">
+                            Archieved
+                        </a>
+                    </li>
+                </ul>
+                <div class="bg-white max-w-lg mx-auto">
+                    <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 2 }" >
+                        <div v-for="data in projects">
+                            <div @click="editBike(data.slug)" class="flex cursor-pointer p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
+                                <div class="ml-2">
+                                    <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.name }}</p>
+                                    <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.mobile }}</p>
                                 </div>
+                                <i class="fa-3x mr-2 fal fa-bicycle"></i>
                             </div>
                         </div>
-                        <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 1 }">
-                            <div>
-                                <div class="flex p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
-                                    <div class="ml-2">
-                                        <p class="font-bold py-1 text-[18px] self-center leading-tight">Name</p>
-                                        <p class="font-bold py-1 text-[18px] self-center leading-tight">Phone number</p>
-                                    </div>
-                                    <i class="fa-3x mr-2 fal fa-bicycle"></i>
-                                </div>
-                            </div>
+                        <div class="flex justify-center items-center" v-show="projects.length === 0">
+                            Data not available !
+                        </div>
+                    </div>
+                    <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 1 }">
+                        <div class="flex justify-center items-center">
+                            Data not available !
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
         <MasterFooter
             :footerLists="footerLists"

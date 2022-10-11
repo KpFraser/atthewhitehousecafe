@@ -14,11 +14,10 @@
     const { Toast } = commonFunctions(),
         { footerLists } = useFooterList();
 
-    const bike = ref({id: '', image: '', system_name: '', name: '', project_slug: '', phone: '', estimated_total: '', middle_total: '', actual_total: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item_name: '', cost: ''}], middle_costs: [{item_name: '', cost: ''}], actual_costs: [{item_name: '', cost: ''}]}),
+    const bike = ref({id: '', image: '', system_name: '', name: '', project_slug: '', phone: '', estimated_total: '', middle_total: '', actual_total: '', rating: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item_name: '', cost: '', id: ''}], middle_costs: [{item_name: '', cost: '', id: ''}], actual_costs: [{item_name: '', cost: '', id: ''}]}),
         processing = reactive ({process: false}),
         goals = ref({}),
         isActive = ref(1),
-        star = ref(0),
         errors = reactive({}),
         url =  ref(),
         baseUrl = window.location.origin
@@ -48,6 +47,7 @@
                         bike.value.name = response.data.bike.name
                         bike.value.leader = response.data.bike.leader
                         bike.value.assistant = response.data.bike.assistant
+                        bike.value.rating = response.data.bike.rating
                         bike.value.system_name = response.data.bike.system_name
                         bike.value.image = response.data.bike.image_name
                         bike.value.estimated_total = response.data.bike.estimated_cost
@@ -64,6 +64,9 @@
                             }
                         });
                     }
+                    totalEstimate ()
+                    totalMiddle ()
+                    totalActual ()
                 }
                 if(response.data.goals !== ''){
                     goals.value = response.data.goal
@@ -123,7 +126,7 @@
                     if( response.data.success === true){
                         processing.process = false
                         errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = '', errors.actualCost = ''
-                        Toast.fire({icon: "success",title: "Project created successfully!"})
+                        Toast.fire({icon: "success",title: "Information saved successfully!"})
                         bikeAllRedirect ()
                     }
                 })
@@ -147,7 +150,7 @@
         let last_cost = bike.value.estimated_costs[bike.value.estimated_costs.length-1].cost;
 
         if(last_item !== '' && last_cost !== ''){
-            bike.value.estimated_costs.push({item_name: '', cost:''});
+            bike.value.estimated_costs.push({item_name: '', cost:'', id: ''});
         }else {
             errors.estimatedCost = '* Fillup item name and cost'
         }
@@ -160,7 +163,7 @@
         var last_cost = bike.value.middle_costs[bike.value.middle_costs.length-1].cost;
 
         if(last_item !== '' && last_cost !== ''){
-            bike.value.middle_costs.push({item_name: '', cost:''});
+            bike.value.middle_costs.push({item_name: '', cost:'', id: ''});
         }else {
             errors.middleCost = '* Fillup item name and cost'
         }
@@ -173,7 +176,7 @@
         var last_cost = bike.value.actual_costs[bike.value.actual_costs.length-1].cost;
 
         if(last_item !== '' && last_cost !== ''){
-            bike.value.actual_costs.push({item_name: '', cost:''});
+            bike.value.actual_costs.push({item_name: '', cost:'', id: ''});
         }else {
             errors.actualCost = '* Fillup item name and cost'
         }
@@ -360,10 +363,11 @@
                                             <div class="p-10">
                                                 <BreezeLabel value="Customer Comment:" />
                                                 <div class="flex text-[45px] p-10 items-center justify-between space-x-2">
-                                                    <i :class="{'fas' : star >= 1 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=1)"></i>
-                                                    <i :class="{'fas' : star >= 2 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=2)"></i>
-                                                    <i :class="{'fas' : star >= 3 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=3)"></i>
-                                                    <i :class="{'fas' : star >= 4 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(star=4)"></i>
+                                                    <i :class="{'fas' : bike.rating >= 1 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(bike.rating=1)"></i>
+                                                    <i :class="{'fas' : bike.rating >= 2 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(bike.rating=2)"></i>
+                                                    <i :class="{'fas' : bike.rating >= 3 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(bike.rating=3)"></i>
+                                                    <i :class="{'fas' : bike.rating >= 4 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(bike.rating=4)"></i>
+                                                    <i :class="{'fas' : bike.rating >= 5 }" class="far fa-star cursor-pointer text-[#FFD700]" @click="(bike.rating=5)"></i>
                                                 </div>
                                             </div>
                                         </div>

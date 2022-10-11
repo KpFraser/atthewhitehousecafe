@@ -90,7 +90,7 @@ onMounted( ()=> {
                     <BreezeInput  v-model="favourite.frequency" disabled/>
                     <div class="flex items-center justify-between">
                         <BreezeLabel value="Events" />
-                        <div class="flex items-center space-x-2 border border-[#639f1e] p-0.5 rounded w-28 justify-center text-[12px]" data-bs-toggle="modal" data-bs-target="#eventmodel">
+                        <div class="flex items-center cursor-pointer space-x-2 border border-[#639f1e] p-0.5 rounded w-28 justify-center text-[12px]" data-bs-toggle="modal" data-bs-target="#eventmodel">
                             <div>Add New</div>
                             <i class="fa fa-plus"></i>
                         </div>

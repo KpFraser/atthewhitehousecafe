@@ -37,7 +37,6 @@ class BikeController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
         $check = json_decode($request->checkGoals, true);
         $estimate = json_decode($request->estimated_costs, true);
         $middle = json_decode($request->middle_costs, true);
@@ -65,6 +64,8 @@ class BikeController extends Controller
             'name' => 'required|unique:bikes,name,'.$request->id,
         ]);
 
+//                dd($request->rating);
+
         $bike_data = Bike::updateOrCreate([
             'id'=> $request->id,
             ],[
@@ -74,6 +75,7 @@ class BikeController extends Controller
             'mobile' => $request->phone,
             'leader' => $request->leader,
             'assistant' => $request->assistant,
+            'rating' => $request->rating,
             'estimated_cost' => $request->estimated_total,
             'actual_cost' => $request->actual_total,
             'image_name' => $image,
@@ -106,15 +108,15 @@ class BikeController extends Controller
             if (!empty($estimate) && count($estimate) > 0) {
                 foreach ($estimate as $row) {
                     if(!empty($row['item_name']) && !empty($row['cost'])) {
-                        BikeItems::updateOrCreate([
+                        $test = BikeItems::updateOrCreate([
+                            'id' => $row['id'],
                             'bike_id' => $bike_data->id,
-                            'stage_id' => 1,
-
                         ], [
                             'stage_id' => 1,
                             'item_name' => $row['item_name'],
                             'cost' => $row['cost'],
                         ]);
+//                        print_r($test);
                     }
                 }
             }
@@ -123,9 +125,8 @@ class BikeController extends Controller
                 foreach ($middle as $row) {
                     if(!empty($row['item_name']) && !empty($row['cost'])) {
                         BikeItems::updateOrCreate([
+                            'id' => $row['id'],
                             'bike_id' => $bike_data->id,
-                            'stage_id' => 2,
-
                         ], [
                             'stage_id' => 2,
                             'item_name' => $row['item_name'],
@@ -139,8 +140,8 @@ class BikeController extends Controller
                 foreach ($actual as $row) {
                     if(!empty($row['item_name']) && !empty($row['cost'])) {
                         BikeItems::updateOrCreate([
+                            'id' => $row['id'],
                             'bike_id' => $bike_data->id,
-                            'stage_id' => 3,
                         ], [
                             'stage_id' => 3,
                             'item_name' => $row['item_name'],

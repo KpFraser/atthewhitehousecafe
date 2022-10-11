@@ -50,7 +50,7 @@ class GoalController extends Controller
     public function show($slug)
     {
         if ($slug !== 'undefined'){
-            $bike = Bike::select('id', 'name', 'mobile', 'slug', 'leader', 'assistant', 'system_name', 'image_name', 'estimated_cost', 'actual_cost')->where('slug', $slug)->first();
+            $bike = Bike::select('id', 'name', 'mobile', 'slug', 'leader', 'assistant', 'rating', 'system_name', 'image_name', 'estimated_cost', 'actual_cost')->where('slug', $slug)->first();
             $bike_items = BikeItems::select('id', 'bike_id', 'stage_id', 'item_name', 'cost')->where('bike_id', $bike->id)->get();
             $bike_option = BikeOption::select('id', 'bike_id', 'goal_id', 'status')->where('bike_id', $bike->id)->get();
             $goal = Goal::select('id', 'name')->get();
