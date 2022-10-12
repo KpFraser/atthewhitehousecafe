@@ -62,16 +62,28 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $project_id = Project::select('id')->where('slug', $request->slug)->first();
+        // dd($request->all());
         $request->validate([
             'name' => 'required|unique:events,name,'.$request->name,
         ]);
-        Event::Create([
-            'user_id'=> auth()->user()->id,
-            'name'=> $request->name,
-            'project_id'=> $project_id->id,
-            'slug' => Str::slug($request->name),
-        ]);
+        if($request->slug !== null){
+            $project_id = Project::select('id')->where('slug', $request->slug)->first();
+            Event::Create([
+                'user_id'=> auth()->user()->id,
+                'name'=> $request->name,
+                'project_id'=> $project_id->id,
+                'slug' => Str::slug($request->name),
+            ]);
+        }else{
+            $project_id = ProjectUser::select('project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
+            Event::Create([
+                'user_id'=> auth()->user()->id,
+                'name'=> $request->name,
+                'project_id'=> $project_id->project_id,
+                'slug' => Str::slug($request->name),
+            ]);
+        }
+
         return response()->success();
     }
 

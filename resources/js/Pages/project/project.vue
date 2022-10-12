@@ -27,7 +27,6 @@ const projects = () =>{
         .then((response)=>{
             favourite.value = response.data[0].key_project
             eventShow.value = response.data[1]
-            console.log(favourite.value, eventShow.value)
         })
     } else {
         axios
@@ -35,7 +34,6 @@ const projects = () =>{
         .then((response)=>{
             favourite.value = response.data[0].key_project
             eventShow.value = response.data[1]
-            console.log(favourite.value, eventShow.value)
         })
     }
 }
@@ -54,13 +52,12 @@ const eventName = () =>{
                     $(".modal").modal('hide')
                 }
             }).catch((response)=>{
-                console.log(errors.value.duplicate = response.response.data.message)
+                errors.value.duplicate = response.response.data.message
         })
     }
 }
 
 const selectedEvent = (event_id, project_id) =>{
-    console.log(event_id, project_id)
     Inertia.visit('/roster/' +event_id+'/'+project_id)
 
 }

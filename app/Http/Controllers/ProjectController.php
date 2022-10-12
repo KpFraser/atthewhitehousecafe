@@ -53,7 +53,8 @@ class ProjectController extends Controller
     public function favouriteInfo()
     {
         $data1 = ProjectUser::select('id', 'project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->with('key_project')->first();
-        $data2 = Event::select('id', 'name', 'slug')->get();
+        // dd(Event::select('id', 'name', 'slug')->where(array('project_id'=> $data1->project_id))->get());
+        $data2 = Event::select('id', 'name', 'slug')->where(array('project_id'=> $data1->project_id))->get();
         return response([$data1, $data2]);
     }
 
