@@ -67,23 +67,18 @@ class EventController extends Controller
             'name' => 'required|unique:events,name,'.$request->name,
         ]);
         if($request->slug !== null){
-            $project_id = Project::select('id')->where('slug', $request->slug)->first();
-            Event::Create([
-                'user_id'=> auth()->user()->id,
-                'name'=> $request->name,
-                'project_id'=> $project_id->id,
-                'slug' => Str::slug($request->name),
-            ]);
+            $data1 = Project::select('id')->where('slug', $request->slug)->first();
+            $project_id = $data1->id;
         }else{
-            $project_id = ProjectUser::select('project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
-            Event::Create([
-                'user_id'=> auth()->user()->id,
-                'name'=> $request->name,
-                'project_id'=> $project_id->project_id,
-                'slug' => Str::slug($request->name),
-            ]);
+            $data2 = ProjectUser::select('project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
+            $project_id = $data2->project_id;
         }
-
+        Event::Create([
+            'user_id'=> auth()->user()->id,
+            'name'=> $request->name,
+            'project_id'=> $project_id,
+            'slug' => Str::slug($request->name),
+        ]); 
         return response()->success();
     }
 
