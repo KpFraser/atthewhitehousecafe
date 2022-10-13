@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
-    Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/RosterRegister') )->name('roster-register');
+    Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register');
     Route::get('/project-leadership/leader', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
     Route::get('/bike-project/{slug}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/question-first', fn ()=> Inertia::render('project/questionFirst') )->name('question-first');
     Route::get('/question-second', fn ()=> Inertia::render('project/questionSecond') )->name('question-second');
     Route::get('/question-third', fn ()=> Inertia::render('project/questionThird') )->name('question-third');
+    Route::get('/proposals', fn ()=> Inertia::render('project/proposals') )->name('proposals');
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
     Route::get('/emailShow', [RegisteredUserController::class, 'show']);
