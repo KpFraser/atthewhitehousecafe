@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/edit-favourite-projects/{slug?}', [ProjectController::class, 'editFavouriteInfo'])->name('favourite_info');
     Route::get('/new-projects/{slug}', [ProjectController::class, 'show']);
     Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
+    Route::get('/archieve-project', [ProjectController::class, 'showArchieve']);
     Route::post('/project-names', [ProjectController::class, 'store']);
     Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
     Route::post('/un-archieve', [ProjectController::class, 'unarchieve']);

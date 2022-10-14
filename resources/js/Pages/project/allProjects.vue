@@ -14,10 +14,6 @@ const { Toast } = commonFunctions(),
     user_names = ref([]),
     names = ref([]),
     isActive = ref(1)
-    // classObject = reactive({
-    //     active: true,
-    //     'text-danger': false
-    // })
 
 const projects = () =>{
     axios
@@ -26,8 +22,6 @@ const projects = () =>{
             names.value = response.data.data
             all_names.value = names.value
                 .filter(x => x.is_approved === 1 && x.is_archived !== 1)
-            console.log(all_names.value)
-
             user_names.value = all_names.value
                 .filter(x => x.is_user === 1)
 
@@ -67,11 +61,17 @@ const allPencilBtn = (slug) =>{
 }
 
 const userPencilBtn = (slug) =>{
+    if(slug === 'bike-repair')
+        Inertia.visit('/bike-all-projects/'+slug)
+    else
     Inertia.visit('/favourite-project/'+slug)
 }
 
 const bikeProject = (slug) =>{
-    Inertia.visit('/bike-all-projects/'+slug)
+    if(slug === 'bike-repair')
+        Inertia.visit('/bike-all-projects/'+slug)
+    else
+        userPencilBtn(slug)
 }
 
 onMounted( ()=> {
@@ -81,7 +81,6 @@ onMounted( ()=> {
 </script>
 
 <template>
-    <!-- <Head title="Dashboard" /> -->
     <BreezeAuthenticatedLayout>
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full">

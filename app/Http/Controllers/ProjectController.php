@@ -65,6 +65,14 @@ class ProjectController extends Controller
         }
     }
 
+    public function showArchieve()
+    {
+        $data = Project::select('id', 'name')->where(array('is_archived' => 1, 'is_approved' => 1))->get();
+        if (!empty($data)) {
+            return response($data);
+        }
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
