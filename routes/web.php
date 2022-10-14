@@ -54,8 +54,9 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register');
-    Route::get('/project-leadership/leader', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
-    Route::get('/project-leadership/assistant', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
+    Route::get('/project-leadership/leader/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
+    Route::get('/project-leadership/assistant/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
+    Route::get('/project-leadership/application/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-application');
     Route::get('/bike-project/{slug}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
     Route::get('/bike-project/{project_slug}/{bike_slug?}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project-edit');
     Route::get('/bike-all-projects/{slug}', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
@@ -128,7 +129,7 @@ Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 *  ApplicationController
 */
 Route::get('/project-roles', [ApplicationController::class, 'show']);
-Route::get('/application-answers/{id}', [ApplicationController::class, 'answers']);
+Route::get('/application-answers/{id}/{project_slug}', [ApplicationController::class, 'answers']);
 Route::post('/application-info', [ApplicationController::class, 'store']);
 /*
  *  ReferenceController

@@ -108,7 +108,7 @@ onMounted( ()=> {
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
                                     <div :class="!!all.is_user ? `ml-5 text-white font-extrabold`: `ml-5 text-white`">{{all.name}}</div>
                                     <div>
-                                        <i class="far fa-pencil text-[26px] mr-4 cursor-pointer text-[30px]"  @click="allPencilBtn(all.slug)"></i>
+                                        <i class="far fa-pencil mr-4 cursor-pointer text-[30px]"  @click="allPencilBtn(all.slug)"></i>
                                         <i class="fas cursor-pointer text-[30px] mr-4 fa-plus-circle" @click="plusBtn(all.id)"></i>
                                         <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(all.id)"></i>
                                     </div>
@@ -119,7 +119,7 @@ onMounted( ()=> {
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
                                     <div @click="bikeProject(user.slug)" :class="!!user.is_key ? `ml-5 text-white cursor-pointer font-extrabold` : `ml-5 cursor-pointer text-white`">{{user.name}}</div>
                                     <div class="flex items-center">
-                                        <i class="far fa-pencil text-[26px] mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>
+                                        <i class="far fa-pencil mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>
                                         <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
                                     </div>
                                 </div>

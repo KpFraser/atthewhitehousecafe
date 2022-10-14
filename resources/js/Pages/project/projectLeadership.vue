@@ -14,14 +14,16 @@
     const answer = ref({})
     const appAnswer = ref({})
 
-    const answers = (slug) =>{
+    const answers = (slug, project_slug) =>{
         if (!!slug){
-            if (slug === 'assistant'){
-                var id = 3
-            } else{
-                var id = 2
-            }
-            axios.get('/application-answers/'+id)
+            if (slug === 'assistant') 
+            var id = 3
+            if (slug === 'leader')
+            var id = 2
+            if (slug === 'application')
+            var id = 0
+            console.log(id)
+            axios.get('/application-answers/'+id+'/'+project_slug)
                 .then((response)=>{
                     answer.value = !!response.data? response.data: ''
                 })
@@ -37,9 +39,9 @@
 
     onMounted( ()=> {
         const queryString = window.location.href
-        let slug = queryString.split('/')[4].split('-')[0]
-        // console.log(slug)
-        answers (slug)
+        let slug = queryString.split('/')[4]
+        let project_slug = queryString.split('/')[5]
+        answers (slug, project_slug)
     })
 </script>
 
@@ -62,7 +64,7 @@
                         </div>
                     </div>
                     <div class="space-y-2 font-sans mx-auto w-3/4">
-                        <div v-for="info in answer" class="flex justify-between items-center pr-6 py-1.5 bg-[#639f1e] bg-opacity-75 text-black text-xs leading-tight rounded shadow-md font-bold transition duration-150 ease-in-out flex items-center whitespace-nowrap">
+                        <div v-for="info in answer" class="flex justify-between items-center pr-6 py-1.5 bg-[#639f1e] bg-opacity-75 text-black text-xs leading-tight rounded shadow-md font-bold transition duration-150 ease-in-out whitespace-nowrap">
                             <span class="px-6 py-2 text-[16px] font-bold">{{ info.name }}</span>
                             <span class="flex">
                                 <i @click="applicationRole(info.id)" class="fas border-2 cursor-pointer border-black flex justify-center items-center fa-plus fa-2x w-8 ml-3 h-8 bg-white rounded-full text-black py-1"></i>

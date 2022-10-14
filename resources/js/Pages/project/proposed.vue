@@ -85,16 +85,16 @@ onMounted( ()=> {
                         <BreezeLabel value="Requirements" />
                     </div>
                     <BreezeInput v-model="information.requirements"/>
-                    <div class="flex items-center">
-                        <BreezeLabel value="Applications" />
-                    </div>
+                    <a :href="'/project-leadership/application/'+ information.slug" target="_blank" class="flex cursor-pointer w-24 items-center">
+                        <BreezeLabel value="Applications" class="cursor-pointer"/>
+                    </a>
                     <div class="flex justify-around border-b-8 border-opacity-75 border-[#639f1e] space-x-4 items-center">
-                        <a href="/project-leadership/assistant" target="_blank">
+                        <a :href="'/project-leadership/assistant/'+ information.slug" target="_blank">
                             <BreezeLabel value="Assistant" class="cursor-pointer"/>
                         </a>
-                        <a href="/project-leadership/leader" target="_blank">
+                        <a :href="'/project-leadership/leader/'+ information.slug" target="_blank">
                             <BreezeLabel value="Leader" class="cursor-pointer"/>
-                        </a>
+                        </a> 
                     </div>
                     <button v-show="information.is_approved !== 1" type="button" @click="updateInfo" class="inline-flex items-center font-bold transition ease-in-out duration-150 bg-opacity-75 mt-4 bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px]" :class="{ 'opacity-25': information.updating }" :disabled="information.updating">
                         Update
