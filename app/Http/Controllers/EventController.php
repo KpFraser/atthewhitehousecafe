@@ -38,11 +38,11 @@ class EventController extends Controller
         $data = Event::select('name', 'created_at', 'slug')->where('slug', $event_slug)->get();
         if (!empty($data[0]->created_at))
         {
-            $month = Carbon::parse($data[0]->created_at)->format('F');
+            $month = Carbon::parse($data[0]->created_at)->format('m');
             $date = Carbon::parse($data[0]->created_at)->format('d');
             $event_year = Carbon::parse($data[0]->created_at)->format('Y');
-            $event_start = Carbon::parse($data[0]->created_at)->format('h:i a');
-            $event_end = Carbon::parse($data[0]->created_at)->addHour()->format('h:i a');
+            $event_start = Carbon::parse($data[0]->created_at)->format('h:i');
+            $event_end = Carbon::parse($data[0]->created_at)->addHour()->format('h:i');
 
             $project_id = Project::select('id')->where('slug', $project_slug)->get();
 
@@ -173,10 +173,16 @@ class EventController extends Controller
      */
     public function update(Request $request)
     {
+        $date1 = Carbon::parse($request->datetime['start_time'])->format('H:i:s');
+        $date2 = Carbon::parse($request->datetime['end_time'])->format('H:i:s');
+
         Event::updateOrCreate([
-            'slug' => $request->event_id,
+            'slug' => $request->comment['event_id'],
         ],[
-            'group_comment'=> $request->comment,
+            'group_comment'=> $request->comment['comment'],
+            'event_date'=> $request->datetime['date'],
+            'start_time'=> $date1,
+            'end_time'=> $date2
         ]);
         return response()->success();
     }

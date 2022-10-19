@@ -31,7 +31,7 @@
             .get('/event-info/'+event_id+'/'+project_id)
             .then((response)=>{
                 // console.log(response)
-                info.value.date = response.data[1]+' '+response.data[0]+' '+response.data[2]
+                info.value.date =  response.data[2]+'-'+response.data[0]+'-'+response.data[1]
                 info.value.start_time = response.data[3]
                 info.value.end_time = response.data[4]
                 users.value = response.data[5]
@@ -95,6 +95,8 @@
             errors.value.comment = ['*Group comment is required field!']
         if(groupImages.value.length === 0)
             errors.value.pic = ['*Group Image is required field!']
+        if(!info.value.date || !info.value.start_time || !info.value.end_time)
+            errors.value.dateAndTime = ['*Date and time is required!']
 
         return Object.values(errors.value).length === 0;
     }
@@ -107,17 +109,14 @@
         if (valid === true) {
             if (groupComment.value.approve) return
             groupComment.value.approve = true
-
-            groupImages.value.forEach((element, index, array) => {
-                formData.append('photo-' + index, element)
-            });
-            formData.append('comment',post.comment)
+            //
+            // groupImages.value.forEach((element, index, array) => {
+            //     formData.append('photo-' + index, element)
+            // });
+            // formData.append('comment',post.comment)
+            // formData.append('info',info.value)
             axios
-                .post('/group-comment', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
+                .post('/group-comment', {comment:post, datetime: info.value})
                 .then((response) => {
                     if (response.data.success === true)
                         Toast.fire({icon: "success", title: "Comment Submitted!"})
@@ -170,18 +169,22 @@
                         <i class="fas fa-home"></i>
                     </Link>
                 </div>
+                <div v-if="errors.length !== 0" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.dateAndTime">{{ message }}</div>
                 <div class="flex space-x-2 justify-between">
                     <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
                         <div class="px-4 pt-2 text-[16px] text-center">Date</div>
-                        <div class="text-[12px] text-white text-center font-sans">{{info.date}}</div>
+<!--                        <div class="text-[12px] text-white text-center font-sans">{{info.date}}</div>-->
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="date" v-model="info.date">
                     </div>
                     <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
                         <div class="px-4 pt-2 text-[16px] text-center">Start Time</div>
-                        <div class="text-[12px] text-white text-center font-sans">{{info.start_time}}</div>
+<!--                        <div class="text-[12px] text-white text-center font-sans">{{info.start_time}}</div>-->
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="info.start_time">
                     </div>
                     <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
                         <div class="px-4 pt-2 text-[16px] text-center">End Time</div>
-                        <div class="text-[12px] text-white text-center font-sans">{{info.end_time}}</div>
+<!--                        <div class="text-[12px] text-white text-center font-sans">{{info.end_time}}</div>-->
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="info.end_time">
                     </div>
                 </div>
                 <BreezeLabel value="Roster"/>
@@ -249,4 +252,15 @@
         />
     </div>
 </template>
+<style>
+[type='time'], [type='date'] {
+     color: white;
+     background-color: transparent;
+     border-width: 0px;
+     border-radius: 0px;
+     padding: 0px !important;
+     font-size: 0.75rem;
+    text-align: center;
+}
+</style>
 
