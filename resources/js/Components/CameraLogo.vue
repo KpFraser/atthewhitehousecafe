@@ -1,0 +1,65 @@
+<template>
+    <svg
+        version="1.1"
+        x="0px"
+        y="0px"
+        viewBox="0 0 1000 1000"
+        enable-background="new 0 0 1000 1000"
+        xml:space="preserve"
+        id="svg18"
+        sodipodi:docname="AddPhoto.svg"
+        inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs22" /><sodipodi:namedview
+        id="namedview20"
+        pagecolor="#ffffff"
+        bordercolor="#666666"
+        borderopacity="1.0"
+        inkscape:pageshadow="2"
+        inkscape:pageopacity="0.0"
+        inkscape:pagecheckerboard="0"
+        showgrid="false"
+        inkscape:zoom="0.4155"
+        inkscape:cx="499.39832"
+        inkscape:cy="500.60168"
+        inkscape:window-width="1920"
+        inkscape:window-height="1017"
+        inkscape:window-x="-8"
+        inkscape:window-y="-8"
+        inkscape:window-maximized="1"
+        inkscape:current-layer="svg18" />
+        <metadata
+            id="metadata2"> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
+        <rect
+            style="fill:#629e1e;fill-opacity:1;stroke:#7d897b;stroke-width:8.53744;stroke-linejoin:round"
+            id="rect953"
+            width="991.46252"
+            height="991.46259"
+            x="4.2687378"
+            y="4.2687073"
+            ry="4.8646545" /><g
+            id="g16"
+            transform="matrix(0.91405381,0,0,0.91405381,75.045322,74.140341)"
+            style="fill:#0c0d0c;fill-opacity:1"><path
+     d="m 449.3,314.1 c -111.8,0 -202.8,90.9 -202.8,202.8 0,111.8 90.9,202.8 202.8,202.8 111.9,0 202.8,-90.9 202.8,-202.8 0,-111.8 -91,-202.8 -202.8,-202.8 z m 0,338 c -74.5,0 -135.2,-60.6 -135.2,-135.2 0,-74.5 60.6,-135.2 135.2,-135.2 74.5,0 135.2,60.6 135.2,135.2 0,74.5 -60.6,135.2 -135.2,135.2 z"
+     id="path4"
+     style="fill:#0c0d0c;fill-opacity:1" /><path
+            d="M 550.7,821 H 111.4 C 92.8,821 77.6,805.9 77.6,787.2 V 246.6 c 0,-18.6 15.2,-33.8 33.8,-33.8 h 101.4 c 18.7,0 33.8,-15.1 33.8,-33.8 0,-18.7 -15.1,-33.8 -33.8,-33.8 H 111.4 C 55.5,145.2 10,190.7 10,246.6 v 540.7 c 0,55.9 45.5,101.4 101.4,101.4 h 439.3 c 18.7,0 33.8,-15.1 33.8,-33.8 0,-18.8 -15.1,-33.9 -33.8,-33.9 z"
+            id="path6"
+            style="fill:#0c0d0c;fill-opacity:1" /><path
+            d="M 483.1,212.8 H 821 c 18.7,0 33.8,15.2 33.8,33.8 v 270.3 c 0,18.7 15.1,33.8 33.8,33.8 18.7,0 33.8,-15.1 33.8,-33.8 V 246.6 C 922.4,190.7 876.9,145.2 821,145.2 H 483.1 c -18.7,0 -33.8,15.1 -33.8,33.8 0,18.7 15.1,33.8 33.8,33.8 z"
+            id="path8"
+            style="fill:#0c0d0c;fill-opacity:1" /><path
+            d="m 719.7,297.2 c 0,28 22.7,50.7 50.7,50.7 28,0 50.7,-22.7 50.7,-50.7 0,-28 -22.7,-50.7 -50.7,-50.7 -28,0 -50.7,22.7 -50.7,50.7 z"
+            id="path10"
+            style="fill:#0c0d0c;fill-opacity:1" /><path
+            d="m 280.3,111.4 h 135.2 c 18.7,0 33.8,-15.1 33.8,-33.8 0,-18.7 -15.1,-33.8 -33.8,-33.8 H 280.3 c -18.7,0 -33.8,15.1 -33.8,33.8 0.1,18.7 15.2,33.8 33.8,33.8 z"
+            id="path12"
+            style="fill:#0c0d0c;fill-opacity:1" /><path
+            d="M 956.2,753.4 H 854.8 V 652.1 c 0,-18.7 -15.1,-33.8 -33.8,-33.8 -18.7,0 -33.8,15.1 -33.8,33.8 V 753.5 H 685.9 c -18.7,0 -33.8,15.1 -33.8,33.8 0,18.7 15.1,33.8 33.8,33.8 h 101.4 v 101.4 c 0,18.7 15.1,33.8 33.8,33.8 18.7,0 33.8,-15.1 33.8,-33.8 V 821 h 101.4 c 18.7,0 33.8,-15.1 33.8,-33.8 -0.1,-18.6 -15.2,-33.8 -33.9,-33.8 z"
+            id="path14"
+            style="fill:#0c0d0c;fill-opacity:1" /></g></svg>
+</template>

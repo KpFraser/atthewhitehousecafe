@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProjectUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ProjectUserController extends Controller
 {
@@ -66,12 +67,30 @@ class ProjectUserController extends Controller
      */
     public function edit(Request $request)
     {
-//        dd($request->all());
+        if ($request->hasFile('image')) {
+            $file1 = $request->file('image')->getClientOriginalName();
+            $filename1 = pathinfo($file1, PATHINFO_FILENAME);
+            $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
+            $image = $filename1.'-'.time().'.'.$extension1;
+            $image_path = $request->file('image')->move(storage_path('/app/public/images/roster'), $image);
+
+            if (!empty($request->system_name)){
+                if(File::exists(storage_path('/app/public/images/').$request->system_name)){
+                    File::delete(storage_path('/app/public/images/').$request->system_name);
+                }
+            }
+        } else {
+            $image = $request->system_name;
+            $filename1 = $request->system_name;
+        }
+
         $data = ProjectUser::updateOrCreate([
             'user_id'=> $request->id,
             'project_id' => $request->project_id,
         ],[
             'comment'=> $request->comment,
+            'roster_image' => $filename1,
+            'system_name' => $image,
         ]);
         return response()->success();
     }

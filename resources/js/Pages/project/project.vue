@@ -109,7 +109,7 @@ onMounted( ()=> {
                     </div>
                     <textarea class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                     <div class="flex items-center">
-                        <BreezeLabel value="Goles" />
+                        <BreezeLabel value="Goals" />
                     </div>
                     <textarea class="focus:ring-[#639f1e] border-none focus:border-[#639f1e] w-full h-28 bg-[#639f1e] bg-opacity-75"></textarea>
                 </form>

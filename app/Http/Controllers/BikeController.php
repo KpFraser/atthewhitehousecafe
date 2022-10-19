@@ -64,8 +64,6 @@ class BikeController extends Controller
             'name' => 'required|unique:bikes,name,'.$request->id,
         ]);
 
-//                dd($request->rating);
-
         $bike_data = Bike::updateOrCreate([
             'id'=> $request->id,
             ],[

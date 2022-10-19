@@ -78,7 +78,7 @@ class EventController extends Controller
             'name'=> $request->name,
             'project_id'=> $project_id,
             'slug' => Str::slug($request->name),
-        ]); 
+        ]);
         return response()->success();
     }
 

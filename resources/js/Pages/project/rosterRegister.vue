@@ -91,66 +91,76 @@ const addParticipant = () =>{
 
 const checkRegister = () => {
     emailError.value = []
-    if (alreadyRegister.value === true){
+    if (alreadyRegister.value === true)
         alreadyRegister.value = false
-    }else {
+    else
     alreadyRegister.value = true
-    }
 }
+
+const redirect = () => {
+    const queryString = window.location.href
+    let event_slug = queryString.split('/')[4]
+    let project_slug = queryString.split('/')[5]
+    console.log(event_slug, project_slug)
+    Inertia.visit('/roster/' + event_slug + '/' + project_slug)
+}
+
 </script>
 
 <template>
-    <BreezeGuestLayout>
-        <div class="py-8">
-            <LoginRegisterHeader />
-        </div>
-        <BreezeValidationErrors class="mb-4" />
-        <div class="flex justify-center items-center max-w-lg mx-auto font-serif">
-            <div class="w-full mb-28 justify-center">
-                <form v-if="sendEmail === true" class="text-[22px] mx-10">
-                    <div class="flex items-center my-5">
-                        <BreezeCheckbox @change="checkRegister()" class="accent-[#639f1e] w-5 h-5 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
-                        <BreezeLabel for="name" class="ml-2 text-black" value="Already a Member?" />
-                    </div>
-                    <div v-show="alreadyRegister !== true">
-                        <div class="flex items-center">
-                            <BreezeLabel for="name" class="text-black" value="Name *" />
-                            <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.name }}</div>
-                        </div>
-                        <BreezeInput id="name" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.name" required autofocus autocomplete="name" />
-                    </div>
-                    <div class="mt-4">
-                        <div class="flex items-center">
-                            <div class="flex items-center">
-                                <BreezeLabel for="email" value="Email *" />
-                                <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.email }}</div>
-                            </div>
-                            <div v-if="emailError.length !== 0" class="ml-2 text-red-700 font-bold text-sm" >{{emailError[0]}}</div>
-                        </div>
-                        <div v-if="!!errors" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.email">{{ message }}</div>
-                        <BreezeInput id="email" type="email" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="formInfo.email" required autocomplete="username" />
-                    </div>
-                    <div v-show="alreadyRegister !== true" class="flex items-center justify-end mt-4">
-                        <BreezeButton @click="submit(formInfo)" class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
-                            Send Email
-                        </BreezeButton>
-                    </div>
-                    <div v-show="alreadyRegister === true" class="flex items-center justify-end mt-4">
-                        <BreezeButton @click="addParticipant()" class="bg-[#639f1e] text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
-                            Add a Participant
-                        </BreezeButton>
-                    </div>
-                </form>
-                <div v-if="sendEmail === false">
-                    <BreezeLabel class="text-center text-white py-4 bg-opacity-75 bg-[#639f1e]">
-                        Check your email to enter password.
-                    </BreezeLabel>
-                    <Link class="text-center justify-center flex py-4 bg-opacity-75 text-[#639f1e]">Resend Email</Link>
+        <div class="border-8 border-[#639f1e] border-opacity-75 h-screen items-center mx-auto max-w-lg">
+            <div class="flex justify-end m-2">
+                <div @click="redirect()" class="text-[25px] cursor-pointer font-serif bg-[#639f1e] bg-opacity-75 p-2 text-center font-extrabold">
+                    X
                 </div>
             </div>
-            <MasterFooter
-                :footerLists="footerLists"
-            />
+            <BreezeValidationErrors class="mb-4" />
+            <div class="flex justify-center items-center mx-auto font-serif">
+                <div class="w-full mb-28 justify-center">
+                    <form v-if="sendEmail === true" class="text-[22px] mx-10">
+                        <div class="flex items-center my-5">
+                            <BreezeCheckbox @change="checkRegister()" class="accent-[#639f1e] w-5 h-5 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
+                            <BreezeLabel for="name" class="ml-2 text-black" value="Already a Member?" />
+                        </div>
+                        <div v-show="alreadyRegister !== true">
+                            <div class="flex items-center">
+                                <BreezeLabel for="name" class="text-black" value="Name *" />
+                                <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.name }}</div>
+                            </div>
+                            <BreezeInput id="name" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.name" required autofocus autocomplete="name" />
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex items-center">
+                                <div class="flex items-center">
+                                    <BreezeLabel for="email" value="Email *" />
+                                    <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.email }}</div>
+                                </div>
+                                <div v-if="emailError.length !== 0" class="ml-2 text-red-700 font-bold text-sm" >{{emailError[0]}}</div>
+                            </div>
+                            <div v-if="!!errors" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.email">{{ message }}</div>
+                            <BreezeInput id="email" type="email" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="formInfo.email" required autocomplete="username" />
+                        </div>
+                        <div v-show="alreadyRegister !== true" class="flex items-center justify-end mt-4">
+                            <BreezeButton @click="submit(formInfo)" class="bg-[#639f1e] hover:bg-opacity-75 text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
+                                Add a Participant
+                            </BreezeButton>
+                        </div>
+                        <div v-show="alreadyRegister === true" class="flex items-center justify-end mt-4">
+                            <BreezeButton @click="addParticipant()" class="bg-[#639f1e] hover:bg-opacity-75 text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
+                                Add a Participant
+                            </BreezeButton>
+                        </div>
+                    </form>
+                    <div v-if="sendEmail === false">
+                        <BreezeLabel class="text-center text-white py-4 bg-opacity-75 bg-[#639f1e]">
+                            Check your email to enter password.
+                        </BreezeLabel>
+                        <Link class="text-center justify-center flex py-4 bg-opacity-75 text-[#639f1e]">Resend Email</Link>
+                    </div>
+                </div>
+                <MasterFooter
+                    :footerLists="footerLists"
+                />
+            </div>
         </div>
-    </BreezeGuestLayout>
 </template>
