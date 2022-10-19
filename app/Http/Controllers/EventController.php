@@ -35,22 +35,33 @@ class EventController extends Controller
      */
     public function showInfo($event_slug, $project_slug)
     {
-        $data = Event::select('name', 'created_at', 'slug')->where('slug', $event_slug)->get();
-        if (!empty($data[0]->created_at))
-        {
-            $month = Carbon::parse($data[0]->created_at)->format('m');
-            $date = Carbon::parse($data[0]->created_at)->format('d');
-            $event_year = Carbon::parse($data[0]->created_at)->format('Y');
-            $event_start = Carbon::parse($data[0]->created_at)->format('h:i');
-            $event_end = Carbon::parse($data[0]->created_at)->addHour()->format('h:i');
+        $data = Event::select('name', 'created_at', 'slug', 'event_date', 'start_time', 'end_time')->where('slug', $event_slug)->first();
+        if (!empty($data->created_at)){
+            if(empty($data->event_date && $data->start_time && $data->end_time)){
+                $month = Carbon::parse($data->created_at)->format('m');
+                $date = Carbon::parse($data->created_at)->format('d');
+                $event_year = Carbon::parse($data->created_at)->format('Y');
+                $event_start = Carbon::parse($data->created_at)->format('h:i');
+                $event_end = Carbon::parse($data->created_at)->addHour()->format('h:i');
+                $dateComp = $event_year.'-'.$month.'-'.$date;
+            } else{
+                $dateComp = $data->event_date;
+                $event_start = $data->start_time;
+                $event_end = $data->end_time;
+            }
 
-            $project_id = Project::select('id')->where('slug', $project_slug)->get();
+//                $date = Carbon::parse($data->created_at)->format('d');
+//                $event_year = Carbon::parse($data->created_at)->format('Y');
+//            info.value.date =  response.data[2]+'-'+response.data[0]+'-'+response.data[1]
 
-            $data1 = ProjectUser::with('project_users')->where(array('project_id'=>$project_id[0]->id, 'is_key'=> 1))->get();
+
+            $project_id = Project::select('id')->where('slug', $project_slug)->first();
+
+            $data1 = ProjectUser::with('project_users')->where(array('project_id'=>$project_id->id, 'is_key'=> 1))->get();
             $data2 = RosterProjectResource::Collection($data1);
-            $data3 = Event::select('id','slug', 'group_comment')->where( 'slug', $event_slug)->get();
+            $data3 = Event::select('id','slug', 'group_comment')->where( 'slug', $event_slug)->first();
 
-            return response([$month, $date, $event_year, $event_start, $event_end, $data2, $data3]);
+            return response([$dateComp, $event_start, $event_end, $data2, $data3]);
         }
     }
 

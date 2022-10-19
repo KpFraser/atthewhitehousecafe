@@ -16,7 +16,7 @@ const unArchieved = (id) =>{
     axios
         .post('/un-archieve', {id: id})
         .then((response)=>{
-            Toast.fire({icon: "success", title: "Added to Archieved!"})
+            Toast.fire({icon: "success", title: "Moved to Projects!"})
             archieved ()
         })
 }

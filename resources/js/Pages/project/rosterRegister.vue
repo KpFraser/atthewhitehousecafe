@@ -120,7 +120,7 @@ const redirect = () => {
                     <form v-if="sendEmail === true" class="text-[22px] mx-10">
                         <div class="flex items-center my-5">
                             <BreezeCheckbox @change="checkRegister()" class="accent-[#639f1e] w-5 h-5 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
-                            <BreezeLabel for="name" class="ml-2 text-black" value="Already a Member?" />
+                            <BreezeLabel class="ml-2 text-black" value="Already a Member?" />
                         </div>
                         <div v-show="alreadyRegister !== true">
                             <div class="flex items-center">

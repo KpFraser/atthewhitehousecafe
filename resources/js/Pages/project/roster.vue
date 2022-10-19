@@ -15,6 +15,7 @@
         { footerLists } = useFooterList()
 
     const info = ref({}),
+        baseUrl = window.location.origin,
         roster = ref({}),
         users = ref([]),
         groupImages = ref([]),
@@ -30,12 +31,11 @@
         axios
             .get('/event-info/'+event_id+'/'+project_id)
             .then((response)=>{
-                // console.log(response)
-                info.value.date =  response.data[2]+'-'+response.data[0]+'-'+response.data[1]
-                info.value.start_time = response.data[3]
-                info.value.end_time = response.data[4]
-                users.value = response.data[5]
-                groupComment.value.comment = response.data[6][0].group_comment;
+                info.value.date =  response.data[0]
+                info.value.start_time = response.data[1]
+                info.value.end_time = response.data[2]
+                users.value = response.data[3]
+                groupComment.value.comment = response.data[4].group_comment;
             })
     }
 
@@ -44,8 +44,6 @@
         errors.value = {}
         if(!post.comment)
             errors.value.rosterComment = ['* Required field!']
-        if(!post.image && !post.image_name)
-            errors.value.rosterImage = ['* Image is Required!']
 
         return Object.values(errors.value).length === 0;
     }
@@ -93,8 +91,8 @@
         errors.value = {}
         if(!post.comment)
             errors.value.comment = ['*Group comment is required field!']
-        if(groupImages.value.length === 0)
-            errors.value.pic = ['*Group Image is required field!']
+        // if(groupImages.value.length === 0)
+        //     errors.value.pic = ['*Group Image is required field!']
         if(!info.value.date || !info.value.start_time || !info.value.end_time)
             errors.value.dateAndTime = ['*Date and time is required!']
 
@@ -150,7 +148,7 @@
 
     const rosterImage = (e) =>{
         roster.value.image = e.target.files[0]
-        console.log(roster.value.image_name = roster.value.image.name)
+        roster.value.image_name = roster.value.image.name
     }
 
     onMounted( ()=> {
@@ -204,7 +202,7 @@
                         <div>
                             <BreezeLabel value="Group Comment"/>
                             <div v-if="!groupComment.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.comment">{{ message }}</div>
-                            <div v-if="errors.length !== 0" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.pic">{{ message }}</div>
+<!--                            <div v-if="errors.length !== 0" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.pic">{{ message }}</div>-->
                         </div>
                         <div>
                             <label for="camera">
@@ -235,9 +233,9 @@
                         <div class="p-2 text-sm">{{ roster.image_name }}</div>
                         <div class="flex items-center justify-between">
                             <div>
-                                <label for="rosterImg" class="flex">
+                                <label for="rosterImg" class="flex items-center">
                                     <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
-                                    <div v-if="!roster.Image" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.rosterImage">{{ message }}</div>
+                                    <a v-show="roster.image_name !== null" target="_blank" :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 px-4 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded">Preview</a>
                                 </label>
                                 <input @change="rosterImage($event)" type="file" id="rosterImg" class="hidden">
                             </div>
