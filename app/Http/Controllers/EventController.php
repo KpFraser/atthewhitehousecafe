@@ -6,6 +6,8 @@ use App\Http\Resources\RosterProjectResource;
 use App\Mail\ParticipantMail;
 use App\Models\Event;
 use App\Models\Project;
+use App\Models\RosterImage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rules;
 use App\Models\ProjectUser;
 use App\Models\User;
@@ -35,8 +37,9 @@ class EventController extends Controller
      */
     public function showInfo($event_slug, $project_slug)
     {
-        $data = Event::select('name', 'created_at', 'slug', 'event_date', 'start_time', 'end_time')->where('slug', $event_slug)->first();
+        $data = Event::select('id', 'name', 'created_at', 'slug', 'event_date', 'start_time', 'end_time')->where('slug', $event_slug)->first();
         if (!empty($data->created_at)){
+            $images = RosterImage::select('id', 'system_name', 'image_name')->where('event_id', $data->id)->get();
             if(empty($data->event_date && $data->start_time && $data->end_time)){
                 $month = Carbon::parse($data->created_at)->format('m');
                 $date = Carbon::parse($data->created_at)->format('d');
@@ -50,18 +53,13 @@ class EventController extends Controller
                 $event_end = $data->end_time;
             }
 
-//                $date = Carbon::parse($data->created_at)->format('d');
-//                $event_year = Carbon::parse($data->created_at)->format('Y');
-//            info.value.date =  response.data[2]+'-'+response.data[0]+'-'+response.data[1]
-
-
             $project_id = Project::select('id')->where('slug', $project_slug)->first();
 
             $data1 = ProjectUser::with('project_users')->where(array('project_id'=>$project_id->id, 'is_key'=> 1))->get();
             $data2 = RosterProjectResource::Collection($data1);
             $data3 = Event::select('id','slug', 'group_comment')->where( 'slug', $event_slug)->first();
 
-            return response([$dateComp, $event_start, $event_end, $data2, $data3]);
+            return response([$dateComp, $event_start, $event_end, $data2, $data3, $images]);
         }
     }
 
@@ -184,17 +182,48 @@ class EventController extends Controller
      */
     public function update(Request $request)
     {
-        $date1 = Carbon::parse($request->datetime['start_time'])->format('H:i:s');
-        $date2 = Carbon::parse($request->datetime['end_time'])->format('H:i:s');
+        $groupComment = json_decode($request->groupComment, true);
+        $dateTime = json_decode($request->dateTime, true);
+        $length = json_decode($request->length, true);
+        $image_names = json_decode($request->image_name, true);
 
-        Event::updateOrCreate([
-            'slug' => $request->comment['event_id'],
+        $date1 = Carbon::parse($dateTime['start_time'])->format('H:i:s');
+        $date2 = Carbon::parse($dateTime['end_time'])->format('H:i:s');
+
+        $event = Event::updateOrCreate([
+            'slug' => $groupComment['event_slug'],
         ],[
-            'group_comment'=> $request->comment['comment'],
-            'event_date'=> $request->datetime['date'],
+            'group_comment'=> $groupComment['comment'],
+            'event_date'=> $dateTime['date'],
             'start_time'=> $date1,
             'end_time'=> $date2
         ]);
+        for ($i=1; $i <= $length; $i++ ){
+            if ($request->hasFile('image'.$i)) {
+                $file1 = $request->file('image'.$i)->getClientOriginalName();
+                $filename1 = pathinfo($file1, PATHINFO_FILENAME);
+                $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
+                $image = $filename1.'-'.time().'.'.$extension1;
+                $request->file('image'.$i)->move(public_path('storage/images/group'), $image);
+
+                RosterImage::create([
+                    'event_id' => $event->id,
+                    'image_name'=> $file1,
+                    'system_name'=> $image,
+                ]);
+            } elseif(count($image_names) === 0) {
+                return response()->error('file missing', 500);
+            }
+        }
+
+        if (!empty($length) && $length !== 0 && count($image_names) !== 0){
+            foreach ($image_names as $item) {
+                if (File::exists(storage_path('/app/public/images/group/') . $item['system_name'])) {
+                    File::delete(storage_path('/app/public/images/group/') . $item['system_name']);
+                }
+                RosterImage::where('id', $item['id'])->delete();
+            }
+        }
         return response()->success();
     }
 

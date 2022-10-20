@@ -14,28 +14,31 @@
     const { Toast } = commonFunctions(),
         { footerLists } = useFooterList()
 
-    const info = ref({}),
+    const
         baseUrl = window.location.origin,
-        roster = ref({}),
+        roster = ref({image:''}),
         users = ref([]),
-        groupImages = ref([]),
-        groupComment = ref({}),
-        errors = ref({})
+        errors = ref({}),
+        imagesPreview = ref([]),
+        allInformation = ref ({groupComment:{event_slug:'', approve:false, comment:'', roster_comment:false}, dateTime:{date:'', start_time:'', end_time:''}, images:[]})
 
     const eventInfo = () => {
         const queryString = window.location.href
-        let event_id = queryString.split('/')[4]
+        let event_slug = queryString.split('/')[4]
         let project_id = queryString.split('/')[5]
-        groupComment.value.event_id = event_id
+        allInformation.value.groupComment.event_slug = event_slug
 
         axios
-            .get('/event-info/'+event_id+'/'+project_id)
+            .get('/event-info/'+event_slug+'/'+project_id)
             .then((response)=>{
-                info.value.date =  response.data[0]
-                info.value.start_time = response.data[1]
-                info.value.end_time = response.data[2]
-                users.value = response.data[3]
-                groupComment.value.comment = response.data[4].group_comment;
+                if(!!response.data){
+                    allInformation.value.dateTime.date = !!response.data[0] ? response.data[0]: ''
+                    allInformation.value.dateTime.start_time = !!response.data[1] ? response.data[1]: ''
+                    allInformation.value.dateTime.end_time = !!response.data[2] ? response.data[2]: ''
+                    users.value = !!response.data[3] ? response.data[3]: ''
+                    allInformation.value.groupComment.comment = !!response.data[4].group_comment ? response.data[4].group_comment: ''
+                    imagesPreview.value = !!response.data[5] ? response.data[5]: ''
+                }
             })
     }
 
@@ -52,8 +55,8 @@
         console.log(post)
         let validComment = modalValidation (post)
         if (validComment === true) {
-            if (groupComment.value.roster_comment) return
-            groupComment.value.roster_comment = true
+            if (allInformation.value.groupComment.roster_comment) return
+            allInformation.value.groupComment.roster_comment = true
             axios
                 .post('/roster-comment', roster.value,{
                     headers: {
@@ -70,12 +73,12 @@
 
                 })
                 .finally(() => {
-                    groupComment.value.roster_comment = false
+                    allInformation.value.groupComment.roster_comment = false
 
                 })
 
         }
-        groupComment.value.modal = false
+        allInformation.value.groupComment.modal = false
     }
 
     const checkedProject = (one, two, three) =>{
@@ -87,14 +90,14 @@
     }
 
     const validationError = (post) =>{
-
+        console.log(post)
         errors.value = {}
-        if(!post.comment)
-            errors.value.comment = ['*Group comment is required field!']
-        // if(groupImages.value.length === 0)
-        //     errors.value.pic = ['*Group Image is required field!']
-        if(!info.value.date || !info.value.start_time || !info.value.end_time)
+        if(!post.dateTime.date || !post.dateTime.start_time || !post.dateTime.end_time)
             errors.value.dateAndTime = ['*Date and time is required!']
+        if(!post.groupComment.comment)
+            errors.value.groupComment = ['*Comment is required!']
+        if(post.images.length === 0 && imagesPreview.value.length === 0)
+            errors.value.groupImage = ['*Image is required!']
 
         return Object.values(errors.value).length === 0;
     }
@@ -102,33 +105,57 @@
     const groupComments = (post) =>{
 
         let valid = validationError (post)
-        const formData = new FormData();
 
-        if (valid === true) {
-            if (groupComment.value.approve) return
-            groupComment.value.approve = true
-            //
-            // groupImages.value.forEach((element, index, array) => {
-            //     formData.append('photo-' + index, element)
-            // });
-            // formData.append('comment',post.comment)
-            // formData.append('info',info.value)
+        if (valid) {
+            console.log(post)
+            if (allInformation.value.groupComment.approve) return
+            const formData = new FormData();
+            for (let item in post) {
+                if(post.hasOwnProperty(item)) {
+                    if(item === "dateTime" || item === "groupComment") {
+                        formData.append(item,  JSON.stringify(post[item]));
+                    } else if (item === "images"){
+                        console.log(item, post[item])
+                        let index=1
+                        _.forEach(post[item], function (value, key){
+                            const length = key+1
+                            formData.append('image'+length ,  value);
+                            index = key
+                        })
+                        formData.append('length',  JSON.stringify(index+1));
+                    }
+                }
+            }
+            formData.append('image_name',  JSON.stringify(imagesPreview.value));
             axios
-                .post('/group-comment', {comment:post, datetime: info.value})
-                .then((response) => {
-                    if (response.data.success === true)
-                        Toast.fire({icon: "success", title: "Comment Submitted!"})
+                .post('/group-comment', formData , {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
                 })
-                .finally(() => groupComment.value.approve = false)
+                .then((response) => {
+                    if (response.data.success === true){
+                        allInformation.value.images=[]
+                        eventInfo ()
+                        Toast.fire({icon: "success", title: "Comment Submitted!"})
+                    }
+                })
+                .finally(() => allInformation.value.groupComment.approve = false)
         } else
-            groupComment.value.approve = false
+            allInformation.value.groupComment.approve = false
+    }
+
+    const groupImg = (e) =>{
+        _.forEach(e.target.files, function(value, key) {
+            allInformation.value.images.push(value)
+        });
     }
 
     const rosterRegister = () =>{
         const queryString = window.location.href
-        let event_id = queryString.split('/')[4]
+        let event_slug = queryString.split('/')[4]
         let project_id = queryString.split('/')[5]
-        Inertia.visit('/roster-register/'+event_id+'/'+project_id)
+        Inertia.visit('/roster-register/'+event_slug+'/'+project_id)
     }
 
     const commentModal = (user_id, project_id) =>{
@@ -138,12 +165,6 @@
         roster.value.comment = obj.comment
         roster.value.image_name = obj.image
         roster.value.system_name = obj.image
-    }
-
-    const groupImg = (e) =>{
-        _.forEach(e.target.files, function(value, key) {
-            groupImages.value.push(value)
-        });
     }
 
     const rosterImage = (e) =>{
@@ -171,18 +192,15 @@
                 <div class="flex space-x-2 justify-between">
                     <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
                         <div class="px-4 pt-2 text-[16px] text-center">Date</div>
-<!--                        <div class="text-[12px] text-white text-center font-sans">{{info.date}}</div>-->
-                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="date" v-model="info.date">
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="date" v-model="allInformation.dateTime.date">
                     </div>
                     <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
                         <div class="px-4 pt-2 text-[16px] text-center">Start Time</div>
-<!--                        <div class="text-[12px] text-white text-center font-sans">{{info.start_time}}</div>-->
-                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="info.start_time">
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="allInformation.dateTime.start_time">
                     </div>
                     <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
                         <div class="px-4 pt-2 text-[16px] text-center">End Time</div>
-<!--                        <div class="text-[12px] text-white text-center font-sans">{{info.end_time}}</div>-->
-                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="info.end_time">
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="allInformation.dateTime.end_time">
                     </div>
                 </div>
                 <BreezeLabel value="Roster"/>
@@ -201,10 +219,14 @@
                     <div class="flex items-center justify-between w-full">
                         <div>
                             <BreezeLabel value="Group Comment"/>
-                            <div v-if="!groupComment.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.comment">{{ message }}</div>
-<!--                            <div v-if="errors.length !== 0" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.pic">{{ message }}</div>-->
+                            <div v-if="!allInformation.groupComment.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.groupComment">{{ message }}</div>
+                            <div v-if="errors.length !== 0" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.groupImage">{{ message }}</div>
                         </div>
-                        <div>
+                        <div class="flex items-end">
+                            <div class="text-center">
+                                <div v-if="allInformation.images.length !== 0" class="mr-2 mb-2 text-sm">Image Added !</div>
+                                <div v-if="imagesPreview.length !== 0" class="mr-2 text-sm text-blue-700  cursor-pointer" data-bs-toggle="modal" data-bs-target="#preview">Preview</div>
+                            </div>
                             <label for="camera">
                                 <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
                             </label>
@@ -212,8 +234,8 @@
                         <input class="hidden" @change="groupImg($event)" id="camera" multiple type="file">
                     </div>
                 </div>
-                <textarea v-model="groupComment.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]"></textarea>
-                <BreezeButton @click="groupComments(groupComment)" type="button" class="bg-opacity-75 px-10 mt-4 bg-[#639f1e] text-white w-full font-sans submit py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': groupComment.approve }" :disabled="groupComment.approve">
+                <textarea v-model="allInformation.groupComment.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]"></textarea>
+                <BreezeButton @click="groupComments(allInformation)" type="button" class="bg-opacity-75 px-10 mt-4 bg-[#639f1e] text-white w-full font-sans submit py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': allInformation.groupComment.approve }" :disabled="allInformation.groupComment.approve">
                     Save
                 </BreezeButton>
             </form>
@@ -230,16 +252,31 @@
                         <textarea v-model="roster.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]" placeholder="Add a comment here.."></textarea>
                     </div>
                     <div class="p-4 border-t border-gray-200 rounded-b-md">
-                        <div class="p-2 text-sm">{{ roster.image_name }}</div>
                         <div class="flex items-center justify-between">
                             <div>
                                 <label for="rosterImg" class="flex items-center">
                                     <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
-                                    <a v-show="roster.image_name !== null" target="_blank" :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 px-4 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded">Preview</a>
+                                    <a v-if="roster.image === ''" target="_blank" :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 text-blue-700 rounded">Preview</a>
+                                    <div v-else class="ml-2 text-sm">Image Added !</div>
                                 </label>
                                 <input @change="rosterImage($event)" type="file" id="rosterImg" class="hidden">
                             </div>
-                            <button @click="rosterComment(roster)" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" :class="{ 'opacity-25': groupComment.roster_comment }" :disabled="groupComment.roster_comment">Submit</button>
+                            <button @click="rosterComment(roster)" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" :class="{ 'opacity-25': allInformation.groupComment.roster_comment }" :disabled="allInformation.groupComment.roster_comment">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="preview" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="previewLabel" aria-hidden="true">
+            <div class="modal-dialog relative w-auto pointer-events-none">
+                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
+                        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Group Images</h5>
+                        <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    </div>
+                    <div class="modal-body h-[500px] overflow-y-auto relative p-4">
+                        <div v-for="info in imagesPreview">
+                            <img :src="'/storage/images/group/'+info.system_name" class="p-2">
                         </div>
                     </div>
                 </div>

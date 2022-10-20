@@ -19,7 +19,7 @@
                     <div class="w-full">
                         <Link :href="route('new-project')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
-                            <div>Purposed</div>
+                            <div>Proposed</div>
                         </Link>
                         <Link :href="route('all-project')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
