@@ -114,10 +114,15 @@ const inputSearch = debounce(() => {
         axios
             .get('/searchEmail/'+formInfo.value.email)
             .then((response) => {
-                console.log(response.data)
+                console.log(search.value = response.data.data)
             })
     }
 }, 1000)
+
+const selectEmail = (email) => {
+    formInfo.value.email = email
+    search.value = []
+}
 
 </script>
 
@@ -152,8 +157,10 @@ const inputSearch = debounce(() => {
                                 <div v-if="emailError.length !== 0" class="ml-2 text-red-700 font-bold text-sm" >{{emailError[0]}}</div>
                             </div>
                             <div v-if="!!errors" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.email">{{ message }}</div>
-                            <BreezeInput @input="inputSearch" id="email" type="email" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="formInfo.email" required/>
-<!--                            <div class="hover:bg-gray-100 cursor-pointer border-2 border-[#639f1e]">ahmad@ahmad.com</div>-->
+                            <div class="relative">
+                                <BreezeInput @input="inputSearch" v-model="formInfo.email" id="email" type="email" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" required/>
+                                <div v-if="search.length !== 0" v-for="mail in search" @click="selectEmail(mail.email)" class="hover:bg-gray-100 absolute bg-white w-full cursor-pointer border-2 border-[#639f1e]">{{ mail.email }}</div>
+                            </div>
                         </div>
                         <div v-show="alreadyRegister !== true" class="flex items-center justify-end mt-4">
                             <BreezeButton @click="submit(formInfo)" class="bg-[#639f1e] hover:bg-opacity-75 text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">

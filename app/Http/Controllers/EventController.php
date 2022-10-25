@@ -27,9 +27,8 @@ class EventController extends Controller
      */
     public function findMail($search)
     {
-        dd(User::all());
         $data = User::select(['id', 'email'])->where('email', 'LIKE', "%$search%")->get();
-        dd($data);
+        return response()->success($data);
     }
 
     /**
