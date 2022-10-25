@@ -19,6 +19,8 @@
         roster = ref({image:''}),
         users = ref([]),
         errors = ref({}),
+        urlRoster =  ref(),
+        urlGroup =  ref([]),
         imagesPreview = ref([]),
         allInformation = ref ({groupComment:{event_slug:'', approve:false, comment:'', roster_comment:false}, dateTime:{date:'', start_time:'', end_time:''}, images:[]})
 
@@ -148,7 +150,9 @@
     const groupImg = (e) =>{
         _.forEach(e.target.files, function(value, key) {
             allInformation.value.images.push(value)
+            urlGroup.value.push(URL.createObjectURL(value))
         });
+        console.log(urlGroup.value)
     }
 
     const rosterRegister = () =>{
@@ -169,6 +173,7 @@
 
     const rosterImage = (e) =>{
         roster.value.image = e.target.files[0]
+        urlRoster.value = URL.createObjectURL(roster.value.image);
         roster.value.image_name = roster.value.image.name
     }
 
@@ -224,14 +229,13 @@
                         </div>
                         <div class="flex items-end">
                             <div class="text-center">
-                                <div v-if="allInformation.images.length !== 0" class="mr-2 mb-2 text-sm">Image Added !</div>
-                                <div v-if="imagesPreview.length !== 0" class="mr-2 text-sm text-blue-700  cursor-pointer" data-bs-toggle="modal" data-bs-target="#preview">Preview</div>
+                                <div v-if="imagesPreview.length !== 0 || urlGroup.length !== 0" class="mr-2 text-sm text-blue-700  cursor-pointer" data-bs-toggle="modal" data-bs-target="#preview">Preview</div>
                             </div>
                             <label for="camera">
                                 <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
                             </label>
                         </div>
-                        <input class="hidden" @change="groupImg($event)" id="camera" multiple type="file">
+                        <input class="hidden" @change="groupImg($event)" id="camera" accept="image/*" multiple type="file">
                     </div>
                 </div>
                 <textarea v-model="allInformation.groupComment.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]"></textarea>
@@ -257,9 +261,9 @@
                                 <label for="rosterImg" class="flex items-center">
                                     <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
                                     <a v-if="roster.image === ''" target="_blank" :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 text-blue-700 rounded">Preview</a>
-                                    <div v-else class="ml-2 text-sm">Image Added !</div>
+                                    <a v-if="urlRoster" target="_blank" :href="urlRoster" class="ml-2 text-blue-700 rounded">Preview</a>
                                 </label>
-                                <input @change="rosterImage($event)" type="file" id="rosterImg" class="hidden">
+                                <input @change="rosterImage($event)" accept="image/*" type="file" id="rosterImg" class="hidden">
                             </div>
                             <button @click="rosterComment(roster)" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" :class="{ 'opacity-25': allInformation.groupComment.roster_comment }" :disabled="allInformation.groupComment.roster_comment">Submit</button>
                         </div>
@@ -275,7 +279,10 @@
                         <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                     </div>
                     <div class="modal-body h-[500px] overflow-y-auto relative p-4">
-                        <div v-for="info in imagesPreview">
+                        <div v-if="urlGroup.length !== 0" v-for="img in urlGroup">
+                            <img :src="img" class="p-2">
+                        </div>
+                        <div v-else v-for="info in imagesPreview">
                             <img :src="'/storage/images/group/'+info.system_name" class="p-2">
                         </div>
                     </div>
