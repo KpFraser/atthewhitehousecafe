@@ -12,6 +12,7 @@ import useFooterList from "../../../use/useFooterList";
 import { ref } from "vue";
 import {Inertia} from "@inertiajs/inertia";
 import commonFunctions from "@/use/common";
+import debounce from "lodash/debounce";
 
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList(),
@@ -19,7 +20,9 @@ const { Toast } = commonFunctions(),
     formInfo = ref({}),
     slug = ref({}),
     validationErrors = ref({}),
-    emailError = ref([])
+    emailError = ref([]),
+    search = ref('')
+
 
 const errors = ref({}),
     alreadyRegister = ref (false)
@@ -105,6 +108,17 @@ const redirect = () => {
     Inertia.visit('/roster/' + event_slug + '/' + project_slug)
 }
 
+const inputSearch = debounce(() => {
+    if(formInfo.value.email !== ''){
+        console.log(formInfo.value.email)
+        axios
+            .get('/searchEmail/'+formInfo.value.email)
+            .then((response) => {
+                console.log(response.data)
+            })
+    }
+}, 1000)
+
 </script>
 
 <template>
@@ -138,7 +152,8 @@ const redirect = () => {
                                 <div v-if="emailError.length !== 0" class="ml-2 text-red-700 font-bold text-sm" >{{emailError[0]}}</div>
                             </div>
                             <div v-if="!!errors" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.email">{{ message }}</div>
-                            <BreezeInput id="email" type="email" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="formInfo.email" required autocomplete="username" />
+                            <BreezeInput @input="inputSearch" id="email" type="email" class="mt-1 block w-full border-b-8 border-[#639f1e] outline-0 bg-transparent" v-model="formInfo.email" required/>
+<!--                            <div class="hover:bg-gray-100 cursor-pointer border-2 border-[#639f1e]">ahmad@ahmad.com</div>-->
                         </div>
                         <div v-show="alreadyRegister !== true" class="flex items-center justify-end mt-4">
                             <BreezeButton @click="submit(formInfo)" class="bg-[#639f1e] hover:bg-opacity-75 text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">

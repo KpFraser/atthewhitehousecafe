@@ -25,9 +25,11 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function findMail($search)
     {
-        //
+        dd(User::all());
+        $data = User::select(['id', 'email'])->where('email', 'LIKE', "%$search%")->get();
+        dd($data);
     }
 
     /**

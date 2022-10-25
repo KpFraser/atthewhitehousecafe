@@ -103,9 +103,11 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/group-comment', [EventController::class, 'update']);
     Route::post('/roster-new', [EventController::class, 'rosterRegister']);
     Route::post('/add-participant', [EventController::class, 'addParticipant']);
-/*
- *  GoalsController
-*/
+    Route::get('/searchEmail/{search}', [EventController::class, 'findMail']);
+
+    /*
+     *  GoalsController
+    */
     Route::get('/bike-show/{bike_slug?}', [GoalController::class, 'show']);
 /*
  *  BikesController
