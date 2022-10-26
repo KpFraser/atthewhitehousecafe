@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/question-second', fn ()=> Inertia::render('project/questionSecond') )->name('question-second');
     Route::get('/question-third', fn ()=> Inertia::render('project/questionThird') )->name('question-third');
     Route::get('/proposals', fn ()=> Inertia::render('project/proposals') )->name('proposals');
+    Route::get('/applications-projects', fn ()=> Inertia::render('project/applications-projects') )->name('applications-projects');
 
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
     Route::get('/emailShow', [RegisteredUserController::class, 'show']);
@@ -131,6 +132,7 @@ Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 /*
 *  ApplicationController
 */
+Route::get('/applications-information', [ApplicationController::class, 'application']);
 Route::get('/project-roles', [ApplicationController::class, 'show']);
 Route::get('/application-answers/{id}/{project_slug}', [ApplicationController::class, 'answers']);
 Route::post('/application-info', [ApplicationController::class, 'store']);

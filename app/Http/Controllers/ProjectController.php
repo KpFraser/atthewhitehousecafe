@@ -72,7 +72,7 @@ class ProjectController extends Controller
             return response($data);
         }
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -175,6 +175,10 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
 //        dd($request->all());
+
+        $request->validate([
+            'name' => 'required|unique:projects,name,'.$request->id,
+        ]);
         Project::updateOrCreate([
             'id' => $request->id,
         ],[

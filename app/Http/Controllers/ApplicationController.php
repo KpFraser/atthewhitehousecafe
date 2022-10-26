@@ -27,9 +27,10 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function application()
     {
-        //
+        $data = Application::select('id', 'project_id', 'name', 'role_id')->with('ProjectsName')->get();
+        return response()->success($data);
     }
 
     /**
@@ -138,7 +139,7 @@ class ApplicationController extends Controller
             } else {
                 return response()->error('Not found', 220);
             }
-        } 
+        }
         // dd($id, $project_id->id);
         else {
             $data = Application::select('id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')
@@ -148,6 +149,6 @@ class ApplicationController extends Controller
             } else {
                 return response()->error('Not found', 220);
             }
-        } 
+        }
     }
 }

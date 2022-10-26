@@ -152,7 +152,13 @@
             allInformation.value.images.push(value)
             urlGroup.value.push(URL.createObjectURL(value))
         });
-        console.log(urlGroup.value)
+    }
+
+    const removeImage = (key) =>{
+        if(key !== ''){
+            urlGroup.value.splice(key, 1)
+            allInformation.value.images.splice(key, 1)
+        }
     }
 
     const rosterRegister = () =>{
@@ -260,8 +266,8 @@
                             <div>
                                 <label for="rosterImg" class="flex items-center">
                                     <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
-                                    <a v-if="roster.image === ''" target="_blank" :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 text-blue-700 rounded">Preview</a>
                                     <a v-if="urlRoster" target="_blank" :href="urlRoster" class="ml-2 text-blue-700 rounded">Preview</a>
+                                    <a v-else-if="roster.image_name !== ''" target="_blank" :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 text-blue-700 rounded">Preview</a>
                                 </label>
                                 <input @change="rosterImage($event)" accept="image/*" type="file" id="rosterImg" class="hidden">
                             </div>
@@ -279,7 +285,10 @@
                         <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                     </div>
                     <div class="modal-body h-[500px] overflow-y-auto relative p-4">
-                        <div v-if="urlGroup.length !== 0" v-for="img in urlGroup">
+                        <div v-if="urlGroup.length !== 0" v-for="(img, key) in urlGroup">
+                            <div class="flex justify-end">
+                                <i @click="removeImage(key)" class="fas fa-times cursor-pointer hover:text-white hover:bg-red-500 text-red-500 border-2 border-red-500 px-2 py-[5px] -mr-3 -mb-4 z-10 bg-white rounded-full"></i>
+                            </div>
                             <img :src="img" class="p-2">
                         </div>
                         <div v-else v-for="info in imagesPreview">

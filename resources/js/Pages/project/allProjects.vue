@@ -57,6 +57,7 @@ const keyBtn = (id) =>{
 }
 
 const allPencilBtn = (slug) =>{
+    if (slug !== 'bike-repair')
     Inertia.visit('/proposed/'+slug)
 }
 

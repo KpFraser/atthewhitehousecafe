@@ -12,7 +12,8 @@ import commonFunctions from "@/use/common";
 
 const { Toast } = commonFunctions()
 const { footerLists } = useFooterList()
-const information = ref({})
+const information = ref({}),
+    errors = ref({name:[]})
 
 const projectInfo = () => {
     const queryString = window.location.href;
@@ -25,18 +26,23 @@ const projectInfo = () => {
 }
 
 const updateInfo = (id) =>{
-    if(information.value.updating) return
-    information.value.updating = true
-    axios
-        .post ('/update-project', information.value)
-        .then((response)=>{
-            if(response.data.success === true)
-                Toast.fire({icon: "success",title: "Project updated successfully!"})
-            if (id===1){
-                Inertia.visit('/projectshome')
-            }
-        })
-        .finally(()=> information.value.updating = false)
+    if(information.value.name !== ''){
+        if(information.value.updating) return
+        information.value.updating = true
+        axios
+            .post ('/update-project', information.value)
+            .then((response)=>{
+                if(response.data.success === true)
+                    Toast.fire({icon: "success",title: "Project updated successfully!"})
+                if (id===1)
+                    Inertia.visit('/projectshome')
+            })
+            .catch(function (error) {
+                   errors.value.name = error.response.data.errors.name
+            })
+            .finally(()=> information.value.updating = false)
+    } else
+        errors.value.name.push('Name is required')
 }
 
 const approveInfo = () =>{
@@ -71,6 +77,7 @@ onMounted( ()=> {
                     </div>
                     <div class="flex items-center">
                         <BreezeLabel value="Name" />
+                        <div v-if="errors?.name !== ''" class="text-xs font-bold text-red-700 ml-2" v-for="message in errors?.name">* {{message}}</div>
                     </div>
                     <BreezeInput v-model="information.name"/>
                     <div class="flex items-center">
