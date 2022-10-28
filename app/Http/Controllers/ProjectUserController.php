@@ -52,7 +52,6 @@ class ProjectUserController extends Controller
      */
     public function isRoster(Request $request)
     {
-//        dd($request->project_id);
         ProjectUser::select('id', 'user_id', 'is_roster')
             ->where(array('user_id'=> $request->id, 'project_id' => $request->project_id))
             ->update(array('is_roster'=> !empty($request->check)? 1 : 0));
@@ -104,7 +103,6 @@ class ProjectUserController extends Controller
      */
     public function update(Request $request)
     {
-//        dd($request->all());
         ProjectUser::updateOrCreate([
             'project_id' => $request->id,
             'user_id'=> auth()->user()->id,

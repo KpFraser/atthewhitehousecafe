@@ -114,7 +114,6 @@ class BikeController extends Controller
                             'item_name' => $row['item_name'],
                             'cost' => $row['cost'],
                         ]);
-//                        print_r($test);
                     }
                 }
             }

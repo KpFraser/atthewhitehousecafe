@@ -21,56 +21,42 @@ class ProjectController extends Controller
     public function index()
     {
         $data = Project::select('id', 'name', 'slug')->where('is_approved', '!=', 1)->orWhereNull('is_approved')->orderBy('name')->get();
-        return response($data);
+        return response()->success($data);
     }
 
     public function footer_project()
     {
        $favourite = ProjectUser::select('id', 'user_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
 
-       if (!empty($favourite)){
+       if (!empty($favourite))
            return Inertia::render('project/project');
-       }
        else
-       {
            return Inertia::render('ProjectsHome');
-       }
     }
 
     public function editFavouriteInfo($slug)
     {
-//        dd($slug);
         if(!empty($slug)){
             $project_id = Project::select('id')->where('slug', $slug)->first();
             $data1 = ProjectUser::select('id', 'project_id')->where(array('project_id'=> $project_id->id, 'user_id'=> auth()->user()->id))->with('key_project')->first();
             $data2 = Event::select('id', 'name', 'slug')->where('project_id', $project_id->id)->get();
-            return response([$data1, $data2]);
-        } else{
+            return response()->success([$data1, $data2]);
+        } else
             return response()->error('Data not available!', 500);
-        }
     }
 
     public function favouriteInfo()
     {
         $data1 = ProjectUser::select('id', 'project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->with('key_project')->first();
         $data2 = Event::select('id', 'name', 'slug')->where(array('project_id'=> $data1->project_id))->get();
-        return response([$data1, $data2]);
-    }
-
-    public function favourite()
-    {
-        $data = Project::select('id', 'is_key')->where('is_key', 1)->get();
-        if (!empty($data)) {
-            return response($data);
-        }
+        return response()->success([$data1, $data2]);
     }
 
     public function showArchieve()
     {
         $data = Project::select('id', 'name')->where(array('is_archived' => 1, 'is_approved' => 1))->get();
-        if (!empty($data)) {
-            return response($data);
-        }
+        if (!empty($data))
+            return response()->success($data);
     }
 
     /**
@@ -174,8 +160,6 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-//        dd($request->all());
-
         $request->validate([
             'name' => 'required|unique:projects,name,'.$request->id,
         ]);
@@ -199,9 +183,9 @@ class ProjectController extends Controller
      */
     public function projects(Project $project)
     {
-        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived', 'slug' )->with('projectUser')->orderBy('name')->get();
-
-        return AllProjectResource::Collection($data);
+        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived', 'slug' )
+            ->with('projectUser')->orderBy('name')->get();
+        return response()->success(AllProjectResource::Collection($data));
     }
 
     public function destroy($id)

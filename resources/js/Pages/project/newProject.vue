@@ -9,10 +9,11 @@
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
 
-    const baseUrl = window.location.origin
     const { Toast, ConfirmToast } = commonFunctions()
     const { footerLists  } = useFooterList()
+
     const names = ref({}),
+        baseUrl = window.location.origin,
         option = ref(-1),
         validationErrors = ref({})
 
@@ -62,8 +63,7 @@
       axios
         .get('/project-names')
         .then((response)=>{
-            // console.log(response)
-            names.value = response.data
+            names.value = response.data.data
         })
     }
 

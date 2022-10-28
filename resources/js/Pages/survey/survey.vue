@@ -49,7 +49,8 @@
         axios
             .get('/surveyOptions')
             .then((response)=>{
-                names.value = response.data
+                if (response.data.success)
+                    names.value = !!response.data.data ? response.data.data: ''
             })
     }
     onMounted( ()=> {

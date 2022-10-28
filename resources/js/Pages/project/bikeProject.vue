@@ -247,7 +247,7 @@
                             </div>
                             <div class="flex flex-col my-3 justify-between">
                                 <div class="bg-[#639f1e] bg-opacity-75">
-                                    <div @click="bikeAllRedirect()" class="text-[28px] flex justify-center p-1 text-center font-bold">
+                                    <div @click="bikeAllRedirect()" class="text-[28px] cursor-pointer flex justify-center p-1 text-center font-bold">
                                         <i class="fas fa-home"></i>
                                     </div>
                                 </div>

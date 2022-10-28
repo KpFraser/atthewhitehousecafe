@@ -33,19 +33,18 @@
         axios
             .get('/event-info/'+event_slug+'/'+project_id)
             .then((response)=>{
-                if(!!response.data){
-                    allInformation.value.dateTime.date = !!response.data[0] ? response.data[0]: ''
-                    allInformation.value.dateTime.start_time = !!response.data[1] ? response.data[1]: ''
-                    allInformation.value.dateTime.end_time = !!response.data[2] ? response.data[2]: ''
-                    users.value = !!response.data[3] ? response.data[3]: ''
-                    allInformation.value.groupComment.comment = !!response.data[4].group_comment ? response.data[4].group_comment: ''
-                    imagesPreview.value = !!response.data[5] ? response.data[5]: ''
+                if(response.data.success){
+                    allInformation.value.dateTime.date = !!response.data.data[0] ? response.data.data[0]: ''
+                    allInformation.value.dateTime.start_time = !!response.data.data[1] ? response.data.data[1]: ''
+                    allInformation.value.dateTime.end_time = !!response.data.data[2] ? response.data.data[2]: ''
+                    users.value = !!response.data.data[3] ? response.data.data[3]: ''
+                    allInformation.value.groupComment.comment = !!response.data.data[4].group_comment ? response.data.data[4].group_comment: ''
+                    imagesPreview.value = !!response.data.data[5] ? response.data.data[5]: ''
                 }
             })
     }
 
     const modalValidation = (post) =>{
-        console.log(post)
         errors.value = {}
         if(!post.comment)
             errors.value.rosterComment = ['* Required field!']
@@ -54,7 +53,6 @@
     }
 
     const rosterComment = (post) =>{
-        console.log(post)
         let validComment = modalValidation (post)
         if (validComment === true) {
             if (allInformation.value.groupComment.roster_comment) return
@@ -92,7 +90,6 @@
     }
 
     const validationError = (post) =>{
-        console.log(post)
         errors.value = {}
         if(!post.dateTime.date || !post.dateTime.start_time || !post.dateTime.end_time)
             errors.value.dateAndTime = ['*Date and time is required!']
@@ -109,7 +106,6 @@
         let valid = validationError (post)
 
         if (valid) {
-            console.log(post)
             if (allInformation.value.groupComment.approve) return
             const formData = new FormData();
             for (let item in post) {
@@ -117,7 +113,6 @@
                     if(item === "dateTime" || item === "groupComment") {
                         formData.append(item,  JSON.stringify(post[item]));
                     } else if (item === "images"){
-                        console.log(item, post[item])
                         let index=1
                         _.forEach(post[item], function (value, key){
                             const length = key+1
@@ -289,10 +284,10 @@
                             <div class="flex justify-end">
                                 <i @click="removeImage(key)" class="fas fa-times cursor-pointer hover:text-white hover:bg-red-500 text-red-500 border-2 border-red-500 px-2 py-[5px] -mr-3 -mb-4 z-10 bg-white rounded-full"></i>
                             </div>
-                            <img :src="img" class="p-2">
+                            <img alt="image" :src="img" class="p-2">
                         </div>
                         <div v-else v-for="info in imagesPreview">
-                            <img :src="'/storage/images/group/'+info.system_name" class="p-2">
+                            <img alt="image" :src="'/storage/images/group/'+info.system_name" class="p-2">
                         </div>
                     </div>
                 </div>
@@ -307,9 +302,9 @@
 [type='time'], [type='date'] {
      color: white;
      background-color: transparent;
-     border-width: 0px;
-     border-radius: 0px;
-     padding: 0px !important;
+     border-width: 0;
+     border-radius: 0;
+     padding: 0 !important;
      font-size: 0.75rem;
     text-align: center;
 }

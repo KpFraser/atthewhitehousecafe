@@ -25,7 +25,8 @@ const archieved = () =>{
     axios
         .get('/archieve-project')
         .then((response)=>{
-            names.value = response.data
+            if(response.data.success)
+            names.value = response.data.data
         })
 }
 

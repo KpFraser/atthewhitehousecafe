@@ -41,6 +41,7 @@ class EventController extends Controller
         $data = Event::select('id', 'name', 'created_at', 'slug', 'event_date', 'start_time', 'end_time')->where('slug', $event_slug)->first();
         if (!empty($data->created_at)){
             $images = RosterImage::select('id', 'system_name', 'image_name')->where('event_id', $data->id)->get();
+
             if(empty($data->event_date && $data->start_time && $data->end_time)){
                 $month = Carbon::parse($data->created_at)->format('m');
                 $date = Carbon::parse($data->created_at)->format('d');
@@ -60,7 +61,7 @@ class EventController extends Controller
             $data2 = RosterProjectResource::Collection($data1);
             $data3 = Event::select('id','slug', 'group_comment')->where( 'slug', $event_slug)->first();
 
-            return response([$dateComp, $event_start, $event_end, $data2, $data3, $images]);
+            return response()->success([$dateComp, $event_start, $event_end, $data2, $data3, $images]);
         }
     }
 

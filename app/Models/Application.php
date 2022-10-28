@@ -17,4 +17,9 @@ class Application extends Model
         return $this->belongsTo(Project::class,'project_id')->select('id', 'name');
     }
 
+    public function ApplicationRoles ()
+    {
+        return $this->belongsTo(Role::class,'role_id')->select('id', 'name');
+    }
+
 }

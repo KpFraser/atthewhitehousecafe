@@ -23,7 +23,7 @@ class SurveySubmissionController extends Controller
     public function index()
     {
         $data = Project::select('id', 'name')->where('is_survey', 1)->get();
-        return response($data);
+        return response()->success($data);
     }
 
     /**
@@ -60,7 +60,6 @@ class SurveySubmissionController extends Controller
      */
     public function store(Request $request)
     {
-//dd($request->all());
         $survey_contact = SurveyContact::create([
             'session_id'=> Session::getId(),
 
@@ -92,32 +91,9 @@ class SurveySubmissionController extends Controller
     public function show()
     {
         $data = Project::select('id', 'name', 'is_survey')->orderBy('name')->get();
-        return response($data);
+        return response()->success($data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\SurveySubmission  $surveySubmission
-     * @return \Illuminate\Http\Response
-     */
-    public function option(Request $request)
-    {
-        // if($request->id != ""){
-        //     SurveySubmission::updateOrCreate([
-        //             'session_id'=> Session::getId(),
-        //             'game_id'=> $request->id,
-        //         ],[
-        //             'session_id'=> Session::getId(),
-        //             'options'=> $request->option,
-        //             'survey_contact_id'=> 1,
-        //         ]);
-
-        //     return response()->success();
-        // }else{
-        //     return response()->error(500);
-        // }
-    }
     /**
      * Update the specified resource in storage.
      *

@@ -29,7 +29,8 @@ class ApplicationController extends Controller
      */
     public function application()
     {
-        $data = Application::select('id', 'project_id', 'name', 'role_id')->with('ProjectsName')->get();
+        $data = Application::select('id', 'project_id', 'name', 'role_id', 'text1', 'text2', 'text3')
+            ->with('ProjectsName', 'ApplicationRoles')->get();
         return response()->success($data);
     }
 
@@ -88,7 +89,7 @@ class ApplicationController extends Controller
         $data1 = Project::select('id', 'name')->where('is_approved', 1)->get();
         $data2 = Role::select('id', 'name')->get();
 
-        return response([$data1, $data2]);
+        return response()->success([$data1, $data2]);
     }
 
     /**
@@ -124,28 +125,26 @@ class ApplicationController extends Controller
     {
         //
     }
-    public function SlugCreate($title){
-        return Str::slug($title);
-    }
 
     public function answers($id, $project_slug)
     {
         $project_id = Project::select('id')->where('slug', $project_slug)->first();
+
         if (!empty($id) && $id !== 0){
+
             $data = Application::select('id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')
             ->where(array('role_id'=> $id, 'project_id'=> $project_id->id))->get();
             if (!empty($data)){
-                return response($data);
+                return response()->success($data);
             } else {
                 return response()->error('Not found', 220);
             }
         }
-        // dd($id, $project_id->id);
         else {
             $data = Application::select('id', 'name', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')
                 ->where(array('project_id'=> $project_id->id))->get();
             if (!empty($data)){
-                return response($data);
+                return response()->success($data);
             } else {
                 return response()->error('Not found', 220);
             }

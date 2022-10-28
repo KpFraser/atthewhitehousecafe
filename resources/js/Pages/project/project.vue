@@ -25,15 +25,19 @@ const projects = () =>{
         axios
         .get('/edit-favourite-projects/'+ slug)
         .then((response)=>{
-            favourite.value = response.data[0].key_project
-            eventShow.value = response.data[1]
+            if(response.data.success){
+                favourite.value = response.data.data[0].key_project
+                eventShow.value = response.data.data[1]
+            }
         })
     } else {
         axios
         .get('/favourite-projects')
         .then((response)=>{
-            favourite.value = response.data[0].key_project
-            eventShow.value = response.data[1]
+            if (response.data.success){
+                favourite.value = response.data.data[0].key_project
+                eventShow.value = response.data.data[1]
+            }
         })
     }
 }
@@ -59,7 +63,6 @@ const eventName = () =>{
 
 const selectedEvent = (event_id, project_id) =>{
     Inertia.visit('/roster/' +event_id+'/'+project_id)
-
 }
 
 onMounted( ()=> {

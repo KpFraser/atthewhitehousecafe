@@ -30,6 +30,7 @@ const validation = (post) =>{
 
     return Object.values(validationErrors.value).length === 0;
 }
+
 const healthInfo = (post) => {
     if(health.processing) return;
 
@@ -39,7 +40,8 @@ const healthInfo = (post) => {
         axios
             .post('/healthcare', health)
             .then((response)=>{
-                Toast.fire({icon: "success", title: "Healthcare Information updated successfully!"});
+                if (response.data.success)
+                    Toast.fire({icon: "success", title: "Healthcare Information updated successfully!"});
             })
             .finally(()=>{
                 health.processing = false;
@@ -49,12 +51,13 @@ const healthInfo = (post) => {
 const showHealthInfo = () => {
     axios
         .get('/healthcareInfo').then((response)=>{
-        console.log(response)
-            if(response.status !== 204){
-                health.emergency_name= response.data.emergency_name ? response.data.emergency_name: ''
-                health.emergency_contact = !!response.data.emergency_contact ? response.data.emergency_contact: ''
-                health.dr_name = !!response.data.dr_name ? response.data.dr_name: ''
-                health.dr_contact = !!response.data.dr_contact ? response.data.dr_contact: ''
+            if(response.data.success){
+                health.emergency_name= response.data.data.emergency_name ? response.data.data.emergency_name: ''
+                health.emergency_contact = !!response.data.data.emergency_contact ? response.data.data.emergency_contact: ''
+                health.dr_name = !!response.data.data.dr_name ? response.data.data.dr_name: ''
+                health.dr_contact = !!response.data.data.dr_contact ? response.data.data.dr_contact: ''
+            } else if (response.status !== 204){
+                validationErrors.value.mainError = ['Something went wrong try again later!']
             }
         })
 }
@@ -73,6 +76,7 @@ onMounted( ()=>{
                     <div class="flex justify-end mr-4">
                         <Link :href="route('dashboard')" class="text-[25px] bg-[#639f1e] px-1 text-center font-bold bg-opacity-75">X</Link>
                     </div>
+                    <div v-if="validationErrors.length !== 0" class="text-red-700 font-bold text-sm" v-for="message in  validationErrors.mainError">{{ message }}</div>
                     <div class="flex items-center">
                         <BreezeLabel value="Emergency Contact Name" />
                         <div v-if="!health.emergency_name" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.emergency_name">{{ message }}</div>

@@ -8,24 +8,25 @@
     import BreezeLabel from '@/Components/Label.vue';
     import { Link } from '@inertiajs/inertia-vue3';
     import useFooterList from "../../../use/useFooterList";
-    const { Toast, ConfirmToast } = commonFunctions()
+    const { Toast } = commonFunctions()
     const { footerLists  } = useFooterList()
 
-    const answer = ref({})
-    const appAnswer = ref({})
+    const answer = ref({}),
+        appAnswer = ref({})
 
     const answers = (slug, project_slug) =>{
         if (!!slug){
-            if (slug === 'assistant') 
-            var id = 3
+            if (slug === 'assistant')
+                var id = 3
             if (slug === 'leader')
-            var id = 2
+                var id = 2
             if (slug === 'application')
-            var id = 0
-            console.log(id)
+                var id = 0
+
             axios.get('/application-answers/'+id+'/'+project_slug)
                 .then((response)=>{
-                    answer.value = !!response.data? response.data: ''
+                    if(response.data.success)
+                    answer.value = !!response.data.data? response.data.data: ''
                 })
         }
     }

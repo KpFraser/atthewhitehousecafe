@@ -1,38 +1,13 @@
 <template>
     <svg
-        version="1.1"
         x="0px"
         y="0px"
         viewBox="0 0 1000 1000"
-        enable-background="new 0 0 1000 1000"
         xml:space="preserve"
         id="svg18"
-        sodipodi:docname="AddPhoto.svg"
-        inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
-        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:svg="http://www.w3.org/2000/svg"><defs
-   id="defs22" /><sodipodi:namedview
-        id="namedview20"
-        pagecolor="#ffffff"
-        bordercolor="#666666"
-        borderopacity="1.0"
-        inkscape:pageshadow="2"
-        inkscape:pageopacity="0.0"
-        inkscape:pagecheckerboard="0"
-        showgrid="false"
-        inkscape:zoom="0.4155"
-        inkscape:cx="499.39832"
-        inkscape:cy="500.60168"
-        inkscape:window-width="1920"
-        inkscape:window-height="1017"
-        inkscape:window-x="-8"
-        inkscape:window-y="-8"
-        inkscape:window-maximized="1"
-        inkscape:current-layer="svg18" />
-        <metadata
-            id="metadata2"> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
+        xmlns="http://www.w3.org/2000/svg" >
+        <defs id="defs22" />
+        <metadata id="metadata2"> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
         <rect
             style="fill:#629e1e;fill-opacity:1;stroke:#7d897b;stroke-width:8.53744;stroke-linejoin:round"
             id="rect953"

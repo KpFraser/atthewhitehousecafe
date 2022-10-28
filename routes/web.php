@@ -34,7 +34,7 @@ Route::middleware('guest')->get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('logo');
 
 Route::get('/roster-confirmation/{email}/{project_slug}/{name}/{event_slug}', fn ()=> Inertia::render('project/rosterRegisterConfirmation') )->name('roster-confirmation');
 Route::post('/roster-register-confirm', [EventController::class, 'RosterConfirm']);
@@ -65,11 +65,16 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/question-third', fn ()=> Inertia::render('project/questionThird') )->name('question-third');
     Route::get('/proposals', fn ()=> Inertia::render('project/proposals') )->name('proposals');
     Route::get('/applications-projects', fn ()=> Inertia::render('project/applications-projects') )->name('applications-projects');
-
+/*
+ * RegisteredUserController
+ */
     Route::get('/showInfo', [RegisteredUserController::class, 'showPersonalInfo']);
     Route::get('/emailShow', [RegisteredUserController::class, 'show']);
     Route::post('/password-update', [RegisteredUserController::class, 'PasswordUpdate']);
     Route::post('/personal', [RegisteredUserController::class, 'update']);
+/*
+ * UHealthcareController
+*/
     Route::get('/healthcareInfo', [UHealthcareController::class, 'show']);
     Route::post('/healthcare', [UHealthcareController::class, 'update']);
 /*
@@ -77,7 +82,6 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
  */
     Route::get('/project-names', [ProjectController::class, 'index']);
     Route::get('/projects', [ProjectController::class, 'projects']);
-    Route::get('/favourite-info', [ProjectController::class, 'favourite']);
     Route::get('/favourite-projects', [ProjectController::class, 'favouriteInfo'])->name('favourite_info');
     Route::get('/edit-favourite-projects/{slug?}', [ProjectController::class, 'editFavouriteInfo'])->name('favourite_info');
     Route::get('/new-projects/{slug}', [ProjectController::class, 'show']);
@@ -105,10 +109,9 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/roster-new', [EventController::class, 'rosterRegister']);
     Route::post('/add-participant', [EventController::class, 'addParticipant']);
     Route::get('/searchEmail/{search}', [EventController::class, 'findMail']);
-
-    /*
-     *  GoalsController
-    */
+/*
+ *  GoalsController
+*/
     Route::get('/bike-show/{bike_slug?}', [GoalController::class, 'show']);
 /*
  *  BikesController
@@ -128,7 +131,6 @@ Route::get('/surveyOptions', [SurveySubmissionController::class, 'index']);
 Route::post('/name-edit', [SurveySubmissionController::class, 'update']);
 Route::post('/check-project', [SurveySubmissionController::class, 'surveyProject']);
 Route::post('/surveyProjects', [SurveySubmissionController::class, 'store']);
-Route::post('/selectOption', [SurveySubmissionController::class, 'option']);
 /*
 *  ApplicationController
 */

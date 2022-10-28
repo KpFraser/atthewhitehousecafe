@@ -48,7 +48,7 @@ class UHealthcareController extends Controller
     {
         $health = User::with('UHealthcares')->first();
         if (!empty($health->UHealthcares)){
-            return response($health->UHealthcares);
+            return response()->success($health->UHealthcares);
         }else
         {
             return response()->error('Data Missing', 204);
@@ -75,7 +75,7 @@ class UHealthcareController extends Controller
      */
     public function update(Request $request)
     {
-        
+
         $user_id = Auth()->user()->id;
         UHealthcare::updateOrCreate([
             'user_id'=> $user_id,
