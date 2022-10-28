@@ -126,6 +126,10 @@ class ApplicationController extends Controller
         //
     }
 
+    public function SlugCreate($title){
+        return Str::slug($title);
+    }
+
     public function answers($id, $project_slug)
     {
         $project_id = Project::select('id')->where('slug', $project_slug)->first();
