@@ -14,12 +14,14 @@
     const allInformation = ref({}),
         projects = ref({}),
         appAnswer = ref({}),
-        projectApplication = ref({})
+        projectApplication = ref({}),
+        isActive = ref(1)
 
     const apllicationsInfo = () =>{
         axios
             .get('/applications-information')
             .then((response)=>{
+                console.log(response)
                 allInformation.value = response.data.data
                 projects.value = [...new Map(allInformation.value.map(item =>
                     [item['project_id'], item])).values()]
@@ -72,7 +74,8 @@ onMounted( ()=> {
                             <div v-if="projectApplication.length !== 0" v-for="data in projectApplication">
                                 <div class="my-2 font-sans mx-auto w-3/4">
                                     <div class="flex justify-between items-center pr-6 py-1.5 bg-[#639f1e] bg-opacity-75 text-black text-xs leading-tight rounded shadow-md font-bold transition duration-150 ease-in-out whitespace-nowrap">
-                                        <span class="px-6 py-2 text-[13px] font-bold">{{ data.name }} as {{ data.application_roles.name }}</span>
+                                        <span class="pl-4 py-2 text-[13px] font-bold max-w-48 overflow-clip">{{data.name}}</span>
+                                        <span class="pl-1 text-[13px] font-bold">as {{data.application_roles.name }}</span>
                                         <span class="flex">
                                         <i @click="applicationInfo(data.id)" class="fas border-2 cursor-pointer border-black flex justify-center items-center fa-plus fa-2x w-8 ml-3 h-8 bg-white rounded-full text-black py-1" data-bs-toggle="modal" data-bs-target="#ApplicationModal"></i>
                                         <i class="fas fa-star fa-2x w-8 ml-3 flex justify-center cursor-pointer items-center h-8 bg-white rounded-full text-black py-1"></i>
@@ -105,6 +108,28 @@ onMounted( ()=> {
                                 <div class="px-2 mt-3">
                                     <BreezeLabel value="What experience do you have?"/>
                                     <div class="p-2 border-2">{{appAnswer.text3}}</div>
+                                </div>
+                            </div>
+                            <div class="text-black border-4 border-b-4 border-[#20351d] m-2 border-opacity-75 bg-white text-lg">
+                                <ul class="w-full flex">
+                                    <li class="nav-item w-1/2">
+                                        <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3 active">
+                                            Reference One
+                                        </a>
+                                    </li>
+                                    <li class="nav-item w-1/2">
+                                        <a @click="(isActive=2)" :class="{'bg-[#20351d] !text-white': isActive === 2 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3">
+                                            Reference Two
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="bg-white max-w-lg mx-auto">
+                                    <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 2 }" >
+                                        <div class="p-2">Email: {{appAnswer.ref1_email}}</div>
+                                    </div>
+                                    <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 1 }">
+                                        <div class="p-2">Email: {{appAnswer.ref2_email}}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

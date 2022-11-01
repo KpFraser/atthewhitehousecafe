@@ -29,8 +29,8 @@ class ApplicationController extends Controller
      */
     public function application()
     {
-        $data = Application::select('id', 'project_id', 'name', 'role_id', 'text1', 'text2', 'text3')
-            ->with('ProjectsName', 'ApplicationRoles')->get();
+        $data = Application::select('id', 'project_id', 'name', 'role_id', 'text1', 'text2', 'text3', 'ref1_email', 'ref2_email')
+            ->with('ProjectsName', 'ApplicationRoles', 'ApplicantReference')->get();
         return response()->success($data);
     }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\{BikeController,
     BikeItemsController,
     GoalController,
+    LocationController,
     ReferenceController,
     UHealthcareController,
     SurveySubmissionController,
@@ -118,6 +119,10 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 */
     Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
     Route::post('/bike-all-information', [BikeController::class, 'store']);
+/*
+ *  LocationController
+*/
+Route::post('/location-information', [LocationController::class, 'store']);
 });
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');

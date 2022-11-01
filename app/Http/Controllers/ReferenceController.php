@@ -113,4 +113,8 @@ class ReferenceController extends Controller
         //
     }
 
+    public function StringConverter($slug)
+    {
+        return Str::title(str_replace('-', ' ', $slug));
+    }
 }

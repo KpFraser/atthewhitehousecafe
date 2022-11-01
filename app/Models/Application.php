@@ -22,4 +22,9 @@ class Application extends Model
         return $this->belongsTo(Role::class,'role_id')->select('id', 'name');
     }
 
+    public function ApplicantReference ()
+    {
+        return $this->hasMany(Reference::class,'application_id')->select('id', 'reference_email', 'application_id', 'payload');
+    }
+
 }

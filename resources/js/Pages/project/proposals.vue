@@ -10,9 +10,12 @@ import {Inertia} from "@inertiajs/inertia";
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList()
 
-const isActive = ref(0)
-const subTabActive = ref(0)
-const day = ref(0)
+const isActive = ref(1),
+    subTabActive = ref(1),
+    day = ref([{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]),
+    location = ref({name:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_on:'', never:'', ondate:'', after:''}),
+    ends = ref ({}),
+    locationError = ref ({address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_on:'', ends:'', days: ''})
 
 const activeTab = (tab) =>{
     isActive.value = tab
@@ -23,8 +26,65 @@ const subTab = (tab) =>{
 }
 
 const selectDay = (tab) =>{
-    console.log(tab)
-    day.value = tab
+    let index = _.findKey(day.value, function(o) { return o.day === tab; });
+    if(day.value[index].value === 0)
+        day.value[index].value = 1
+    else
+        day.value[index].value = 0
+}
+
+const endDate = (post) =>{
+    ends.value = post
+    if (post === 'never'){
+        location.value.never = 1
+        location.value.ondate = ''
+        location.value.after = ''
+    } else if (post === 'on'){
+        location.value.never = ''
+        location.value.after = ''
+    } else if (post === 'after'){
+        location.value.ondate = ''
+        location.value.never = ''
+    }
+}
+
+const locationValidation = (post) =>{
+
+    locationError.value = {address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_on:'', ends:'', days: ''}
+    if (!post.name)
+        locationError.value.name = '* Required'
+    if (!post.address_1)
+        locationError.value.address_1 = '* Required'
+    if (!post.country)
+        locationError.value.country = '* Required'
+    if (!post.city)
+        locationError.value.city = '* Required'
+    if (!post.postcode)
+        locationError.value.postcode = '* Required'
+    if (!post.repeat_time)
+        locationError.value.repeat_time = '* Required'
+    if (!post.repeat_on)
+        locationError.value.repeat_on = '* Required'
+    if (!post.after && !post.never && !post.ondate)
+        locationError.value.ends = '* Select one option'
+    if (day.value[0].value === 0 && day.value[1].value === 0 && day.value[2].value === 0 && day.value[3].value === 0 && day.value[4].value === 0 && day.value[5].value === 0 && day.value[6].value === 0)
+        locationError.value.days = '* Required'
+
+    return(!locationError.value.address_1 && !locationError.value.address_2 && !locationError.value.city && !locationError.value.country && !locationError.value.name && !locationError.value.postcode && !locationError.value.repeat_time && !locationError.value.repeat_on && !locationError.value.ends && !locationError.value.days)
+
+}
+
+const  locationSubmit = (post) =>{
+
+    let valid = locationValidation (post)
+    if(valid){
+        axios
+            .post('/location-information', {location: location.value, day:day.value})
+            .then((response)=>{
+                if(response.data.success)
+                    Toast.fire({icon: "success", title: "Data saved successfully!"})
+            })
+    }
 }
 
 onMounted(()=>{
@@ -37,20 +97,8 @@ onMounted(()=>{
     <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
         <div class="w-full">
             <MasterHeader/>
-<!--            <div class="flex justify-between px-10">-->
-<!--                <div class="flex justify-end my-6">-->
-<!--                    <Link class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">-->
-<!--                        <i class="fas fa-home px-1"></i>-->
-<!--                    </Link>-->
-<!--                </div>-->
-<!--                <div class="flex justify-end my-6">-->
-<!--                    <div @click="newBike()" class="text-[25px] bg-[#639f1e] cursor-pointer p-1 text-center font-bold bg-opacity-75">-->
-<!--                        <i class="fas fa-plus px-1.5"></i>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-            <div class="text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 space-y-4 bg-white text-lg">
-                <ul class="w-full flex justify-between">
+            <div class="text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
+                <ul class="w-full flex !text-gray-800 justify-between">
                     <li @click="activeTab(1)" :class="{'bg-opacity-100': isActive === 1 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-cog"></i>
                     </li>
@@ -61,19 +109,16 @@ onMounted(()=>{
                         <i class="text-[46px] fas fa-volume-up"></i>
                     </li>
                     <li @click="activeTab(4)" :class="{'bg-opacity-100': isActive === 4 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <div class="text-[46px] relative">
-                            <i class="fas fa-search"></i>
-<!--                            <i class="fas fa-user absolute text-[16px] top-[10px] left-[19px]"></i>-->
-                        </div>
+                        <i class="text-[46px] fas fa-search"></i>
                     </li>
                     <li class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-home"></i>
                     </li>
                 </ul>
-                <div class="bg-white h-[700px] max-w-lg mx-auto">
-                    <div class="h-[700px]" :class="{'hidden': isActive !== 1 }" >
+                <div class="bg-white h-[730px] max-w-lg mx-auto">
+                    <div class="h-[730px]" :class="{'hidden': isActive !== 1 }" >
                         <div class="">
-                            <ul class="w-full grid grid-cols-5">
+                            <ul class="w-full grid grid-cols-5 text-gray-800">
                                 <li @click="subTab(1)" :class="{'bg-opacity-100': subTabActive === 1 }" class=" m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                                     <i class="text-[46px] fas fa-map-marker-alt"></i>
                                 </li>
@@ -85,65 +130,69 @@ onMounted(()=>{
                                 </li>
                             </ul>
                             <div class="" :class="{'hidden': subTabActive !== 1 }">
-                                <div class="overflow-y-auto p-4 h-[625px] border-4">
+                                <div class="overflow-y-auto p-4 h-[655px] border-4">
                                     <div class="bg-white">
-                                        <input type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address1">
-                                        <input type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address2">
-                                        <input type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="City">
-                                        <input type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Post code">
-                                        <input type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Country">
+                                        <input v-model="location.name" type="text" :class="{'border-red-500 border-2': locationError.name !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Name">
+                                        <input v-model="location.address_1" type="text" :class="{'border-red-500 border-2': locationError.address_1 !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address1">
+                                        <input v-model="location.address_2" type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address2">
+                                        <input v-model="location.city" type="text" :class="{'border-red-500 border-2': locationError.city !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="City">
+                                        <input v-model="location.postcode" type="text" :class="{'border-red-500 border-2': locationError.postcode !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Post code">
+                                        <input v-model="location.country" type="text" :class="{'border-red-500 border-2': locationError.country !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Country">
                                         <div class="flex items-center justify-between mt-3">
-                                            <h3>Repeat Every: </h3>
-                                            <input type="text" class="outline-none border-b-2">
-                                            <select class="form-select appearance-none w-24 block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
-                                                <option selected>Week</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                            <div class="flex items-center">
+                                                <h3>Repeat Every: </h3>
+                                                <input v-model="location.repeat_time" type="number" :class="{'!border-red-500 !border-2': locationError.repeat_time !== '' }" class="ml-2 w-20 h-8 focus:border-b-4 border-b-[#639f1e] focus:border-b-[#639f1e] border-b-4 focus:ring-0 outline-none border-b-2">
+                                            </div>
+                                            <select v-model="location.repeat_on" :class="{'!border-red-500 !border-2': locationError.repeat_on !== '' }" class="h-8 focus:ring-0 focus:border border-[#639f1e] focus:border-[#639f1e] w-24 px-3 py-1.5 text-base font-normal bg-white rounded" aria-label="Default select example">
+                                                <option selected class="hidden">Select</option>
+                                                <option value="week">Week</option>
+                                                <option value="month">Month</option>
+                                                <option value="year">Year</option>
                                             </select>
                                         </div>
                                         <h3 class="font-semibold">Repeat on: </h3>
                                         <div class="flex items-center my-2">
-                                            <span @click="selectDay(1)" :class="{'!bg-[#639f1e]': day === 1}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 cursor-pointer">M</span>
-                                            <span @click="selectDay(2)" :class="{'!bg-[#639f1e]': day === 2}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
-                                            <span @click="selectDay(3)" :class="{'!bg-[#639f1e]': day === 3}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">W</span>
-                                            <span @click="selectDay(4)" :class="{'!bg-[#639f1e]': day === 4}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
-                                            <span @click="selectDay(5)" :class="{'!bg-[#639f1e]': day === 5}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">F</span>
-                                            <span @click="selectDay(6)" :class="{'!bg-[#639f1e]': day === 6}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
-                                            <span @click="selectDay(7)" :class="{'!bg-[#639f1e]': day === 7}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
+                                            <span @click="selectDay('mon')" :class="{'!bg-[#639f1e]': day[0].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 cursor-pointer">M</span>
+                                            <span @click="selectDay('tue')" :class="{'!bg-[#639f1e]': day[1].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
+                                            <span @click="selectDay('wed')" :class="{'!bg-[#639f1e]': day[2].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">W</span>
+                                            <span @click="selectDay('thu')" :class="{'!bg-[#639f1e]': day[3].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
+                                            <span @click="selectDay('fri')" :class="{'!bg-[#639f1e]': day[4].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">F</span>
+                                            <span @click="selectDay('sat')" :class="{'!bg-[#639f1e]': day[5].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
+                                            <span @click="selectDay('sun')" :class="{'!bg-[#639f1e]': day[6].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
                                         </div>
-                                        <h3 class="font-semibold">Ends: </h3>
-                                       <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <h3 class="font-semibold">Ends: </h3>
+                                            <div v-if="locationError.ends !== ''" class="font-light text-[15px] text-red-700 ml-3">{{ locationError.ends }}</div>
+                                        </div>
+                                       <form class="space-y-4">
                                            <div class="flex items-center">
-                                               <input class="rounded-full border border-gray-300 bg-white cursor-pointer" type="radio" id="never" name="date" >
-                                               <label class="inline-block text-gray-800" for="never">
-                                                   Never
-                                               </label>
+                                               <input @click="endDate('never')" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="never" name="endOn" >
+                                               <label class="inline-block text-gray-800" for="never">Never</label>
                                            </div>
-                                           <div class="flex justify-between items-center">
+                                           <div class="flex justify-between items-center h-8">
                                                <div class="flex items-center">
-                                                   <input class="border border-gray-300 bg-white cursor-pointer" type="radio" id="ondate" name="date">
-                                                   <label class="inline-block text-gray-800" for="ondate">on</label>
+                                                   <input @click="endDate('on')" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="ondate" name="endOn">
+                                                   <label class="inline-block text-gray-800" for="ondate">On</label>
                                                </div>
-                                               <input type="date" class="w-40 h-12 bg-gray-200 rounded-md px-3 -my-5">
+                                               <input v-if="ends === 'on'" v-model="location.ondate" type="date" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
                                            </div>
-                                           <div class="flex items-center justify-between">
+                                           <div class="flex items-center justify-between h-8">
                                                <div class="flex items-center">
-                                                   <input class="border border-gray-300 bg-white cursor-pointer" type="radio" name="tilldate" id="date">
+                                                   <input @click="endDate('after')" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="date" name="endOn">
                                                    <label class="inline-block text-gray-800" for="tilldate">After</label>
                                                </div>
-                                               <input type="date" class="w-40 h-12 bg-gray-200 rounded-md px-3 mt-2">
+                                               <input v-if="ends === 'after'" v-model="location.after" type="number" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
                                            </div>
                                            <div class="flex float-right">
                                                <div class="cursor-pointer">Cancel</div>
-                                               <div class="ml-5 cursor-pointer text-[#639f1e] font-semibold">Done</div>
+                                               <div @click="locationSubmit(location)" class="ml-5 cursor-pointer text-[#639f1e] font-semibold">Done</div>
                                            </div>
-                                       </div>
+                                       </form>
                                     </div>
                                 </div>
                             </div>
                             <div class="" :class="{'hidden': subTabActive !== 2 }">
-                                <div class="overflow-y-auto p-4 h-[625px] border-4">
+                                <div class="overflow-y-auto p-4 h-[655px] border-4">
                                     <p class="text-sm">
                                         Risk assessment is about deciding what could go wrong and determining what you need to do to prevent that happening. It is not possible to completely eliminate all risks. But we endeavour to remove risk to its lowest level compatible with the enjoyment of the activity.
                                     </p>
@@ -209,7 +258,7 @@ onMounted(()=>{
                                 </div>
                             </div>
                             <div class="" :class="{'hidden': subTabActive !== 3 }">
-                                <div class="overflow-y-auto p-4 h-[625px] border-4">
+                                <div class="overflow-y-auto p-4 h-[655px] border-4">
                                     <div class="bg-white space-y-2 rounded-xl p-5">
                                         <div class="flex space-x-4 mr-1 justify-end">
                                             <label>Yes</label>
@@ -258,7 +307,7 @@ onMounted(()=>{
                             </div>
                         </div>
                     </div>
-                    <div class="h-[700px] overflow-y-auto" :class="{'hidden': isActive !== 2 }">
+                    <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 2 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5">
                                 <div class="flex justify-between">
@@ -281,7 +330,7 @@ onMounted(()=>{
                             </div>
                         </div>
                     </div>
-                    <div class="h-[700px] overflow-y-auto" :class="{'hidden': isActive !== 3 }">
+                    <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 3 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5">
                                 <p class="text-sm text-center">Please provide your scial media channels</p>
@@ -317,7 +366,7 @@ onMounted(()=>{
                             </div>
                         </div>
                     </div>
-                    <div class="h-[700px] overflow-y-auto" :class="{'hidden': isActive !== 4 }">
+                    <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 4 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5">
                                 <p class="text-lg text-gray-400">Who are your leadership team</p>

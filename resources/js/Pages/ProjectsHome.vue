@@ -21,6 +21,10 @@
                             <LoginLogo class="max-h-10"/>
                             <div>Proposed</div>
                         </Link>
+                        <Link :href="route('proposals')" class="flex my-16 items-center justify-start space-x-6 ml-10">
+                            <LoginLogo class="max-h-10"/>
+                            <div>Proposals</div>
+                        </Link>
                         <Link :href="route('applications-projects')" class="flex my-16 items-center justify-start space-x-6 ml-10">
                             <LoginLogo class="max-h-10"/>
                             <div>Applications</div>
