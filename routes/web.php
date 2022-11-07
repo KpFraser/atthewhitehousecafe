@@ -9,6 +9,8 @@ use App\Http\Controllers\{BikeController,
     GoalController,
     LocationController,
     ReferenceController,
+    RiskManagementController,
+    SafetyController,
     UHealthcareController,
     SurveySubmissionController,
     ResultsController,
@@ -122,7 +124,15 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 /*
  *  LocationController
 */
-Route::post('/location-information', [LocationController::class, 'store']);
+    Route::post('/location-information', [LocationController::class, 'store']);
+/*
+ *  LocationController
+*/
+    Route::post('/save-risk', [RiskManagementController::class, 'store']);
+/*
+ *  SafetyController
+*/
+    Route::post('/safety-info', [SafetyController::class, 'store']);
 });
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');

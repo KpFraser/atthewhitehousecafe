@@ -12,9 +12,13 @@ const { Toast } = commonFunctions(),
 
 const isActive = ref(1),
     subTabActive = ref(1),
+    approved = ref(false),
     day = ref([{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]),
     location = ref({name:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_on:'', never:'', ondate:'', after:''}),
     ends = ref ({}),
+    safety = ref ({date: '', document:'', document_name:'', text1:'', text2:'', text3:''}),
+    errors = ref ({riskManagement:'', document:'', text1:'', text2:'', text3:''}),
+    riskManagement = ref([{name:'', risk:'', control:''}]),
     locationError = ref ({address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_on:'', ends:'', days: ''})
 
 const activeTab = (tab) =>{
@@ -74,7 +78,7 @@ const locationValidation = (post) =>{
 
 }
 
-const  locationSubmit = (post) =>{
+const locationSubmit = (post) =>{
 
     let valid = locationValidation (post)
     if(valid){
@@ -87,11 +91,81 @@ const  locationSubmit = (post) =>{
     }
 }
 
+const addRisk = () =>{
+    errors.value.riskManagement = ''
+    let lastObject = riskManagement.value[riskManagement.value.length -1]
+    if(lastObject.name === '' || lastObject.risk === '' || lastObject.control === '')
+        errors.value.riskManagement = '* All field are required !'
+    else
+    riskManagement.value.push({name:'', risk:'', control:''})
+}
+
+const saveRiskManagement = () =>{
+    if (riskManagement.value[0].name !== '' && riskManagement.value[0].risk !== '' && riskManagement.value[0].control !== ''){
+        approved.value = true
+        axios
+            .post('/save-risk', riskManagement.value)
+            .then((response)=>{
+                if(response.data.success){
+                    Toast.fire({icon: "success", title: "Data saved successfully!"})
+                    approved.value = false
+                }
+            }).finally(() => approved.value = false)
+    } else
+        errors.value.riskManagement = '* All field are required !'
+}
+
+const safetyValidation = (post) => {
+    errors.value = {riskManagement:'', document:'', text1:'', text2:'', text3:''}
+
+    if (!post.document)
+        errors.value.document = '* Required'
+    if (!post.text1)
+        errors.value.text1 = '* Required'
+    if (!post.text2)
+        errors.value.text2 = '* Required'
+    if (!post.text3)
+        errors.value.text3 = '* Required'
+
+    return( !errors.value.document && !errors.value.text1 && !errors.value.text2 && !errors.value.text3 )
+
+}
+
+const saveSafetyMeasures = (post) => {
+    let valid = safetyValidation (post)
+    if (valid){
+        approved.value = true
+        const formData = new FormData();
+        formData.append('document',  safety.value.document);
+        formData.append('document_name',  safety.value.document_name);
+        formData.append('date',  safety.value.date);
+        formData.append('text1',  safety.value.text1);
+        formData.append('text2',  safety.value.text2);
+        formData.append('text3',  safety.value.text3);
+        axios
+            .post('/safety-info', formData , {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then((response)=>{
+                if(response.data.success){
+                    Toast.fire({icon: "success", title: "Data saved successfully!"})
+                    approved.value = false
+                }
+            })
+            .finally(() => approved.value = false)
+    }
+}
+
+const insuranceDocument = (e) =>{
+    safety.value.document = e.target.files[0]
+}
+
 onMounted(()=>{
 })
 
 </script>
-
 
 <template>
     <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
@@ -199,62 +273,40 @@ onMounted(()=>{
                                     <table class="my-5 w-full">
                                         <thead>
                                             <tr>
-                                                <th scope="col" class="border-gray-800 text-center border-4 text-sm font-medium bg-[#639f1e] bg-opacity-75 p-4">
+                                                <th scope="col" class="border-gray-800 text-center border-4 border-opacity-75 text-sm font-medium bg-[#639f1e] bg-opacity-75 p-4">
                                                     <i class="text-[20px] fas fa-exclamation-triangle "></i>
                                                     <div class="text-[18px]">Hazards</div>
                                                 </th>
-                                                <th scope="col" class="border-gray-800 text-center border-4 text-sm font-medium bg-[#639f1e] bg-opacity-75 p-4">
+                                                <th scope="col" class="border-gray-800 text-center border-4 border-opacity-75 text-sm font-medium bg-[#639f1e] bg-opacity-75 p-4">
                                                     <i class="text-[20px] fas fa-tachometer"></i>
                                                     <div class="text-[18px]">Risks</div>
                                                 </th>
-                                                <th scope="col" class="border-gray-800 text-center border-4 bg-[#639f1e] bg-opacity-75  text-sm font-medium p-4">
+                                                <th scope="col" class="border-gray-800 text-center border-4 border-opacity-75 bg-[#639f1e] bg-opacity-75 text-sm font-medium p-4">
                                                     <i class="text-[20px] fas fa-cog"></i>
                                                     <div class="text-[18px]">Control</div>
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody class="rounded-md">
-                                            <tr>
-                                                <td class="text-[14px] text-red-800 font-semibold pl-2 py-4 border-gray-800 border-4">
-                                                    Traveling
+                                            <tr v-for="data in riskManagement">
+                                                <td class="text-[12.5px] text-red-800 border-gray-800 border-4 border-opacity-75 w-28">
+                                                    <input v-model="data.name" type="text" class="border-none focus:ring-0 focus:border-none py-8 w-full">
                                                 </td>
-                                                <td class="text-[14px] text-red-800 font-semibold pl-2 py-4 border-gray-800 border-4">
-                                                    Car Accident
+                                                <td class="text-[12.5px] text-red-800 border-gray-800 border-4 border-opacity-75 w-28">
+                                                    <input v-model="data.risk" type="text" class="border-none focus:ring-0 focus:border-none py-8 w-full">
                                                 </td>
-                                                <td class="text-[14px] text-red-800 font-semibold pl-2 py-4 border-gray-800 border-4">
-                                                    <ol>
-                                                        <li>a. Cars are MOTed</li>
-                                                        <li>b. Drivers are insured</li>
-                                                        <li>c. etc..</li>
-                                                    </ol>
-                                                </td>
-                                            </tr>
-                                            <tr class="bg-white border-b">
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                            </tr>
-                                            <tr class="bg-white border-b">
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                            </tr>
-                                            <tr class="bg-white border-b">
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
-                                                </td>
-                                                <td class="text-sm font-light px-6 py-4 border-gray-800 border-4">
+                                                <td class="text-[12.5px] text-red-800 border-gray-800 border-4 border-opacity-75">
+                                                    <textarea v-model="data.control" rows="3" class="w-full h-auto min-h-full border-none focus:ring-0 focus:border-none">
+                                                    </textarea>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div class="flex justify-between">
+                                        <button @click="saveRiskManagement()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
+                                        <div v-if="errors.riskManagement !== '' " class="py-2 text-[14px] text-red-500 bold">{{errors.riskManagement}}</div>
+                                        <i @click="addRisk()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center w-10 h-10 flex items-center border-opacity-75 border-gray-800 border-2 fas fa-plus"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div class="" :class="{'hidden': subTabActive !== 3 }">
@@ -265,43 +317,41 @@ onMounted(()=>{
                                             <label>No</label>
                                         </div>
                                         <div class="grid grid-cols-5 items-center">
-                                            <label type="text" class="col-span-4 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Do you work with vulnerable?</label>
+                                            <label type="text" :class="{'border-red-500': errors.text1 !== ''}" class="col-span-4 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Do you work with vulnerable?</label>
                                             <div class="flex ml-3 justify-around">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault1">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault2">
+                                                <input v-model="safety.text1" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" value="yes" type="radio" name="vulnerability"/>
+                                                <input v-model="safety.text1" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" value="no" type="radio" name="vulnerability"/>
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-5 items-center">
-                                            <label type="text" class="col-span-4 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Do you have public liability?</label>
+                                            <label type="text" :class="{'border-red-500': errors.text2 !== ''}" class="col-span-4 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Do you have public liability?</label>
                                             <div class="flex ml-3 justify-around">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault1">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault2">
+                                                <input v-model="safety.text2" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" value="yes" type="radio" name="liability"/>
+                                                <input v-model="safety.text2" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" value="no" type="radio" name="liability"/>
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-5 items-center">
-                                            <label type="text" class="col-span-4 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Do you have employers liability?</label>
+                                            <label type="text" :class="{'border-red-500': errors.text3 !== ''}" class="col-span-4 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Do you have employers liability?</label>
                                             <div class="flex ml-3 justify-around">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault1">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault2">
-                                            </div>
-                                        </div>
-                                        <div class="grid grid-cols-5 items-center">
-                                            <label type="text" class="col-span-4 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Do you work with vulnerable?</label>
-                                            <div class="flex ml-3 justify-around">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault1">
-                                                <input class="border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault1" id="flexRadioDefault2">
+                                                <input v-model="safety.text3" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" value="yes" type="radio" name="employLiability"/>
+                                                <input v-model="safety.text3" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" value="no" type="radio" name="employLiability"/>
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-5 items-center">
                                             <label type="text" class="col-span-3 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">If yes when does it expire?</label>
                                             <div class="flex h-11 col-span-2 justify-around">
-                                                <input type="date" class="p-3 bg-gray-200 rounded ml-3">
+                                                <input v-model="safety.date" type="date" class="p-3 bg-gray-200 rounded ml-3">
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-5 items-center">
-                                            <label type="text" for="insurance" class="col-span-3 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Upload insurance documents</label>
-                                            <input type="file" class="hidden" id="insurance">
+                                            <label type="text" for="insurance" :class="{'border-red-500': errors.document !== '', 'border-[#639f1e]': safety.document !== ''}" class="col-span-3 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Upload insurance documents</label>
+                                            <label v-if="safety.document !== ''" class="col-span-2 px-2 text-[#639f1e] truncate ...">Doc: {{safety.document.name}}</label>
+                                            <input @change="insuranceDocument($event)" type="file" class="hidden" id="insurance">
                                         </div>
+                                    </div>
+                                    <div class="pl-5 text-[14px] text-red-500 bold" v-if="errors.document !== '' || errors.text1 !== '' || errors.text2 !== '' || errors.text3 !== ''">Red border fields are required !</div>
+                                    <div class="pr-5 flex justify-end">
+                                        <button @click="saveSafetyMeasures(safety)" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
                                     </div>
                                 </div>
                             </div>
