@@ -6,11 +6,14 @@ use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\{BikeController,
     BikeItemsController,
+    FundingController,
     GoalController,
+    LeadershipTeamController,
     LocationController,
     ReferenceController,
     RiskManagementController,
     SafetyController,
+    SocialMediaController,
     UHealthcareController,
     SurveySubmissionController,
     ResultsController,
@@ -112,27 +115,25 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/roster-new', [EventController::class, 'rosterRegister']);
     Route::post('/add-participant', [EventController::class, 'addParticipant']);
     Route::get('/searchEmail/{search}', [EventController::class, 'findMail']);
-/*
- *  GoalsController
-*/
+
     Route::get('/bike-show/{bike_slug?}', [GoalController::class, 'show']);
-/*
- *  BikesController
-*/
+
     Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
     Route::post('/bike-all-information', [BikeController::class, 'store']);
-/*
- *  LocationController
-*/
+
+    Route::get('/proposals-page-information', [LocationController::class, 'show']);
     Route::post('/location-information', [LocationController::class, 'store']);
-/*
- *  LocationController
-*/
+
     Route::post('/save-risk', [RiskManagementController::class, 'store']);
-/*
- *  SafetyController
-*/
+
     Route::post('/safety-info', [SafetyController::class, 'store']);
+
+    Route::post('/save-finance', [FundingController::class, 'store']);
+
+    Route::post('/save-social', [SocialMediaController::class, 'store']);
+
+    Route::post('/save-leadership', [LeadershipTeamController::class, 'store']);
+
 });
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');

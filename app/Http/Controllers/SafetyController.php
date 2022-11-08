@@ -57,7 +57,7 @@ class SafetyController extends Controller
             'user_id'=> auth()->user()->id,
         ],[
             'document' => $document,
-            'date' => !!$request->date ? $request->date: '',
+            'date' => $request->date,
             'text1' => $request->text1,
             'text2' => $request->text2,
             'text3' => $request->text3,

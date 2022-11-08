@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RiskManagement;
+use App\Models\LeadershipTeam;
 use Illuminate\Http\Request;
 
-class RiskManagementController extends Controller
+class LeadershipTeamController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,26 +35,24 @@ class RiskManagementController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($request->all() as $data){
-            RiskManagement::updateOrCreate([
-                'user_id'=> auth()->user()->id,
-                'id'=> $data['id'],
-            ],[
-                'name'=>$data['name'],
-                'risk'=>$data['risk'],
-                'control'=>$data['control'],
-            ]);
-        }
+        LeadershipTeam::updateOrCreate([
+            'user_id'=> auth()->user()->id,
+        ],[
+            'assistants' => $request->assistances,
+            'organisers' => $request->organisers,
+            'leaders' => $request->leaders,
+            'mentors' => $request->mentors,
+        ]);
         return response()->success();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\LeadershipTeam  $leadershipTeam
      * @return \Illuminate\Http\Response
      */
-    public function show(RiskManagement $riskManagement)
+    public function show(LeadershipTeam $leadershipTeam)
     {
         //
     }
@@ -62,10 +60,10 @@ class RiskManagementController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\LeadershipTeam  $leadershipTeam
      * @return \Illuminate\Http\Response
      */
-    public function edit(RiskManagement $riskManagement)
+    public function edit(LeadershipTeam $leadershipTeam)
     {
         //
     }
@@ -74,10 +72,10 @@ class RiskManagementController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\LeadershipTeam  $leadershipTeam
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, RiskManagement $riskManagement)
+    public function update(Request $request, LeadershipTeam $leadershipTeam)
     {
         //
     }
@@ -85,10 +83,10 @@ class RiskManagementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\LeadershipTeam  $leadershipTeam
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RiskManagement $riskManagement)
+    public function destroy(LeadershipTeam $leadershipTeam)
     {
         //
     }

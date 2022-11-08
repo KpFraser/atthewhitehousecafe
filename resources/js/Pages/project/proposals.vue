@@ -1,169 +1,244 @@
 <script setup>
-import MasterFooter from '@/Components/MasterFooter.vue';
-import MasterHeader from '@/Components/MasterHeader.vue';
-import useFooterList from "../../../use/useFooterList";
-import {ref, onMounted } from "vue";
-import { Link } from '@inertiajs/inertia-vue3';
-import commonFunctions from "@/use/common";
-import {Inertia} from "@inertiajs/inertia";
+    import MasterFooter from '@/Components/MasterFooter.vue';
+    import MasterHeader from '@/Components/MasterHeader.vue';
+    import useFooterList from "../../../use/useFooterList";
+    import {ref, onMounted } from "vue";
+    import { Link } from '@inertiajs/inertia-vue3';
+    import commonFunctions from "@/use/common";
 
-const { Toast } = commonFunctions(),
-    { footerLists } = useFooterList()
+    const { Toast } = commonFunctions(),
+        { footerLists } = useFooterList()
 
-const isActive = ref(1),
-    subTabActive = ref(1),
-    approved = ref(false),
-    day = ref([{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]),
-    location = ref({name:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_on:'', never:'', ondate:'', after:''}),
-    ends = ref ({}),
-    safety = ref ({date: '', document:'', document_name:'', text1:'', text2:'', text3:''}),
-    errors = ref ({riskManagement:'', document:'', text1:'', text2:'', text3:''}),
-    riskManagement = ref([{name:'', risk:'', control:''}]),
-    locationError = ref ({address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_on:'', ends:'', days: ''})
+    const isActive = ref(1),
+        subTabActive = ref(1),
+        approved = ref(false),
+        day = ref([{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]),
+        location = ref({ id:'', name:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_every:'', never:'', on:'', after:''}),
+        ends = ref ({}),
+        leadership = ref({}),
+        safety = ref ({date: '', document:'', document_name:'', text1:'', text2:'', text3:''}),
+        errors = ref ({riskManagement:'', document:'', text1:'', text2:'', text3:'', funding:''}),
+        riskManagement = ref([]),
+        finance = ref({funding: '', text1: '', text2: ''}),
+        socialInfo = ref({}),
+        locationError = ref ({address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''})
 
-const activeTab = (tab) =>{
-    isActive.value = tab
-}
-
-const subTab = (tab) =>{
-    subTabActive.value = tab
-}
-
-const selectDay = (tab) =>{
-    let index = _.findKey(day.value, function(o) { return o.day === tab; });
-    if(day.value[index].value === 0)
-        day.value[index].value = 1
-    else
-        day.value[index].value = 0
-}
-
-const endDate = (post) =>{
-    ends.value = post
-    if (post === 'never'){
-        location.value.never = 1
-        location.value.ondate = ''
-        location.value.after = ''
-    } else if (post === 'on'){
-        location.value.never = ''
-        location.value.after = ''
-    } else if (post === 'after'){
-        location.value.ondate = ''
-        location.value.never = ''
+    const activeTab = (tab) =>{
+        isActive.value = tab
     }
-}
 
-const locationValidation = (post) =>{
-
-    locationError.value = {address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_on:'', ends:'', days: ''}
-    if (!post.name)
-        locationError.value.name = '* Required'
-    if (!post.address_1)
-        locationError.value.address_1 = '* Required'
-    if (!post.country)
-        locationError.value.country = '* Required'
-    if (!post.city)
-        locationError.value.city = '* Required'
-    if (!post.postcode)
-        locationError.value.postcode = '* Required'
-    if (!post.repeat_time)
-        locationError.value.repeat_time = '* Required'
-    if (!post.repeat_on)
-        locationError.value.repeat_on = '* Required'
-    if (!post.after && !post.never && !post.ondate)
-        locationError.value.ends = '* Select one option'
-    if (day.value[0].value === 0 && day.value[1].value === 0 && day.value[2].value === 0 && day.value[3].value === 0 && day.value[4].value === 0 && day.value[5].value === 0 && day.value[6].value === 0)
-        locationError.value.days = '* Required'
-
-    return(!locationError.value.address_1 && !locationError.value.address_2 && !locationError.value.city && !locationError.value.country && !locationError.value.name && !locationError.value.postcode && !locationError.value.repeat_time && !locationError.value.repeat_on && !locationError.value.ends && !locationError.value.days)
-
-}
-
-const locationSubmit = (post) =>{
-
-    let valid = locationValidation (post)
-    if(valid){
-        axios
-            .post('/location-information', {location: location.value, day:day.value})
-            .then((response)=>{
-                if(response.data.success)
-                    Toast.fire({icon: "success", title: "Data saved successfully!"})
-            })
+    const subTab = (tab) =>{
+        subTabActive.value = tab
     }
-}
 
-const addRisk = () =>{
-    errors.value.riskManagement = ''
-    let lastObject = riskManagement.value[riskManagement.value.length -1]
-    if(lastObject.name === '' || lastObject.risk === '' || lastObject.control === '')
-        errors.value.riskManagement = '* All field are required !'
-    else
-    riskManagement.value.push({name:'', risk:'', control:''})
-}
+    const selectDay = (tab) =>{
+        let index = _.findKey(day.value, function(o) { return o.day === tab; });
+        if(day.value[index].value === 0)
+            day.value[index].value = 1
+        else
+            day.value[index].value = 0
+    }
 
-const saveRiskManagement = () =>{
-    if (riskManagement.value[0].name !== '' && riskManagement.value[0].risk !== '' && riskManagement.value[0].control !== ''){
+    const endDate = (post) =>{
+        ends.value = post
+        if (post === 'never'){
+            location.value.never = '1'
+            location.value.on = ''
+            location.value.after = ''
+        } else if (post === 'on'){
+            location.value.never = ''
+            location.value.after = ''
+        } else if (post === 'after'){
+            location.value.on = ''
+            location.value.never = ''
+        }
+    }
+
+    const locationValidation = (post) =>{
+
+        locationError.value = {address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''}
+        if (!post.name)
+            locationError.value.name = '* Required'
+        if (!post.address_1)
+            locationError.value.address_1 = '* Required'
+        if (!post.country)
+            locationError.value.country = '* Required'
+        if (!post.city)
+            locationError.value.city = '* Required'
+        if (!post.postcode)
+            locationError.value.postcode = '* Required'
+        if (!post.repeat_time)
+            locationError.value.repeat_time = '* Required'
+        if (!post.repeat_every)
+            locationError.value.repeat_every = '* Required'
+        if (!post.after && !post.never && !post.on)
+            locationError.value.ends = '* Select one option'
+        if (day.value[0].value === 0 && day.value[1].value === 0 && day.value[2].value === 0 && day.value[3].value === 0 && day.value[4].value === 0 && day.value[5].value === 0 && day.value[6].value === 0)
+            locationError.value.days = '* Required'
+
+        return(!locationError.value.address_1 && !locationError.value.address_2 && !locationError.value.city && !locationError.value.country && !locationError.value.name && !locationError.value.postcode && !locationError.value.repeat_time && !locationError.value.repeat_every && !locationError.value.ends && !locationError.value.days)
+
+    }
+
+    const locationSubmit = (post) =>{
+        console.log(post)
+        let valid = locationValidation (post)
+        if(valid){
+            axios
+                .post('/location-information', {location: location.value, day:day.value})
+                .then((response)=>{
+                    if(response.data.success) {
+                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        proposalAllData()
+                    }
+                })
+        }
+    }
+
+    const addRisk = () =>{
+        errors.value.riskManagement = ''
+        let lastObject = riskManagement.value[riskManagement.value.length -1]
+        if(lastObject.name === '' || lastObject.risk === '' || lastObject.control === '')
+            errors.value.riskManagement = '* All field are required !'
+        else
+        riskManagement.value.push({id:'', name:'', risk:'', control:''})
+    }
+
+    const saveRiskManagement = () =>{
+
+        errors.value.riskManagement = ''
+        let lastObject = riskManagement.value[riskManagement.value.length -1]
+        if(lastObject?.name !== '' && lastObject?.risk !== '' && lastObject?.control !== '') {
+            approved.value = true
+            axios
+                .post('/save-risk', riskManagement.value)
+                .then((response)=>{
+                    if(response.data.success){
+                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        approved.value = false
+                        proposalAllData ()
+                    }
+                }).finally(() => approved.value = false)
+        } else
+            errors.value.riskManagement = '* All field are required !'
+    }
+
+    const safetyValidation = (post) => {
+        errors.value = { riskManagement: '', document: '', text1: '', text2: '', text3: '' }
+
+        if (!post.document)
+            errors.value.document = '* Required'
+        if (!post.text1)
+            errors.value.text1 = '* Required'
+        if (!post.text2)
+            errors.value.text2 = '* Required'
+        if (!post.text3)
+            errors.value.text3 = '* Required'
+
+        return( !errors.value.document && !errors.value.text1 && !errors.value.text2 && !errors.value.text3 )
+
+    }
+
+    const saveSafetyMeasures = (post) => {
+        let valid = safetyValidation (post)
+        if (valid){
+            approved.value = true
+            const formData = new FormData();
+            formData.append('document',  safety.value.document);
+            formData.append('document_name',  safety.value.document_name);
+            formData.append('date',  safety.value.date);
+            formData.append('text1',  safety.value.text1);
+            formData.append('text2',  safety.value.text2);
+            formData.append('text3',  safety.value.text3);
+            axios
+                .post('/safety-info', formData , {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then((response)=>{
+                    if(response.data.success){
+                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        approved.value = false
+                        proposalAllData ()
+                    }
+                })
+                .finally(() => approved.value = false)
+        }
+    }
+
+    const insuranceDocument = (e) =>{
+        safety.value.document = e.target.files[0]
+    }
+
+    const saveFinancePlan = (post) =>{
+        if (post.lottery !== ''){
+            approved.value = true
+            axios
+                .post('/save-finance', finance.value)
+                .then((response)=>{
+                    if(response.data.success){
+                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        approved.value = false
+                        proposalAllData ()
+                    }
+                }).finally(() => approved.value = false)
+        } else
+            errors.value.funding = '* Select yes or no !'
+    }
+
+    const saveSocialInfo = () =>{
+
+            approved.value = true
+            axios
+                .post('/save-social', socialInfo.value)
+                .then((response)=>{
+                    if(response.data.success){
+                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        approved.value = false
+                        proposalAllData ()
+                    }
+                }).finally(() => approved.value = false)
+    }
+
+    const saveLeadershipInfo = () =>{
+
         approved.value = true
         axios
-            .post('/save-risk', riskManagement.value)
+            .post('/save-leadership', leadership.value)
             .then((response)=>{
                 if(response.data.success){
                     Toast.fire({icon: "success", title: "Data saved successfully!"})
                     approved.value = false
+                    proposalAllData ()
                 }
             }).finally(() => approved.value = false)
-    } else
-        errors.value.riskManagement = '* All field are required !'
-}
-
-const safetyValidation = (post) => {
-    errors.value = {riskManagement:'', document:'', text1:'', text2:'', text3:''}
-
-    if (!post.document)
-        errors.value.document = '* Required'
-    if (!post.text1)
-        errors.value.text1 = '* Required'
-    if (!post.text2)
-        errors.value.text2 = '* Required'
-    if (!post.text3)
-        errors.value.text3 = '* Required'
-
-    return( !errors.value.document && !errors.value.text1 && !errors.value.text2 && !errors.value.text3 )
-
-}
-
-const saveSafetyMeasures = (post) => {
-    let valid = safetyValidation (post)
-    if (valid){
-        approved.value = true
-        const formData = new FormData();
-        formData.append('document',  safety.value.document);
-        formData.append('document_name',  safety.value.document_name);
-        formData.append('date',  safety.value.date);
-        formData.append('text1',  safety.value.text1);
-        formData.append('text2',  safety.value.text2);
-        formData.append('text3',  safety.value.text3);
-        axios
-            .post('/safety-info', formData , {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-            .then((response)=>{
-                if(response.data.success){
-                    Toast.fire({icon: "success", title: "Data saved successfully!"})
-                    approved.value = false
-                }
-            })
-            .finally(() => approved.value = false)
     }
-}
 
-const insuranceDocument = (e) =>{
-    safety.value.document = e.target.files[0]
-}
+    const proposalAllData = () => {
+        axios
+            .get('/proposals-page-information')
+            .then((response)=>{
+                if(response.data !== ''){
+                    if(response.data[0] !== null)
+                        location.value = response.data[0]
+                    if(response.data[1] !== null)
+                        day.value = response.data[1]
+                    if(response.data[2].length === 0)
+                        riskManagement.value.push({id: '', name: '', risk: '', control: ''})
+                    else
+                        riskManagement.value = response.data[2]
+                    safety.value = !!response.data[3] ? response.data[3]: ''
+                    finance.value = !!response.data[4] ? response.data[4]: ''
+                    socialInfo.value = !!response.data[5] ? response.data[5]: ''
+                    leadership.value = !!response.data[6] ? response.data[6]: ''
+                }
+            })
+    }
 
-onMounted(()=>{
-})
+    onMounted(()=>{
+        proposalAllData ()
+    })
 
 </script>
 
@@ -185,9 +260,9 @@ onMounted(()=>{
                     <li @click="activeTab(4)" :class="{'bg-opacity-100': isActive === 4 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-search"></i>
                     </li>
-                    <li class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <Link :href="route('projectshome')" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-home"></i>
-                    </li>
+                    </Link>
                 </ul>
                 <div class="bg-white h-[730px] max-w-lg mx-auto">
                     <div class="h-[730px]" :class="{'hidden': isActive !== 1 }" >
@@ -217,7 +292,7 @@ onMounted(()=>{
                                                 <h3>Repeat Every: </h3>
                                                 <input v-model="location.repeat_time" type="number" :class="{'!border-red-500 !border-2': locationError.repeat_time !== '' }" class="ml-2 w-20 h-8 focus:border-b-4 border-b-[#639f1e] focus:border-b-[#639f1e] border-b-4 focus:ring-0 outline-none border-b-2">
                                             </div>
-                                            <select v-model="location.repeat_on" :class="{'!border-red-500 !border-2': locationError.repeat_on !== '' }" class="h-8 focus:ring-0 focus:border border-[#639f1e] focus:border-[#639f1e] w-24 px-3 py-1.5 text-base font-normal bg-white rounded" aria-label="Default select example">
+                                            <select v-model="location.repeat_every" :class="{'!border-red-500 !border-2': locationError.repeat_every !== '' }" class="h-8 focus:ring-0 focus:border border-[#639f1e] focus:border-[#639f1e] w-24 px-3 py-1.5 text-base font-normal bg-white rounded" aria-label="Default select example">
                                                 <option selected class="hidden">Select</option>
                                                 <option value="week">Week</option>
                                                 <option value="month">Month</option>
@@ -226,13 +301,13 @@ onMounted(()=>{
                                         </div>
                                         <h3 class="font-semibold">Repeat on: </h3>
                                         <div class="flex items-center my-2">
-                                            <span @click="selectDay('mon')" :class="{'!bg-[#639f1e]': day[0].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 cursor-pointer">M</span>
-                                            <span @click="selectDay('tue')" :class="{'!bg-[#639f1e]': day[1].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
-                                            <span @click="selectDay('wed')" :class="{'!bg-[#639f1e]': day[2].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">W</span>
-                                            <span @click="selectDay('thu')" :class="{'!bg-[#639f1e]': day[3].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
-                                            <span @click="selectDay('fri')" :class="{'!bg-[#639f1e]': day[4].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">F</span>
-                                            <span @click="selectDay('sat')" :class="{'!bg-[#639f1e]': day[5].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
-                                            <span @click="selectDay('sun')" :class="{'!bg-[#639f1e]': day[6].value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
+                                            <span @click="selectDay('mon')" :class="{'!bg-[#639f1e]': day[0]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 cursor-pointer">M</span>
+                                            <span @click="selectDay('tue')" :class="{'!bg-[#639f1e]': day[1]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
+                                            <span @click="selectDay('wed')" :class="{'!bg-[#639f1e]': day[2]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">W</span>
+                                            <span @click="selectDay('thu')" :class="{'!bg-[#639f1e]': day[3]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
+                                            <span @click="selectDay('fri')" :class="{'!bg-[#639f1e]': day[4]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">F</span>
+                                            <span @click="selectDay('sat')" :class="{'!bg-[#639f1e]': day[5]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
+                                            <span @click="selectDay('sun')" :class="{'!bg-[#639f1e]': day[6]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
                                         </div>
                                         <div class="flex items-center">
                                             <h3 class="font-semibold">Ends: </h3>
@@ -240,26 +315,29 @@ onMounted(()=>{
                                         </div>
                                        <form class="space-y-4">
                                            <div class="flex items-center">
-                                               <input @click="endDate('never')" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="never" name="endOn" >
+                                               <input @click="endDate('never')" :checked="location.never !== '' && location.never !== null" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="never" name="endOn" >
                                                <label class="inline-block text-gray-800" for="never">Never</label>
                                            </div>
                                            <div class="flex justify-between items-center h-8">
                                                <div class="flex items-center">
-                                                   <input @click="endDate('on')" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="ondate" name="endOn">
-                                                   <label class="inline-block text-gray-800" for="ondate">On</label>
+                                                   <input @click="endDate('on')" :checked="location.on !== '' && location.on !== null" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="on" name="endOn">
+                                                   <label class="inline-block text-gray-800" for="on">On</label>
                                                </div>
-                                               <input v-if="ends === 'on'" v-model="location.ondate" type="date" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
+                                               <input v-if="ends === 'on' || location.on !== '' && location.on !== null" v-model="location.on" type="date" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
                                            </div>
                                            <div class="flex items-center justify-between h-8">
                                                <div class="flex items-center">
-                                                   <input @click="endDate('after')" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="date" name="endOn">
+                                                   <input @click="endDate('after')" :checked="location.after !== '' && location.after !== null" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="date" name="endOn">
                                                    <label class="inline-block text-gray-800" for="tilldate">After</label>
                                                </div>
-                                               <input v-if="ends === 'after'" v-model="location.after" type="number" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
+                                               <input v-if="ends === 'after' || location.after !== '' && location.after !== null" v-model="location.after" type="number" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
                                            </div>
-                                           <div class="flex float-right">
-                                               <div class="cursor-pointer">Cancel</div>
-                                               <div @click="locationSubmit(location)" class="ml-5 cursor-pointer text-[#639f1e] font-semibold">Done</div>
+                                           <div class="flex justify-end">
+                                               <div class="pr-5 flex justify-end">
+                                                   <button type="button" @click="locationSubmit(location)" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
+                                               </div>
+<!--                                               <div class="cursor-pointer">Cancel</div>-->
+<!--                                               <div @click="locationSubmit(location)" class="ml-5 cursor-pointer text-[#639f1e] font-semibold">Done</div>-->
                                            </div>
                                        </form>
                                     </div>
@@ -359,24 +437,27 @@ onMounted(()=>{
                     </div>
                     <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 2 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
-                            <div class="bg-white rounded-xl p-5">
+                            <div class="bg-white rounded-xl p-5 w-full">
                                 <div class="flex justify-between">
-                                    <input type="text" class="bg-gray-200 border-2 focus:outline-none w-full p-2 rounded" placeholder="Do you accept lottery funding?">
+                                    <label class="bg-gray-200 border-2 focus:outline-none w-full p-2 rounded" :class="{'border-red-700': errors.funding !== ''}">Do you accept lottery funding?</label>
                                     <div class="flex justify-between ml-2">
                                         <div class="">
                                             <label class="inline-block" for="yes">Yes</label>
-                                            <input id="yes" class="rounded-none h-4 w-4 border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault">
+                                            <input type="radio" v-model="finance.funding" value="yes" class="focus:ring-[#639f1e] bg-gray-200 ml-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" name="funding">
                                         </div>
                                         <div class="">
                                             <label class="inline-block" for="no">No</label>
-                                            <input id="no" class="rounded-none h-4 w-4 border bg-gray-200 checked:bg-blue-600 cursor-pointer" type="radio" name="flexRadioDefault">
+                                            <input type="radio" v-model="finance.funding" value="no" class="focus:ring-[#639f1e] bg-gray-200 ml-1 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" name="funding">
                                         </div>
                                     </div>
                                 </div>
-                                <input type="text" class=" bg-gray-200 border-2 focus:outline-none w-full p-2 rounded mt-3" placeholder="What are your funding streams?">
-                                <textarea name="" id="" class="w-full border-2 mt-3 bg-gray-200 rounded-md" cols="30" rows="6"></textarea>
-                                <input type="text" class=" bg-gray-200 border-2 focus:outline-none w-full p-2 rounded mt-3" placeholder="What are your funding streams?">
-                                <textarea name="" id="" class="w-full border-2 mt-3 bg-gray-200 rounded-md" cols="30" rows="6"></textarea>
+                                <div class="bg-gray-200 w-full border-2 p-2 rounded mt-3">What are your funding streams?</div>
+                                <textarea v-model="finance.text1" class="w-full focus:ring-[#639f1e] bg-gray-200 focus:border-[#639f1e] border-2 mt-3 bg-gray-200 rounded-md" cols="30" rows="6"></textarea>
+                                <div class="bg-gray-200 w-full border-2 p-2 rounded mt-3">What are your expenses?</div>
+                                <textarea v-model="finance.text2" class="w-full focus:ring-[#639f1e] bg-gray-200 focus:border-[#639f1e] border-2 border-2 mt-3 bg-gray-200 rounded-md" cols="30" rows="6"></textarea>
+                            </div>
+                            <div class="pr-5 flex justify-end">
+                                <button @click="saveFinancePlan(finance)" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
                             </div>
                         </div>
                     </div>
@@ -386,33 +467,36 @@ onMounted(()=>{
                                 <p class="text-sm text-center">Please provide your scial media channels</p>
                                 <div class="flex mt-2 items-center">
                                     <i class="fas fa-globe w-16 fa-2x text-[#639f1e]"></i>
-                                    <input type="text" class="w-full ml-3 border-2 bg-gray-200">
+                                    <input type="text" v-model="socialInfo.website" placeholder="website" class="w-full ml-3 border-2 bg-gray-200">
                                 </div>
                                 <div class="flex mt-2 items-center">
                                     <i class="fab fa-facebook w-16 fa-2x text-[#639f1e]"></i>
-                                    <input type="text" class="w-full ml-3 border-2 bg-gray-200">
+                                    <input type="text" v-model="socialInfo.facebook" placeholder="facebook" class="w-full ml-3 border-2 bg-gray-200">
                                 </div>
                                 <div class="flex mt-2 items-center">
                                     <i class="fab fa-twitter w-16 fa-2x text-[#639f1e]"></i>
-                                    <input type="text" class="w-full ml-3 border-2 bg-gray-200">
+                                    <input type="text" v-model="socialInfo.twitter" placeholder="twitter" class="w-full ml-3 border-2 bg-gray-200">
                                 </div>
                                 <div class="flex mt-2 items-center">
                                     <i class="fab fa-instagram w-16 fa-2x text-[#639f1e]"></i>
-                                    <input type="text" class="w-full ml-3 border-2 bg-gray-200">
+                                    <input type="text" v-model="socialInfo.instagram" placeholder="instagram" class="w-full ml-3 border-2 bg-gray-200">
                                 </div>
                                 <div class="flex mt-2 items-center">
                                     <i class="fab fa-meetup w-16 fa-2x text-[#639f1e]"></i>
-                                    <input type="text" class="w-full ml-3 border-2 bg-gray-200">
+                                    <input type="text" v-model="socialInfo.meetup" placeholder="meetup" class="w-full ml-3 border-2 bg-gray-200">
                                 </div>
                                 <div class="flex mt-2 items-center">
                                     <i class="fab fa-youtube w-16 fa-2x text-[#639f1e]"></i>
-                                    <input type="text" class="w-full ml-3 border-2 bg-gray-200">
+                                    <input type="text" v-model="socialInfo.youtube" placeholder="youtube" class="w-full ml-3 border-2 bg-gray-200">
                                 </div>
                                 <div>
-                                    <h3 class="text-center">Anyothers</h3>
-                                    <textarea name="" id="" class="w-full border-2 bg-gray-200" cols="30"
+                                    <h3 class="text-center my-4">Anyothers</h3>
+                                    <textarea v-model="socialInfo.others" class="w-full border-2 bg-gray-200" cols="30"
                                         rows="6"></textarea>
                                 </div>
+                            </div>
+                            <div class="pr-5 flex justify-end">
+                                <button @click="saveSocialInfo()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
                             </div>
                         </div>
                     </div>
@@ -420,14 +504,17 @@ onMounted(()=>{
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5">
                                 <p class="text-lg text-gray-400">Who are your leadership team</p>
-                                <textarea class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="organisers"></textarea>
-                                <textarea class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
+                                <textarea v-model="leadership.organisers" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
+                                    rows="6" placeholder="Organisers"></textarea>
+                                <textarea v-model="leadership.leaders" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
                                     rows="6" placeholder="Leaders"></textarea>
-                                <textarea class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
+                                <textarea v-model="leadership.assistants" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
                                     rows="6" placeholder="Assistances"></textarea>
-                                <textarea class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
+                                <textarea v-model="leadership.mentors" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
                                     rows="6" placeholder="Mentors"></textarea>
+                            </div>
+                            <div class="pr-5 flex justify-end">
+                                <button @click="saveLeadershipInfo()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
                             </div>
                         </div>
                     </div>

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RiskManagement;
+use App\Models\SocialMedia;
 use Illuminate\Http\Request;
 
-class RiskManagementController extends Controller
+class SocialMediaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,26 +35,27 @@ class RiskManagementController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($request->all() as $data){
-            RiskManagement::updateOrCreate([
-                'user_id'=> auth()->user()->id,
-                'id'=> $data['id'],
-            ],[
-                'name'=>$data['name'],
-                'risk'=>$data['risk'],
-                'control'=>$data['control'],
-            ]);
-        }
+        SocialMedia::updateOrCreate([
+            'user_id'=> auth()->user()->id,
+        ],[
+            'facebook' => $request->facebook,
+            'twitter' => $request->twitter,
+            'instagram' => $request->instagram,
+            'youtube' => $request->youtube,
+            'website' => $request->website,
+            'meetup' => $request->meetup,
+            'others' => $request->others,
+        ]);
         return response()->success();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\SocialMedia  $socialMedia
      * @return \Illuminate\Http\Response
      */
-    public function show(RiskManagement $riskManagement)
+    public function show(SocialMedia $socialMedia)
     {
         //
     }
@@ -62,10 +63,10 @@ class RiskManagementController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\SocialMedia  $socialMedia
      * @return \Illuminate\Http\Response
      */
-    public function edit(RiskManagement $riskManagement)
+    public function edit(SocialMedia $socialMedia)
     {
         //
     }
@@ -74,10 +75,10 @@ class RiskManagementController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\SocialMedia  $socialMedia
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, RiskManagement $riskManagement)
+    public function update(Request $request, SocialMedia $socialMedia)
     {
         //
     }
@@ -85,10 +86,10 @@ class RiskManagementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\SocialMedia  $socialMedia
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RiskManagement $riskManagement)
+    public function destroy(SocialMedia $socialMedia)
     {
         //
     }

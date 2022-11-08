@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RiskManagement;
+use App\Models\Funding;
 use Illuminate\Http\Request;
 
-class RiskManagementController extends Controller
+class FundingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,26 +35,24 @@ class RiskManagementController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($request->all() as $data){
-            RiskManagement::updateOrCreate([
-                'user_id'=> auth()->user()->id,
-                'id'=> $data['id'],
-            ],[
-                'name'=>$data['name'],
-                'risk'=>$data['risk'],
-                'control'=>$data['control'],
-            ]);
-        }
+//        dd($request->expenses);
+        Funding::updateOrCreate([
+            'user_id'=> auth()->user()->id,
+        ],[
+            'funding' => $request->lottery,
+            'text1' => $request->funding,
+            'text2' => $request->expenses,
+        ]);
         return response()->success();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\Funding  $funding
      * @return \Illuminate\Http\Response
      */
-    public function show(RiskManagement $riskManagement)
+    public function show(Funding $funding)
     {
         //
     }
@@ -62,10 +60,10 @@ class RiskManagementController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\Funding  $funding
      * @return \Illuminate\Http\Response
      */
-    public function edit(RiskManagement $riskManagement)
+    public function edit(Funding $funding)
     {
         //
     }
@@ -74,10 +72,10 @@ class RiskManagementController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\Funding  $funding
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, RiskManagement $riskManagement)
+    public function update(Request $request, Funding $funding)
     {
         //
     }
@@ -85,10 +83,10 @@ class RiskManagementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\RiskManagement  $riskManagement
+     * @param  \App\Models\Funding  $funding
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RiskManagement $riskManagement)
+    public function destroy(Funding $funding)
     {
         //
     }
