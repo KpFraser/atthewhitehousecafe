@@ -112,7 +112,7 @@ class EventController extends Controller
      */
     public function rosterRegister(Request $request)
     {
-        dd($request->all());
+//        dd($request->all());
         if (!empty($request->project_slug)) {
             $request->validate([
                 'name' => 'required|string|max:255',
