@@ -9,6 +9,7 @@
     import {onMounted, ref} from "vue";
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
+    import BreezeInput from '@/Components/Input.vue';
 
 
     const { Toast } = commonFunctions(),
@@ -48,6 +49,8 @@
         errors.value = {}
         if(!post.comment)
             errors.value.rosterComment = ['* Required field!']
+        if(!post.userName)
+            errors.value.userName = ['* Required field!']
 
         return Object.values(errors.value).length === 0;
     }
@@ -164,10 +167,12 @@
     }
 
     const commentModal = (user_id, project_id) =>{
+        errors.value = {}
         roster.value.id = user_id
         roster.value.project_id = project_id
         let obj = users.value.find(x => x.identity === user_id)
         roster.value.comment = obj.comment
+        roster.value.userName = obj.name
         roster.value.image_name = obj.image
         roster.value.system_name = obj.image
     }
@@ -248,15 +253,22 @@
         <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="addComment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addCommentLabel" aria-hidden="true">
             <div class="modal-dialog relative w-auto pointer-events-none">
                 <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                    <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-                        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Comment</h5>
-                        <div v-if="!roster.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.rosterComment">{{ message }}</div>
-                        <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    <div class="modal-header flex items-center justify-between p-4 rounded-t-md">
+                        <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                     </div>
-                    <div class="modal-body relative p-4">
+                    <div class="px-4">
+                        <div class="flex items-center">
+                            <h5 class="text-xl font-medium leading-normal text-gray-800">Name:</h5>
+                            <div v-if="!roster.userName" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.userName">{{ message }}</div>
+                        </div>
+                        <BreezeInput v-model="roster.userName" type="text" class="mb-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" placeholder="Name:"/>
+                        <div class="flex mt-5 items-center">
+                            <h5 class="text-xl font-medium leading-normal text-gray-800">Comment:</h5>
+                            <div v-if="!roster.comment" class="ml-2 text-red-700 font-bold text-sm" v-for="message in errors.rosterComment">{{ message }}</div>
+                        </div>
                         <textarea v-model="roster.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]" placeholder="Add a comment here.."></textarea>
                     </div>
-                    <div class="p-4 border-t border-gray-200 rounded-b-md">
+                    <div class="p-4 rounded-b-md">
                         <div class="flex items-center justify-between">
                             <div>
                                 <label for="rosterImg" class="flex items-center">

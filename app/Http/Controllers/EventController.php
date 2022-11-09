@@ -112,15 +112,15 @@ class EventController extends Controller
      */
     public function rosterRegister(Request $request)
     {
-        //dd($request->all());
+        dd($request->all());
         if (!empty($request->project_slug)) {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
             ]);
 
-            $participant = url('roster-confirmation/' . $request->email . '/' . $request->project_slug . '/' . $request->name . '/' .$request->event_slug.'/');
-            Mail::to($request->email)->send(new ParticipantMail($participant));
+//            $participant = url('roster-confirmation/' . $request->email . '/' . $request->project_slug . '/' . $request->name . '/' .$request->event_slug.'/');
+//            Mail::to($request->email)->send(new ParticipantMail($participant));
             return response()->success();
         } else {
             return response()->error('Request Failed', 500);

@@ -140,15 +140,16 @@ class ProjectController extends Controller
 
     public function iskey(Request $request)
     {
-        ProjectUser::where('user_id', auth()->user()->id )->update(array('is_key' => '0'));
+//        dd($request->all());
+        ProjectUser::where('user_id', auth()->user()->id )->update(array('is_key' => 0));
 
-        ProjectUser::updateOrCreate([
+        $data =ProjectUser::updateOrCreate([
             'project_id' => $request->id,
             'user_id'=> auth()->user()->id,
         ],[
-            'is_key'=> 1,
+            'is_key'=> $request->key,
         ]);
-        return response()->success();
+        return response()->success($data->is_key);
     }
 
     /**
@@ -192,5 +193,12 @@ class ProjectController extends Controller
     {
         Project::where('id', $id)->delete();
         return response()->success();
+    }
+
+    public function deleteUser($id)
+    {
+        dd($id);
+//        Project::where('id', $id)->delete();
+//        return response()->success();
     }
 }

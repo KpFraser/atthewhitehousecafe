@@ -7,8 +7,9 @@
     import { Link } from '@inertiajs/inertia-vue3';
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
+    import axios from "axios";
 
-const { Toast } = commonFunctions(),
+const { Toast, ConfirmToast } = commonFunctions(),
     { footerLists } = useFooterList(),
     all_names = ref([]),
     user_names = ref([]),
@@ -46,12 +47,21 @@ const archieveBtn = (id) =>{
         })
 }
 
-const keyBtn = (id) =>{
+const keyBtn = (id, key) =>{
+    if(key === '')
+        key = 1
+    else
+        key = 0
     axios
-        .post('/favourite-project',{id: id})
+        .post('/favourite-project',{id: id, key:key})
         .then((response)=>{
-            Toast.fire({icon: "success", title: "Added to Key Project!"})
-            projects  ()
+            if (response.data.success){
+                if(response.data?.data === 1)
+                    Toast.fire({icon: "success", title: "Added to Key Project!"})
+                else
+                    Toast.fire({icon: "success", title: "Removed from Key Project!"})
+                projects  ()
+            }
         })
 }
 
@@ -72,6 +82,23 @@ const bikeProject = (slug) =>{
         Inertia.visit('/bike-all-projects/'+slug)
     else
         userPencilBtn(slug)
+}
+
+const userDelBtn = (id) =>{
+    if (!!id){
+        ConfirmToast.fire({}).then((confirmed) => {
+            if (confirmed.isConfirmed === true) {
+                axios
+                    .delete('/delete-project/' + id)
+                    .then((response) => {
+                        if (response.data.success){
+                            Toast.fire({icon: "success", title: "Removed from Key Project!"})
+                            projects  ()
+                        }
+                    })
+            }
+        })
+    }
 }
 
 onMounted( ()=> {
@@ -107,17 +134,18 @@ onMounted( ()=> {
                         <div class="bg-white items-center max-w-lg mx-auto">
                             <div :class="{'hidden': isActive === 2 }">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
-                                    <div @click="bikeProject(user.slug)" :class="!!user.is_key ? `ml-5 text-white cursor-pointer font-extrabold` : `ml-5 cursor-pointer text-white`">{{user.name}}</div>
+                                    <div @click="bikeProject(user.slug)" :class="!!user.is_key ? `ml-3 text-white cursor-pointer font-extrabold` : `ml-3 cursor-pointer text-white`" class="truncate w-1/2">{{user.name}}</div>
                                     <div class="flex items-center">
+                                        <i class="far fa-trash mr-8 cursor-pointer text-[30px]"  @click="userDelBtn(user.id)"></i>
                                         <i class="far fa-pencil mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>
-                                        <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] mt-2 rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id)"></i>
+                                        <i :class="!!user.is_key ? `far fa-key-skeleton cursor-pointer font-extrabold text-[32px] rotate-45 pr-5` : `far fa-key-skeleton cursor-pointer text-[30px] mt-2 rotate-45 pr-5`" @click="keyBtn(user.id, user.is_key)"></i>
                                     </div>
                                 </div>
                                 <div v-if="user_names.length === 0" class="bg-white pb-3 text-center">Empty!</div>
                             </div>
                             <div :class="{'hidden': isActive === 1 }">
                                 <div class="flex p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
-                                    <div :class="!!all.is_user ? `ml-5 text-white font-extrabold`: `ml-5 text-white`">{{all.name}}</div>
+                                    <div :class="!!all.is_user ? `ml-3 text-white font-extrabold`: `ml-3 text-white`" class="truncate w-1/2">{{all.name}}</div>
                                     <div>
                                         <i class="far fa-pencil mr-4 cursor-pointer text-[30px]"  @click="allPencilBtn(all.slug)"></i>
                                         <i class="fas cursor-pointer text-[30px] mr-4 fa-plus-circle" @click="plusBtn(all.id)"></i>

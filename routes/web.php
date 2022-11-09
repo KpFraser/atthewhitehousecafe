@@ -100,6 +100,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/update-project', [ProjectController::class, 'update']);
     Route::post('/approve-project', [ProjectController::class, 'approve']);
     Route::delete('/delete-project/{id}', [ProjectController::class, 'destroy']);
+    Route::delete('/user-delete-project/{id}', [ProjectController::class, 'deleteUser']);
 /*
 *  ProjectUserController
 */

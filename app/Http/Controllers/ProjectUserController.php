@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProjectUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -83,6 +84,7 @@ class ProjectUserController extends Controller
             $filename1 = $request->system_name;
         }
 
+        User::where('id', $request->id)->update(array('name'=> $request->userName));
         $data = ProjectUser::updateOrCreate([
             'user_id'=> $request->id,
             'project_id' => $request->project_id,

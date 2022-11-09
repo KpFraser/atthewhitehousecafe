@@ -38,7 +38,7 @@ const validation = (post) =>{
 
 const submit = (Info) => {
     const valid = validation (Info)
-    console.log(valid)
+
     if (valid === true) {
         if (!!formInfo.value.name && !!formInfo.value.email) {
             formInfo.value.processing = true
