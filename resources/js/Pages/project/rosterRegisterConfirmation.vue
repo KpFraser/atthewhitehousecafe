@@ -11,50 +11,50 @@ import { ref } from "vue";
 import {Inertia} from "@inertiajs/inertia";
 import commonFunctions from "@/use/common";
 
-const { Toast } = commonFunctions(),
-    { footerLists } = useFooterList(),
-    registerInfo = ref({}),
-    errors = ref({})
+    const { Toast } = commonFunctions(),
+        { footerLists } = useFooterList(),
+        registerInfo = ref({}),
+        errors = ref({})
 
-const submit = () => {
-    if (registerInfo.value.length!==0){
-        registerInfo.value.processing = true
-        const queryString = window.location.href.replaceAll('%20', ' ')
-        registerInfo.value.email = queryString.split('/')[4]
-        registerInfo.value.project_slug = queryString.split('/')[5]
-        registerInfo.value.name = queryString.split('/')[6]
-        registerInfo.value.event_slug = queryString.split('/')[7]
+    const submit = () => {
+        if (registerInfo.value.length!==0){
+            registerInfo.value.processing = true
+            const queryString = window.location.href.replaceAll('%20', ' ')
+            registerInfo.value.email = queryString.split('/')[4]
+            registerInfo.value.project_slug = queryString.split('/')[5]
+            registerInfo.value.name = queryString.split('/')[6]
+            registerInfo.value.event_slug = queryString.split('/')[7]
 
-        axios
-            .post('/roster-register-confirm', registerInfo.value)
-            .then((response) => {
-                if (response.data.success === true) {
-                    registerInfo.value.processing = false
-                    Toast.fire({icon: "success", title: "Participant Added!"})
-                    Inertia.visit('/roster/' +registerInfo.value.event_slug+'/'+registerInfo.value.project_slug)
-                }
-            }).catch((response) => {
-            errors.value = response.response.data.errors
-            registerInfo.value.processing = false
-            registerInfo.value.password = ''
-            registerInfo.value.password_confirmation = ''
-        });
+            axios
+                .post('/roster-register-confirm', registerInfo.value)
+                .then((response) => {
+                    if (response.data.success === true) {
+                        registerInfo.value.processing = false
+                        Toast.fire({icon: "success", title: "Participant Added!"})
+                        Inertia.visit('/roster/' +registerInfo.value.event_slug+'/'+registerInfo.value.project_slug)
+                    }
+                }).catch((response) => {
+                errors.value = response.response.data.errors
+                registerInfo.value.processing = false
+                registerInfo.value.password = ''
+                registerInfo.value.password_confirmation = ''
+            });
+        }
     }
-}
-const eye_one = (e) => {
-    const password = document.querySelector("#password")
+    const eye_one = (e) => {
+        const password = document.querySelector("#password")
 
-    const type = password.getAttribute("type") === "password" ? "text" : "password"
-    password.setAttribute("type", type)
-    e.target.classList.toggle('fa-eye-slash')
-}
-const eye_two = (e) => {
-    const password = document.querySelector("#password_confirmation")
+        const type = password.getAttribute("type") === "password" ? "text" : "password"
+        password.setAttribute("type", type)
+        e.target.classList.toggle('fa-eye-slash')
+    }
+    const eye_two = (e) => {
+        const password = document.querySelector("#password_confirmation")
 
-    const type = password.getAttribute("type") === "password" ? "text" : "password"
-    password.setAttribute("type", type)
-    e.target.classList.toggle('fa-eye-slash')
-}
+        const type = password.getAttribute("type") === "password" ? "text" : "password"
+        password.setAttribute("type", type)
+        e.target.classList.toggle('fa-eye-slash')
+    }
 </script>
 
 <template>
