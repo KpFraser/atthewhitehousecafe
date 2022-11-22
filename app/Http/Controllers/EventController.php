@@ -181,7 +181,7 @@ class EventController extends Controller
      */
     public function update(Request $request)
     {
-        dd($request->all());
+//        dd($request->all());
         $groupComment = json_decode($request->groupComment, true);
         $dateTime = json_decode($request->dateTime, true);
         $length = json_decode($request->length, true);
