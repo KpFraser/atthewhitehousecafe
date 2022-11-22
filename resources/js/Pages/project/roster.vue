@@ -17,10 +17,10 @@
 
     const
         baseUrl = window.location.origin,
-        roster = ref({image:''}),
+        roster = ref({image:[], previous_img:[]}),
         users = ref([]),
         errors = ref({}),
-        urlRoster =  ref(),
+        urlRoster =  ref([]),
         urlGroup =  ref([]),
         imagesPreview = ref([]),
         allInformation = ref ({groupComment:{event_slug:'', approve:false, comment:'', roster_comment:false}, dateTime:{date:'', start_time:'', end_time:''}, images:[]})
@@ -56,12 +56,33 @@
     }
 
     const rosterComment = (post) =>{
+        console.log(post)
+        // return
         let validComment = modalValidation (post)
-        if (validComment === true) {
+        if (validComment) {
+
             if (allInformation.value.groupComment.roster_comment) return
             allInformation.value.groupComment.roster_comment = true
+
+            const formData = new FormData();
+            for (let item in post) {
+                if(post.hasOwnProperty(item)) {
+                    if(item === "id" || item === "project_id" || item === "userName" || item === "comment" || item === "previous_img") {
+                        formData.append(item,  JSON.stringify(post[item]));
+                    } else if (item === "image"){
+                        let index=1
+                        _.forEach(post[item], function (value, key){
+                            const length = key+1
+                            formData.append('image'+length ,  value);
+                            index = key
+                        })
+                        formData.append('length',  JSON.stringify(index+1));
+                    }
+                }
+            }
+
             axios
-                .post('/roster-comment', roster.value,{
+                .post('/roster-comment', formData,{
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -70,7 +91,7 @@
                     if (response.data.success === true) {
                         Toast.fire({icon: "success", title: "Comment Submitted!"})
                         $(".modal").modal('hide')
-                        roster.value.image = ''
+                        roster.value.image = []
                         eventInfo()
                     }
 
@@ -167,20 +188,47 @@
     }
 
     const commentModal = (user_id, project_id) =>{
+        urlRoster.value = []
         errors.value = {}
         roster.value.id = user_id
         roster.value.project_id = project_id
         let obj = users.value.find(x => x.identity === user_id)
         roster.value.comment = obj.comment
         roster.value.userName = obj.name
-        roster.value.image_name = obj.image
-        roster.value.system_name = obj.image
+        // roster.value.image_name = obj.image
+        // roster.value.system_name = obj.image
+        roster.value.image = []
+        if (user_id !== '') {
+            let img = users.value.filter(x => x.identity === user_id)
+            roster.value.image = img[0].images
+            roster.value.previous_img = img[0].images
+            // if (roster.value.image.length !== 0)
+            //     $("#userImagePeview").modal('show')
+        }
     }
 
     const rosterImage = (e) =>{
-        roster.value.image = e.target.files[0]
-        urlRoster.value = URL.createObjectURL(roster.value.image);
-        roster.value.image_name = roster.value.image.name
+        urlRoster.value = []
+        _.forEach(e.target.files, function(value, key) {
+            roster.value.image.push(value)
+            urlRoster.value.push(URL.createObjectURL(value))
+        });
+    }
+
+    const UserImagePreviewModal = (id) =>{
+        // roster.value.image = []
+        // if (id !== '') {
+        //     let img = users.value.filter(x => x.identity === id)
+        //     roster.value.image = img[0].images
+            if (roster.value.image.length !== 0)
+            $("#userImagePeview").modal('show')
+        // }
+    }
+    const RemoveRosterImage = (key) =>{
+        if(key !== ''){
+            urlRoster.value.splice(key, 1)
+            roster.value.image.splice(key, 1)
+        }
     }
 
     onMounted( ()=> {
@@ -270,13 +318,14 @@
                     </div>
                     <div class="p-4 rounded-b-md">
                         <div class="flex items-center justify-between">
-                            <div>
+                            <div class="flex items-center">
                                 <label for="rosterImg" class="flex items-center">
                                     <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
-                                    <a v-if="urlRoster" target="_blank" :href="urlRoster" class="ml-2 text-blue-700 rounded">Preview</a>
-                                    <a v-else-if="roster.image_name !== ''" target="_blank" :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 text-blue-700 rounded">Preview</a>
+<!--                                    <a data-bs-toggle="modal" data-bs-target="#userImagePeview" v-if="urlRoster" class="ml-2 text-blue-700 rounded">Preview</a>-->
+<!--                                    <a data-bs-toggle="modal" data-bs-target="#userImagePeview" v-else-if="roster.image_name !== '' && roster.image_name !== null " :href="baseUrl+'/storage/images/roster/'+roster.image_name" class="ml-2 text-blue-700 rounded">Preview</a>-->
                                 </label>
-                                <input @change="rosterImage($event)" accept="image/*" type="file" id="rosterImg" class="hidden">
+                                <input @change="rosterImage($event)" accept="image/*" type="file" multiple id="rosterImg" class="hidden">
+                                <a @click="UserImagePreviewModal(roster.id)" class="cursor-pointer ml-2 text-blue-700 rounded">Preview</a>
                             </div>
                             <button @click="rosterComment(roster)" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" :class="{ 'opacity-25': allInformation.groupComment.roster_comment }" :disabled="allInformation.groupComment.roster_comment">Submit</button>
                         </div>
@@ -300,6 +349,28 @@
                         </div>
                         <div v-else v-for="info in imagesPreview">
                             <img alt="image" :src="'/storage/images/group/'+info.system_name" class="p-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="userImagePeview" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="userImagePeview" aria-hidden="true">
+            <div class="modal-dialog relative w-auto pointer-events-none">
+                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
+                        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Images</h5>
+                        <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    </div>
+                    <div class="modal-body h-[500px] overflow-y-auto relative p-4">
+                        <div v-if="urlRoster.length !== 0" v-for="(img, key) in urlRoster">
+                            <div class="flex justify-end">
+                                <i @click="RemoveRosterImage(key)" class="fas fa-times cursor-pointer hover:text-white hover:bg-red-500 text-red-500 border-2 border-red-500 px-2 py-[5px] -mr-3 -mb-4 z-10 bg-white rounded-full"></i>
+                            </div>
+                            <img alt="image" :src="img" class="p-2">
+                        </div>
+                        <div v-else-if="roster.image !== [] && roster.image !== ''" v-for="info in roster.image">
+                            <img v-if="info?.image !== undefined" alt="image" :src="baseUrl+'/storage/images/roster/'+info.image" class="p-2">
+                            <div v-else class="text-center"> No Image Available !</div>
                         </div>
                     </div>
                 </div>

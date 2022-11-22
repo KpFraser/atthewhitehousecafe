@@ -6,6 +6,7 @@ use App\Http\Resources\RosterProjectResource;
 use App\Mail\ParticipantMail;
 use App\Models\Event;
 use App\Models\Project;
+use App\Models\ProjectUserImages;
 use App\Models\RosterImage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rules;
@@ -57,11 +58,13 @@ class EventController extends Controller
 
             $project_id = Project::select('id')->where('slug', $project_slug)->first();
 
-            $data1 = ProjectUser::with('project_users')->where(array('project_id'=>$project_id->id, 'is_key'=> 1))->get();
+            $data1 = ProjectUser::with('project_users', 'project_users_images')->where(array('project_id'=>$project_id->id, 'is_key'=> 1))->get();
             $data2 = RosterProjectResource::Collection($data1);
+//            dd($data2);
             $data3 = Event::select('id','slug', 'group_comment')->where( 'slug', $event_slug)->first();
+            $data4 = ProjectUserImages::where(array('project_id'=>$project_id->id, 'user_id'=> auth()->user()->id))->get();
 
-            return response()->success([$dateComp, $event_start, $event_end, $data2, $data3, $images]);
+            return response()->success([$dateComp, $event_start, $event_end, $data2, $data3, $images, $data4]);
         }
     }
 
@@ -73,7 +76,6 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required|unique:events,name,'.$request->name,
         ]);
@@ -112,7 +114,6 @@ class EventController extends Controller
      */
     public function rosterRegister(Request $request)
     {
-        //dd($request->all());
         if (!empty($request->project_slug)) {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -128,7 +129,6 @@ class EventController extends Controller
     }
     public function RosterConfirm(Request $request)
     {
-//        dd($request->all());
         $project_id = Project::select('id')->where('slug', $request->project_slug)->first();
         if (!empty($project_id)) {
             $request->validate([
@@ -157,10 +157,7 @@ class EventController extends Controller
     public function addParticipant(Request $request)
     {
         if (!empty($request->email)){
-
             $user_id = User::select('id')->where('email', $request->email)->first();
-//            dd(!empty( $user_id));
-
             if (!empty( $user_id)) {
                 $project_id = Project::select('id')->where('slug', $request->project_slug)->first();
                 ProjectUser::updateOrCreate([
@@ -184,6 +181,7 @@ class EventController extends Controller
      */
     public function update(Request $request)
     {
+        dd($request->all());
         $groupComment = json_decode($request->groupComment, true);
         $dateTime = json_decode($request->dateTime, true);
         $length = json_decode($request->length, true);

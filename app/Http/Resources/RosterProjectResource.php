@@ -19,9 +19,9 @@ class RosterProjectResource extends JsonResource
             'comment'=> $this->comment,
             'project'=> $this->project_id,
             'roster'=> $this->is_roster,
-            'image'=> $this->system_name,
             'identity'=>!empty($this->project_users) && !empty($this->project_users->id) ? $this->project_users->id: '',
-            'name'=> !empty($this->project_users) && !empty($this->project_users->name) ? $this->project_users->name: ''
+            'name'=> !empty($this->project_users) && !empty($this->project_users->name) ? $this->project_users->name: '',
+            'images' => UserImagesResource::Collection($this->project_users_images)
         ];
     }
 }

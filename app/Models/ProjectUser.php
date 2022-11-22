@@ -19,4 +19,8 @@ class ProjectUser extends Model
     {
       return $this->belongsTo(User::class,'user_id', 'id')->select( 'id', 'name');
     }
+    public function project_users_images()
+    {
+        return $this->hasMany(ProjectUserImages::class,'project_user_id', 'id');
+    }
 }
