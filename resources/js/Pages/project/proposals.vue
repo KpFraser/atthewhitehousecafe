@@ -423,7 +423,7 @@
                                         </div>
                                         <div class="grid grid-cols-5 items-center">
                                             <label type="text" for="insurance" :class="{'border-red-500': errors.document !== '', 'border-[#639f1e]': safety.document !== ''}" class="col-span-3 bg-gray-200 border-2 focus:outline-none w-full p-2 rounded">Upload insurance documents</label>
-                                            <label v-if="safety.document !== ''" class="col-span-2 px-2 text-[#639f1e] truncate ...">Doc: {{safety.document.name}}</label>
+                                            <label v-if="safety.document !== ''" class="col-span-2 px-2 text-[#639f1e] truncate ...">Doc: {{safety.document?.name}}</label>
                                             <input @change="insuranceDocument($event)" type="file" class="hidden" id="insurance">
                                         </div>
                                     </div>

@@ -90,6 +90,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/projects', [ProjectController::class, 'projects']);
     Route::get('/favourite-projects', [ProjectController::class, 'favouriteInfo'])->name('favourite_info');
     Route::get('/edit-favourite-projects/{slug?}', [ProjectController::class, 'editFavouriteInfo'])->name('favourite_info');
+    Route::get('/project-events/{slug}', [ProjectController::class, 'events']);
     Route::get('/new-projects/{slug}', [ProjectController::class, 'show']);
     Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
     Route::get('/archieve-project', [ProjectController::class, 'showArchieve']);

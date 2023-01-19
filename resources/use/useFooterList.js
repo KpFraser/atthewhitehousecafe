@@ -1,10 +1,10 @@
 
 export default function useFooterList () {
     const footerLists = [
-        {label: 'projects', class: 'fal fa-lightbulb-on', to: 'footer-project'},
-        {label: 'surveys', class: 'far fa-file-invoice', to: 'surveys_home'},
-        {label: 'relationships', class: 'fal fa-user-friends', to: 'dashboard'},
-        {label: 'accounts', class: 'fas fa-user-circle', to: 'dashboard'},
+        {label: 'Plan', to: 'footer-project'},
+        {label: 'Do', to: 'surveys_home'},
+        {label: 'Review', to: 'dashboard'},
+        {label: 'Account', to: 'dashboard'},
     ]
     return { footerLists }
 }

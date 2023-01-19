@@ -34,6 +34,13 @@ class ProjectController extends Controller
            return Inertia::render('ProjectsHome');
     }
 
+    public function events ($id)
+    {
+        $data = Event::select('id', 'name', 'slug')->where('project_id', $id)->get();
+        if (!empty($data))
+            return response()->success($data);
+    }
+
     public function editFavouriteInfo($slug)
     {
         if(!empty($slug)){
