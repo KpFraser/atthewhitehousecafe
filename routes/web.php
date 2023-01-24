@@ -32,8 +32,9 @@ use App\Http\Controllers\{BikeController,
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', fn ()=> Inertia::render('project/allProjects') )->name('display-projects');
 
-Route::middleware('guest')->get('/', function () {
+Route::middleware('guest')->get('/login-page', function () {
     return Inertia::render('Auth/Login', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -44,9 +45,16 @@ Route::middleware('guest')->get('/', function () {
 
 Route::get('/roster-confirmation/{email}/{project_slug}/{name}/{event_slug}', fn ()=> Inertia::render('project/rosterRegisterConfirmation') )->name('roster-confirmation');
 Route::post('/roster-register-confirm', [EventController::class, 'RosterConfirm']);
+Route::get('/projects', [ProjectController::class, 'projects']);
+Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
 
 Route::group(['middleware' => ['auth', 'verified']], function (){
+
+
     Route::get('/dashboard', fn ()=> Inertia::render('Dashboard') )->name('dashboard');
+
+    Route::get('/plan', fn ()=> Inertia::render('Do/Projects') )->name('plan');
+
     Route::get('/personal', fn ()=> Inertia::render('account/personal') )->name('personal');
     Route::get('/security', fn ()=> Inertia::render('account/security') )->name('security');
     Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
@@ -56,7 +64,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/proposed/{slug}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
     Route::get('/favourite-project/{slug?}', fn ()=> Inertia::render('project/project') )->name('favourite-project');
-    Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
+//    Route::get('/allproject', fn ()=> Inertia::render('project/allProjects') )->name('all-project');
     Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register');
@@ -69,7 +77,6 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/question-first', fn ()=> Inertia::render('project/questionFirst') )->name('question-first');
     Route::get('/question-second', fn ()=> Inertia::render('project/questionSecond') )->name('question-second');
     Route::get('/question-third', fn ()=> Inertia::render('project/questionThird') )->name('question-third');
-    Route::get('/proposals', fn ()=> Inertia::render('project/proposals') )->name('proposals');
     Route::get('/applications-projects', fn ()=> Inertia::render('project/applications-projects') )->name('applications-projects');
 /*
  * RegisteredUserController
@@ -87,7 +94,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
  * ProjectController
  */
     Route::get('/project-names', [ProjectController::class, 'index']);
-    Route::get('/projects', [ProjectController::class, 'projects']);
+//    Route::get('/projects', [ProjectController::class, 'projects']);
     Route::get('/favourite-projects', [ProjectController::class, 'favouriteInfo'])->name('favourite_info');
     Route::get('/edit-favourite-projects/{slug?}', [ProjectController::class, 'editFavouriteInfo'])->name('favourite_info');
     Route::get('/project-events/{slug}', [ProjectController::class, 'events']);
@@ -137,6 +144,9 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/save-leadership', [LeadershipTeamController::class, 'store']);
 
 });
+
+Route::get('/project-names', [ProjectController::class, 'names']);
+Route::get('/proposals', fn ()=> Inertia::render('project/proposals') )->name('proposals');
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
 Route::get('/project/reference/{email}/{project_id}/{role_id}/{app_id}', fn ()=> Inertia::render('project/reference') )->name('references');

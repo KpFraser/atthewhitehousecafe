@@ -246,7 +246,7 @@
     <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
         <div class="w-full">
             <MasterHeader/>
-            <div class="text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
+            <div class="relative text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
                 <ul class="w-full flex !text-gray-800 justify-between">
                     <li @click="activeTab(1)" :class="{'bg-opacity-100': isActive === 1 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-cog"></i>
@@ -281,7 +281,7 @@
                             <div class="" :class="{'hidden': subTabActive !== 1 }">
                                 <div class="overflow-y-auto p-4 h-[655px] border-4">
                                     <div class="bg-white">
-                                        <input v-model="location.name" type="text" :class="{'border-red-500 border-2': locationError.name !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Name">
+                                        <input v-model="location.name" type="text" :class="{'border-red-500 border-2': locationError.name !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Project Name">
                                         <input v-model="location.address_1" type="text" :class="{'border-red-500 border-2': locationError.address_1 !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address1">
                                         <input v-model="location.address_2" type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address2">
                                         <input v-model="location.city" type="text" :class="{'border-red-500 border-2': locationError.city !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="City">
@@ -505,19 +505,23 @@
                             <div class="bg-white rounded-xl p-5">
                                 <p class="text-lg text-gray-400">Who are your leadership team</p>
                                 <textarea v-model="leadership.organisers" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Organisers"></textarea>
+                                    rows="6" placeholder="Organisers           (Apply/Appoint)"></textarea>
                                 <textarea v-model="leadership.leaders" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Leaders"></textarea>
+                                    rows="6" placeholder="Leaders           (Apply/Appoint)"></textarea>
                                 <textarea v-model="leadership.assistants" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Assistances"></textarea>
+                                    rows="6" placeholder="Assistances           (Apply/Appoint)"></textarea>
                                 <textarea v-model="leadership.mentors" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Mentors"></textarea>
+                                    rows="6" placeholder="Mentors           (Apply/Appoint)"></textarea>
                             </div>
                             <div class="pr-5 flex justify-end">
                                 <button @click="saveLeadershipInfo()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="m-1 flex justify-between text-[48px]">
+                    <div><i class="w-20 h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center rounded bg-[#639f1e] fas fa-save"></i></div>
+                    <div><i class="w-20 h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center bg-[#639f1e] rounded fas fa-thumbs-up"></i></div>
                 </div>
             </div>
         </div>

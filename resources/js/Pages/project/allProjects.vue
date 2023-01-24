@@ -80,18 +80,11 @@ const allPencilBtn = (slug) =>{
     Inertia.visit('/proposed/'+slug)
 }
 
-const userPencilBtn = (slug) =>{
-    if(slug === 'bike-repair')
-        Inertia.visit('/bike-all-projects/'+slug)
-    else
-    Inertia.visit('/favourite-project/'+slug)
-}
-
 const bikeProject = (slug) =>{
     if(slug === 'bike-repair')
         Inertia.visit('/bike-all-projects/'+slug)
     else
-        userPencilBtn(slug)
+        Inertia.visit('/favourite-project/'+slug)
 }
 
 const showEvents = (id) =>{

@@ -1,8 +1,8 @@
 
 export default function useFooterList () {
     const footerLists = [
-        {label: 'Plan', to: 'footer-project'},
-        {label: 'Do', to: 'surveys_home'},
+        {label: 'Plan', to: 'plan'},
+        {label: 'Do', to: 'display-projects'},
         {label: 'Review', to: 'dashboard'},
         {label: 'Account', to: 'dashboard'},
     ]

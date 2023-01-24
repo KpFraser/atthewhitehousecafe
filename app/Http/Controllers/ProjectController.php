@@ -26,12 +26,14 @@ class ProjectController extends Controller
 
     public function footer_project()
     {
-       $favourite = ProjectUser::select('id', 'user_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
+         return Inertia::render('ProjectsHome');
 
-       if (!empty($favourite))
-           return Inertia::render('project/project');
-       else
-           return Inertia::render('ProjectsHome');
+//       $favourite = ProjectUser::select('id', 'user_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
+//
+//       if (!empty($favourite))
+//           return Inertia::render('project/project');
+//       else
+//           return Inertia::render('ProjectsHome');
     }
 
     public function events ($id)
@@ -41,6 +43,11 @@ class ProjectController extends Controller
             return response()->success($data);
     }
 
+    public function names ()
+    {
+        $data = Project::select('name', 'slug')->where(array('is_approved'=> 1))->orderBy('name')->get();
+        return response()->success($data);
+    }
     public function editFavouriteInfo($slug)
     {
         if(!empty($slug)){

@@ -15,6 +15,6 @@ class Project extends Model
 
     public function projectUser(): HasOne
     {
-        return $this->hasOne(ProjectUser::class,'project_id','id')->select('project_id', 'id', 'is_user', 'is_key')->where('user_id', auth()->user()->id);
+        return $this->hasOne(ProjectUser::class,'project_id','id')->select('project_id', 'id', 'is_user', 'is_key')->where(array('user_id'=> !empty(auth()->user()->id)));
     }
 }
