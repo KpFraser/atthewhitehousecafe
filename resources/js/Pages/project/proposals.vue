@@ -502,20 +502,76 @@
                     </div>
                     <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 4 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
-                            <div class="bg-white rounded-xl p-5">
+                            <div class="bg-white rounded-xl p-5 space-y-2 font-sans">
                                 <p class="text-lg text-gray-400">Who are your leadership team</p>
-                                <textarea v-model="leadership.organisers" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Organisers           (Apply/Appoint)"></textarea>
-                                <textarea v-model="leadership.leaders" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Leaders           (Apply/Appoint)"></textarea>
-                                <textarea v-model="leadership.assistants" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Assistances           (Apply/Appoint)"></textarea>
-                                <textarea v-model="leadership.mentors" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"
-                                    rows="6" placeholder="Mentors           (Apply/Appoint)"></textarea>
+<!--                                <textarea v-model="leadership.organisers" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
+<!--                                    rows="6" placeholder="Organisers           (Apply/Appoint)"></textarea>-->
+<!--                                <textarea v-model="leadership.leaders" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
+<!--                                    rows="6" placeholder="Leaders           (Apply/Appoint)"></textarea>-->
+<!--                                <textarea v-model="leadership.assistants" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
+<!--                                    rows="6" placeholder="Assistances           (Apply/Appoint)"></textarea>-->
+<!--                                <textarea v-model="leadership.mentors" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
+<!--                                    rows="6" placeholder="Mentors           (Apply/Appoint)"></textarea>-->
+                                <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
+                                    <div class="flex justify-between">
+                                        <div>Organisers</div>
+                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Applicants:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Appointments:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                </div>
+                                <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
+                                    <div class="flex justify-between">
+                                        <div>Leaders</div>
+                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Applicants:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Appointments:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                </div>
+                                <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
+                                    <div class="flex justify-between">
+                                        <div>Assistants</div>
+                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Applicants:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Appointments:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                </div>
+                                <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
+                                    <div class="flex justify-between">
+                                        <div>Mentors</div>
+                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Applicants:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                    <div class="flex m-2">
+                                        <div class="mr-4">Appointments:</div>
+                                        <div class="text-gray-700">name1, name2</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="pr-5 flex justify-end">
-                                <button @click="saveLeadershipInfo()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
-                            </div>
+<!--                            <div class="pr-5 flex justify-end">-->
+<!--                                <button @click="saveLeadershipInfo()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
