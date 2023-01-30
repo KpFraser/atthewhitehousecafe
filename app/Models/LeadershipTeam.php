@@ -9,6 +9,6 @@ class LeadershipTeam extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'organisers', 'leaders', 'assistants', 'mentors'
+        'user_id', 'project_id', 'organisers', 'leaders', 'assistants', 'mentors'
     ];
 }

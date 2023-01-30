@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('leadership_teams', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->string('organisers')->nullable(true);
             $table->string('leaders')->nullable(true);
             $table->string('assistants')->nullable(true);

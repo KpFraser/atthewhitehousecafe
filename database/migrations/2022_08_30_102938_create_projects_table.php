@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string('location')->nullable(true);
             $table->string('frequency')->nullable(true);
             $table->string('requirements')->nullable(true);
-            $table->tinyInteger('applications')->nullable(true)->comment('1 for assistant 2 for leader');
-            $table->tinyInteger('module')->nullable(true);
             $table->boolean('is_approved')->nullable(true);
             $table->boolean('is_archived')->nullable(true);
             $table->boolean('is_survey')->nullable(true);

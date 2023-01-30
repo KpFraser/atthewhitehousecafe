@@ -10,11 +10,36 @@ class Project extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'slug', 'location', 'is_survey', 'frequency', 'requirements', 'applications', 'module', 'is_approved', 'is_archived', 'created_by', 'updated_by'
+        'name', 'slug', 'location', 'is_survey', 'frequency', 'requirements', 'is_approved', 'is_archived', 'created_by', 'updated_by'
     ];
 
     public function projectUser(): HasOne
     {
         return $this->hasOne(ProjectUser::class,'project_id','id')->select('project_id', 'id', 'is_user', 'is_key')->where(array('user_id'=> !empty(auth()->user()->id)));
+    }
+
+    public function ProjectLocation ()
+    {
+        return $this->hasOne(Location::class, 'project_id', 'id');
+    }
+
+    public function ProjectRisk ()
+    {
+        return $this->hasOne(RiskManagement::class, 'project_id', 'id');
+    }
+
+    public function ProjectSafety ()
+    {
+        return $this->hasOne(Safety::class, 'project_id', 'id');
+    }
+
+    public function ProjectFunding ()
+    {
+        return $this->hasOne(Funding::class, 'project_id', 'id');
+    }
+
+    public function ProjectMedia ()
+    {
+        return $this->hasOne(SocialMedia::class, 'project_id', 'id');
     }
 }

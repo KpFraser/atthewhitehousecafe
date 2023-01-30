@@ -15,13 +15,15 @@ class ProjectResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'identity'=> $this->id,
-            'name'=> $this->name,
-            'location'=> $this->location,
-            'frequency'=> $this->frequency,
-            'requirements'=> $this->requirements,
-            'applications'=> $this->applications,
-            'approve'=> $this->is_approved
+//            dd($this)
+            'project_id'=> $this->id,
+            'project_name'=> $this->name,
+            'project_slug'=> $this->slug,
+            'ProjectLocation'=> new ProjectLocationPesource($this->ProjectLocation),
+            'ProjectRisk'=> $this->ProjectRisk,
+            'ProjectSafety'=> $this->ProjectSafety,
+            'ProjectFunding'=> $this->ProjectFunding,
+            'ProjectMedia'=> $this->ProjectMedia
         ];
     }
 }

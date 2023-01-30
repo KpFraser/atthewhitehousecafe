@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class RiskManagement extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'name', 'risk', 'control'];
+    protected $fillable = ['user_id', 'project_id', 'name', 'risk', 'control'];
 }

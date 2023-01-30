@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Funding extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'funding', 'text1', 'text2'];
+    protected $fillable = ['user_id', 'project_id', 'funding', 'text1', 'text2'];
 }

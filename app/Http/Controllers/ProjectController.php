@@ -103,14 +103,14 @@ class ProjectController extends Controller
            $request->validate([
                 'name' => 'required|unique:projects,name,'.$request->id,
            ]);
-            Project::updateOrCreate([
+            $data = Project::updateOrCreate([
                 'id' => $request->id,
             ],[
                 'slug' => Str::slug($request->name),
                 'created_by'=> auth()->user()->id,
                 'name'=> $request->name,
             ]);
-            return response()->success();
+            return response()->success($data);
         }
     /**
      * Display the specified resource.

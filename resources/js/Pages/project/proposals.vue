@@ -5,15 +5,18 @@
     import {ref, onMounted } from "vue";
     import { Link } from '@inertiajs/inertia-vue3';
     import commonFunctions from "@/use/common";
+    import {Inertia} from "@inertiajs/inertia";
 
     const { Toast } = commonFunctions(),
         { footerLists } = useFooterList()
 
-    const isActive = ref(1),
+    const isActive = ref(0),
         subTabActive = ref(1),
+        project = ref({}),
         approved = ref(false),
         day = ref([{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]),
-        location = ref({ id:'', name:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_every:'', never:'', on:'', after:''}),
+        location = ref({ project_id:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_every:'', never:'', on:'', after:'',
+            repeat_on:[{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]}),
         ends = ref ({}),
         leadership = ref({}),
         safety = ref ({date: '', document:'', document_name:'', text1:'', text2:'', text3:''}),
@@ -21,6 +24,8 @@
         riskManagement = ref([]),
         finance = ref({funding: '', text1: '', text2: ''}),
         socialInfo = ref({}),
+        nameError = ref(),
+        disable = ref(false),
         locationError = ref ({address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''})
 
     const activeTab = (tab) =>{
@@ -32,11 +37,11 @@
     }
 
     const selectDay = (tab) =>{
-        let index = _.findKey(day.value, function(o) { return o.day === tab; });
-        if(day.value[index].value === 0)
-            day.value[index].value = 1
+        let index = _.findKey(location.value.repeat_on, function(o) { return o.day === tab; });
+        if(location.value.repeat_on[index].value === 0)
+            location.value.repeat_on[index].value = 1
         else
-            day.value[index].value = 0
+            location.value.repeat_on[index].value = 0
     }
 
     const endDate = (post) =>{
@@ -57,8 +62,7 @@
     const locationValidation = (post) =>{
 
         locationError.value = {address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''}
-        if (!post.name)
-            locationError.value.name = '* Required'
+
         if (!post.address_1)
             locationError.value.address_1 = '* Required'
         if (!post.country)
@@ -73,10 +77,10 @@
             locationError.value.repeat_every = '* Required'
         if (!post.after && !post.never && !post.on)
             locationError.value.ends = '* Select one option'
-        if (day.value[0].value === 0 && day.value[1].value === 0 && day.value[2].value === 0 && day.value[3].value === 0 && day.value[4].value === 0 && day.value[5].value === 0 && day.value[6].value === 0)
+        if (location.value.repeat_on[0].value === 0 && location.value.repeat_on[1].value === 0 && location.value.repeat_on[2].value === 0 && location.value.repeat_on[3].value === 0 && location.value.repeat_on[4].value === 0 && location.value.repeat_on[5].value === 0 && location.value.repeat_on[6].value === 0)
             locationError.value.days = '* Required'
 
-        return(!locationError.value.address_1 && !locationError.value.address_2 && !locationError.value.city && !locationError.value.country && !locationError.value.name && !locationError.value.postcode && !locationError.value.repeat_time && !locationError.value.repeat_every && !locationError.value.ends && !locationError.value.days)
+        return(!locationError.value.address_1 && !locationError.value.address_2 && !locationError.value.city && !locationError.value.country && !locationError.value.postcode && !locationError.value.repeat_time && !locationError.value.repeat_every && !locationError.value.ends && !locationError.value.days)
 
     }
 
@@ -85,7 +89,7 @@
         let valid = locationValidation (post)
         if(valid){
             axios
-                .post('/location-information', {location: location.value, day:day.value})
+                .post('/location-information', {location: location.value})
                 .then((response)=>{
                     if(response.data.success) {
                         Toast.fire({icon: "success", title: "Data saved successfully!"})
@@ -215,29 +219,58 @@
             }).finally(() => approved.value = false)
     }
 
-    const proposalAllData = () => {
-        axios
-            .get('/proposals-page-information')
-            .then((response)=>{
-                if(response.data !== ''){
-                    if(response.data[0] !== null)
-                        location.value = response.data[0]
-                    if(response.data[1] !== null)
-                        day.value = response.data[1]
-                    if(response.data[2].length === 0)
-                        riskManagement.value.push({id: '', name: '', risk: '', control: ''})
-                    else
-                        riskManagement.value = response.data[2]
-                    safety.value = !!response.data[3] ? response.data[3]: ''
-                    finance.value = !!response.data[4] ? response.data[4]: ''
-                    socialInfo.value = !!response.data[5] ? response.data[5]: ''
-                    leadership.value = !!response.data[6] ? response.data[6]: ''
-                }
-            })
+    const proposalAllData = (slug) => {
+        if(!!slug) {
+            isActive.value = 1
+            axios
+                .get('/proposals-page-information/' + slug)
+                .then((response) => {
+                    location.value = response.data?.data?.ProjectLocation
+                    // day.value =  response.data?.data?.ProjectLocation?.repeat_on
+                    project.value.name = response.data?.data?.project_name
+                    project.value.id = response.data?.data?.project_id
+                    project.value.slug = response.data?.data?.project_slug
+                    // if(response.data !== ''){
+                    //     if(response.data[0] !== null)
+                    //         location.value = response.data[0]
+                    //     if(response.data[1] !== null)
+                    //     if(response.data[2].length === 0)
+                    //         riskManagement.value.push({id: '', name: '', risk: '', control: ''})
+                    //     else
+                    //         riskManagement.value = response.data[2]
+                    //     safety.value = !!response.data[3] ? response.data[3]: ''
+                    //     finance.value = !!response.data[4] ? response.data[4]: ''
+                    //     socialInfo.value = !!response.data[5] ? response.data[5]: ''
+                    //     leadership.value = !!response.data[6] ? response.data[6]: ''
+                    // }
+                })
+        }
+    }
+
+    const saveName = (post) =>{
+        nameError.value = ''
+        if(!!post) {
+            disable.value = true
+            axios
+                .post('/project-names', {name: post})
+                .then((response) => {
+                    if (response.data.success){
+                        Toast.fire({icon: "success", title: "Project name saved!"})
+                        console.log(response.data.data)
+                        Inertia.visit('/proposals/'+response.data?.data?.slug)
+
+                    }
+                }).finally(()=>{
+                disable.value = false
+            });
+        } else
+            nameError.value = 'Project name is required !'
     }
 
     onMounted(()=>{
-        proposalAllData ()
+        let ProSlug = window.location.href.split('/')[4]
+        if(!!ProSlug)
+        proposalAllData (ProSlug)
     })
 
 </script>
@@ -247,41 +280,41 @@
         <div class="w-full">
             <MasterHeader/>
             <div class="relative text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
-                <ul class="w-full flex !text-gray-800 justify-between">
-                    <li @click="activeTab(1)" :class="{'bg-opacity-100': isActive === 1 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                <ul :class="{'pointer-events-none':isActive === 0}" class="w-full flex !text-gray-800 justify-between">
+                    <li @click="activeTab(1)" :class="{'bg-opacity-100 text-black': isActive === 1 }" class="w-[20%] hover:text-gray-200 m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-cog"></i>
                     </li>
-                    <li @click="activeTab(2)" :class="{'bg-opacity-100': isActive === 2 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <li @click="activeTab(2)" :class="{'bg-opacity-100 text-black': isActive === 2 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-hand-holding-usd"></i>
                     </li>
-                    <li @click="activeTab(3)" :class="{'bg-opacity-100': isActive === 3 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <li @click="activeTab(3)" :class="{'bg-opacity-100 text-black': isActive === 3 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-volume-up"></i>
                     </li>
-                    <li @click="activeTab(4)" :class="{'bg-opacity-100': isActive === 4 }" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <li @click="activeTab(4)" :class="{'bg-opacity-100 text-black': isActive === 4 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-search"></i>
                     </li>
-                    <Link :href="route('projectshome')" class="w-[20%] m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <i class="text-[46px] fas fa-home"></i>
+                    <Link :href="route('plan')" class="w-[20%] !pointer-events-auto m-1 hover:text-red-700 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                        <i class="text-[46px] fas fa-times"></i>
                     </Link>
                 </ul>
-                <div class="bg-white h-[730px] max-w-lg mx-auto">
+                <div :class="{'h-[200px]': isActive === 0}" class="bg-white h-[730px] max-w-lg mx-auto">
                     <div class="h-[730px]" :class="{'hidden': isActive !== 1 }" >
                         <div class="">
                             <ul class="w-full grid grid-cols-5 text-gray-800">
-                                <li @click="subTab(1)" :class="{'bg-opacity-100': subTabActive === 1 }" class=" m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                                <li @click="subTab(1)" :class="{'bg-opacity-100 text-black': subTabActive === 1 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                                     <i class="text-[46px] fas fa-map-marker-alt"></i>
                                 </li>
-                                <li @click="subTab(2)" :class="{'bg-opacity-100': subTabActive === 2 }" class=" m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                                <li @click="subTab(2)" :class="{'bg-opacity-100 text-black': subTabActive === 2 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                                     <i class="text-[46px] fas fa-asterisk"></i>
                                 </li>
-                                <li @click="subTab(3)" :class="{'bg-opacity-100': subTabActive === 3 }" class=" m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                                <li @click="subTab(3)" :class="{'bg-opacity-100 text-black': subTabActive === 3 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                                     <i class="text-[46px] fas fa-hard-hat"></i>
                                 </li>
                             </ul>
                             <div class="" :class="{'hidden': subTabActive !== 1 }">
                                 <div class="overflow-y-auto p-4 h-[655px] border-4">
                                     <div class="bg-white">
-                                        <input v-model="location.name" type="text" :class="{'border-red-500 border-2': locationError.name !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Project Name">
+                                        <input v-model="project.name" type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" disabled>
                                         <input v-model="location.address_1" type="text" :class="{'border-red-500 border-2': locationError.address_1 !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address1">
                                         <input v-model="location.address_2" type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address2">
                                         <input v-model="location.city" type="text" :class="{'border-red-500 border-2': locationError.city !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="City">
@@ -301,13 +334,13 @@
                                         </div>
                                         <h3 class="font-semibold">Repeat on: </h3>
                                         <div class="flex items-center my-2">
-                                            <span @click="selectDay('mon')" :class="{'!bg-[#639f1e]': day[0]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 cursor-pointer">M</span>
-                                            <span @click="selectDay('tue')" :class="{'!bg-[#639f1e]': day[1]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
-                                            <span @click="selectDay('wed')" :class="{'!bg-[#639f1e]': day[2]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">W</span>
-                                            <span @click="selectDay('thu')" :class="{'!bg-[#639f1e]': day[3]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
-                                            <span @click="selectDay('fri')" :class="{'!bg-[#639f1e]': day[4]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">F</span>
-                                            <span @click="selectDay('sat')" :class="{'!bg-[#639f1e]': day[5]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
-                                            <span @click="selectDay('sun')" :class="{'!bg-[#639f1e]': day[6]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
+                                            <span @click="selectDay('mon')" :class="{'!bg-[#639f1e]': location.repeat_on[0]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 cursor-pointer">M</span>
+                                            <span @click="selectDay('tue')" :class="{'!bg-[#639f1e]': location.repeat_on[1]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
+                                            <span @click="selectDay('wed')" :class="{'!bg-[#639f1e]': location.repeat_on[2]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">W</span>
+                                            <span @click="selectDay('thu')" :class="{'!bg-[#639f1e]': location.repeat_on[3]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">T</span>
+                                            <span @click="selectDay('fri')" :class="{'!bg-[#639f1e]': location.repeat_on[4]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">F</span>
+                                            <span @click="selectDay('sat')" :class="{'!bg-[#639f1e]': location.repeat_on[5]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
+                                            <span @click="selectDay('sun')" :class="{'!bg-[#639f1e]': location.repeat_on[6]?.value === 1, 'border border-red-500': locationError.days !== ''}" class="w-8 h-8 rounded-full bg-gray-200 text-center py-1 ml-2 cursor-pointer">S</span>
                                         </div>
                                         <div class="flex items-center">
                                             <h3 class="font-semibold">Ends: </h3>
@@ -575,9 +608,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="m-1 flex justify-between text-[48px]">
-                    <div><i class="w-20 h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center rounded bg-[#639f1e] fas fa-save"></i></div>
-                    <div><i class="w-20 h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center bg-[#639f1e] rounded fas fa-thumbs-up"></i></div>
+                <div v-if="isActive === 0" class="w-full flex justify-between text-[48px]">
+                    <div :class="{'pointer-events-none opacity-50':disable}" class="m-1 cursor-pointer w-[20%]"><i class="h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center rounded bg-[#639f1e] fas fa-save"></i></div>
+                    <div class="m-1 w-[60%] flex items-center">
+                        <input v-model="location.name" type="text" class="w-full rounded border-2 border-[#639f1e] border-opacity-75" placeholder="Write Project Name here.."/>
+                    </div>
+                    <div :class="{'pointer-events-none opacity-50':disable}" @click="saveName(location.name)" class="m-1 bg-opacity-75 hover:bg-opacity-100 bg-[#639f1e] rounded cursor-pointer w-[20%]">
+                        <i class="h-20 flex items-center justify-center fas fa-thumbs-up"></i>
+                    </div>
                 </div>
             </div>
         </div>

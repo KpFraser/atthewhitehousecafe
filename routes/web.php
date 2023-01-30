@@ -130,7 +130,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
     Route::post('/bike-all-information', [BikeController::class, 'store']);
 
-    Route::get('/proposals-page-information', [LocationController::class, 'show']);
+    Route::get('/proposals-page-information/{slug?}', [LocationController::class, 'show']);
     Route::post('/location-information', [LocationController::class, 'store']);
 
     Route::post('/save-risk', [RiskManagementController::class, 'store']);
@@ -146,7 +146,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 });
 
 Route::get('/project-names', [ProjectController::class, 'names']);
-Route::get('/proposals', fn ()=> Inertia::render('project/proposals') )->name('proposals');
+Route::get('/proposals/{slug?}', fn ()=> Inertia::render('project/proposals') )->name('proposals');
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
 Route::get('/project/reference/{email}/{project_id}/{role_id}/{app_id}', fn ()=> Inertia::render('project/reference') )->name('references');

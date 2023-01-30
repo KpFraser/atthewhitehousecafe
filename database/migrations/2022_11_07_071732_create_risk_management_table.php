@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('risk_management', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('risk');
             $table->string('control');

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
+            $table->string('system_name')->nullable(true);
+            $table->string('roster_image')->nullable(true);
             $table->string('comment')->nullable(true);
             $table->boolean('is_roster')->nullable(true);
             $table->boolean('is_user')->nullable(true);
