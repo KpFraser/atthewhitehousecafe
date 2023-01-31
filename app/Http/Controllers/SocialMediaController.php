@@ -35,16 +35,18 @@ class SocialMediaController extends Controller
      */
     public function store(Request $request)
     {
+//        dd($request->all());
         SocialMedia::updateOrCreate([
+            'project_id'=> $request->project_id,
             'user_id'=> auth()->user()->id,
         ],[
-            'facebook' => $request->facebook,
-            'twitter' => $request->twitter,
-            'instagram' => $request->instagram,
-            'youtube' => $request->youtube,
-            'website' => $request->website,
-            'meetup' => $request->meetup,
-            'others' => $request->others,
+            'facebook' => $request->social['facebook'],
+            'twitter' => $request->social['twitter'],
+            'instagram' => $request->social['instagram'],
+            'youtube' => $request->social['youtube'],
+            'website' => $request->social['website'],
+            'meetup' => $request->social['meetup'],
+            'others' => $request->social['others'],
         ]);
         return response()->success();
     }

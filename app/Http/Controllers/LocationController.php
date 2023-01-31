@@ -42,22 +42,23 @@ class LocationController extends Controller
      */
     public function store(Request $request)
     {
+//        dd($request->all());
         Location::updateOrCreate([
-            'id' => $request->location['id'],
-            'project_id' => $request->location['project_id'],
+            'project_id' => $request->project_id,
             'user_id' => auth()->user()->id,
             ],[
-            'city' => $request->location['city'],
-            'postcode' => $request->location['postcode'],
-            'address_1' => $request->location['address_1'],
-            'address_2' => $request->location['address_2'],
-            'country' => $request->location['country'],
-            "repeat_on" => json_encode($request->location['repeat_on']),
-            "repeat_time" => $request->location['repeat_time'],
-            "repeat_every" => $request->location['repeat_every'],
-            "never" => $request->location['never'],
-            "on" => $request->location['on'],
-            "after" => $request->location['after'],
+            'user_id' => auth()->user()->id,
+            'city' => $request->city,
+            'postcode' => $request->postcode,
+            'address_1' => $request->address_1,
+            'address_2' => $request->address_2,
+            'country' => $request->country,
+            "repeat_on" => json_encode($request->repeat_on),
+            "repeat_time" => $request->repeat_time,
+            "repeat_every" => $request->repeat_every,
+            "never" => $request->never,
+            "on" => $request->on,
+            "after" => $request->after,
             'created_by' => auth()->user()->id,
             'updated_by' => auth()->user()->id,
         ]);
@@ -73,8 +74,10 @@ class LocationController extends Controller
     public function show($slug)
     {
         if (!empty($slug)){
-            $data = Project::select('id', 'slug', 'name')->with('ProjectLocation', 'ProjectRisk', 'ProjectSafety', 'ProjectFunding', 'ProjectMedia')->where('slug', $slug)->first();
-//            dd($data);
+            $data = Project::select('id', 'slug', 'name')
+                ->where('slug', $slug)
+                ->with('ProjectLocation', 'ProjectRisk', 'ProjectSafety', 'ProjectFunding', 'ProjectMedia')
+                ->first();
             return response()->success(new ProjectResource($data));
         } else
             return response()->error(500, 'Data not found !');

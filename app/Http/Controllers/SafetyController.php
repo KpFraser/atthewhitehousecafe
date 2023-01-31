@@ -54,6 +54,7 @@ class SafetyController extends Controller
             $filename1 = $request->document_name;
         }
         Safety::updateOrCreate([
+            'project_id'=> $request->project_id,
             'user_id'=> auth()->user()->id,
         ],[
             'document' => $document,

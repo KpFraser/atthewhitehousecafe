@@ -14,8 +14,7 @@
         subTabActive = ref(1),
         project = ref({}),
         approved = ref(false),
-        day = ref([{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]),
-        location = ref({ project_id:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_every:'', never:'', on:'', after:'',
+        location = ref({project_id:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_every:'', never:'', on:'', after:'',
             repeat_on:[{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]}),
         ends = ref ({}),
         leadership = ref({}),
@@ -25,16 +24,7 @@
         finance = ref({funding: '', text1: '', text2: ''}),
         socialInfo = ref({}),
         nameError = ref(),
-        disable = ref(false),
-        locationError = ref ({address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''})
-
-    const activeTab = (tab) =>{
-        isActive.value = tab
-    }
-
-    const subTab = (tab) =>{
-        subTabActive.value = tab
-    }
+        locationError = ref ({address_1:'', city:'', country:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''})
 
     const selectDay = (tab) =>{
         let index = _.findKey(location.value.repeat_on, function(o) { return o.day === tab; });
@@ -61,7 +51,7 @@
 
     const locationValidation = (post) =>{
 
-        locationError.value = {address_1:'', address_2:'', city:'', country:'', name:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''}
+        locationError.value = {address_1:'', city:'', country:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''}
 
         if (!post.address_1)
             locationError.value.address_1 = '* Required'
@@ -80,22 +70,21 @@
         if (location.value.repeat_on[0].value === 0 && location.value.repeat_on[1].value === 0 && location.value.repeat_on[2].value === 0 && location.value.repeat_on[3].value === 0 && location.value.repeat_on[4].value === 0 && location.value.repeat_on[5].value === 0 && location.value.repeat_on[6].value === 0)
             locationError.value.days = '* Required'
 
-        return(!locationError.value.address_1 && !locationError.value.address_2 && !locationError.value.city && !locationError.value.country && !locationError.value.postcode && !locationError.value.repeat_time && !locationError.value.repeat_every && !locationError.value.ends && !locationError.value.days)
+        return(!locationError.value.address_1 && !locationError.value.city && !locationError.value.country && !locationError.value.postcode && !locationError.value.repeat_time && !locationError.value.repeat_every && !locationError.value.ends && !locationError.value.days)
 
     }
 
     const locationSubmit = (post) =>{
-        console.log(post)
         let valid = locationValidation (post)
         if(valid){
+            approved.value = true
             axios
-                .post('/location-information', {location: location.value})
+                .post('/location-information', location.value)
                 .then((response)=>{
                     if(response.data.success) {
                         Toast.fire({icon: "success", title: "Data saved successfully!"})
-                        proposalAllData()
                     }
-                })
+                }).finally(() => approved.value = false)
         }
     }
 
@@ -115,12 +104,11 @@
         if(lastObject?.name !== '' && lastObject?.risk !== '' && lastObject?.control !== '') {
             approved.value = true
             axios
-                .post('/save-risk', riskManagement.value)
+                .post('/save-risk', {project_id:project.value.id, riskManagement:riskManagement.value})
                 .then((response)=>{
                     if(response.data.success){
                         Toast.fire({icon: "success", title: "Data saved successfully!"})
                         approved.value = false
-                        proposalAllData ()
                     }
                 }).finally(() => approved.value = false)
         } else
@@ -128,7 +116,7 @@
     }
 
     const safetyValidation = (post) => {
-        errors.value = { riskManagement: '', document: '', text1: '', text2: '', text3: '' }
+        errors.value = {riskManagement:'', document:'', text1:'', text2:'', text3:'', funding:''}
 
         if (!post.document)
             errors.value.document = '* Required'
@@ -140,7 +128,6 @@
             errors.value.text3 = '* Required'
 
         return( !errors.value.document && !errors.value.text1 && !errors.value.text2 && !errors.value.text3 )
-
     }
 
     const saveSafetyMeasures = (post) => {
@@ -154,6 +141,7 @@
             formData.append('text1',  safety.value.text1);
             formData.append('text2',  safety.value.text2);
             formData.append('text3',  safety.value.text3);
+            formData.append('project_id',  project.value.id);
             axios
                 .post('/safety-info', formData , {
                     headers: {
@@ -164,7 +152,6 @@
                     if(response.data.success){
                         Toast.fire({icon: "success", title: "Data saved successfully!"})
                         approved.value = false
-                        proposalAllData ()
                     }
                 })
                 .finally(() => approved.value = false)
@@ -176,15 +163,14 @@
     }
 
     const saveFinancePlan = (post) =>{
-        if (post.lottery !== ''){
+        if (post.funding !== ''){
             approved.value = true
             axios
-                .post('/save-finance', finance.value)
+                .post('/save-finance', {project_id:project.value.id, finance:finance.value})
                 .then((response)=>{
                     if(response.data.success){
                         Toast.fire({icon: "success", title: "Data saved successfully!"})
                         approved.value = false
-                        proposalAllData ()
                     }
                 }).finally(() => approved.value = false)
         } else
@@ -195,12 +181,11 @@
 
             approved.value = true
             axios
-                .post('/save-social', socialInfo.value)
+                .post('/save-social', {social: socialInfo.value, project_id:project.value.id})
                 .then((response)=>{
                     if(response.data.success){
                         Toast.fire({icon: "success", title: "Data saved successfully!"})
                         approved.value = false
-                        proposalAllData ()
                     }
                 }).finally(() => approved.value = false)
     }
@@ -214,35 +199,42 @@
                 if(response.data.success){
                     Toast.fire({icon: "success", title: "Data saved successfully!"})
                     approved.value = false
-                    proposalAllData ()
                 }
             }).finally(() => approved.value = false)
     }
 
-    const proposalAllData = (slug) => {
-        if(!!slug) {
+    const proposalAllData = () => {
+
+        let ProSlug = window.location.href.split('/')[4]
+        if(!!ProSlug) {
             isActive.value = 1
             axios
-                .get('/proposals-page-information/' + slug)
+                .get('/proposals-page-information/' + ProSlug)
                 .then((response) => {
-                    location.value = response.data?.data?.ProjectLocation
-                    // day.value =  response.data?.data?.ProjectLocation?.repeat_on
+
                     project.value.name = response.data?.data?.project_name
                     project.value.id = response.data?.data?.project_id
                     project.value.slug = response.data?.data?.project_slug
-                    // if(response.data !== ''){
-                    //     if(response.data[0] !== null)
-                    //         location.value = response.data[0]
-                    //     if(response.data[1] !== null)
-                    //     if(response.data[2].length === 0)
-                    //         riskManagement.value.push({id: '', name: '', risk: '', control: ''})
-                    //     else
-                    //         riskManagement.value = response.data[2]
-                    //     safety.value = !!response.data[3] ? response.data[3]: ''
-                    //     finance.value = !!response.data[4] ? response.data[4]: ''
-                    //     socialInfo.value = !!response.data[5] ? response.data[5]: ''
+                    location.value.project_id = response.data?.data?.project_id
+
+                    if(!!response.data?.data?.ProjectLocation)
+                        location.value = response.data?.data?.ProjectLocation
+
+                    if(response.data?.data?.ProjectRisk?.length !== 0)
+                        riskManagement.value = response.data?.data?.ProjectRisk
+                    else
+                        riskManagement.value.push({id: '', name: '', risk: '', control: ''})
+
+                    if(!!response.data?.data?.ProjectSafety)
+                        safety.value = response.data?.data?.ProjectSafety
+
+                    if(!!response.data?.data?.ProjectFunding)
+                        finance.value = response.data?.data?.ProjectFunding
+
+                    if(!!response.data?.data?.ProjectMedia)
+                        socialInfo.value = response.data?.data?.ProjectMedia
+
                     //     leadership.value = !!response.data[6] ? response.data[6]: ''
-                    // }
                 })
         }
     }
@@ -250,27 +242,26 @@
     const saveName = (post) =>{
         nameError.value = ''
         if(!!post) {
-            disable.value = true
+            approved.value = true
             axios
                 .post('/project-names', {name: post})
                 .then((response) => {
                     if (response.data.success){
                         Toast.fire({icon: "success", title: "Project name saved!"})
-                        console.log(response.data.data)
                         Inertia.visit('/proposals/'+response.data?.data?.slug)
-
                     }
-                }).finally(()=>{
-                disable.value = false
+                }).catch((err)=>{
+                    nameError.value = err.response?.data?.errors?.name[0]
+            }).finally(()=>{
+                approved.value = false
             });
         } else
             nameError.value = 'Project name is required !'
     }
 
     onMounted(()=>{
-        let ProSlug = window.location.href.split('/')[4]
-        if(!!ProSlug)
-        proposalAllData (ProSlug)
+
+        proposalAllData ()
     })
 
 </script>
@@ -281,38 +272,38 @@
             <MasterHeader/>
             <div class="relative text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
                 <ul :class="{'pointer-events-none':isActive === 0}" class="w-full flex !text-gray-800 justify-between">
-                    <li @click="activeTab(1)" :class="{'bg-opacity-100 text-black': isActive === 1 }" class="w-[20%] hover:text-gray-200 m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <li @click="isActive = 1" :class="{'bg-opacity-100 text-black': isActive === 1 }" class="w-[20%] hover:text-gray-200 m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-cog"></i>
                     </li>
-                    <li @click="activeTab(2)" :class="{'bg-opacity-100 text-black': isActive === 2 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <li @click="isActive = 2" :class="{'bg-opacity-100 text-black': isActive === 2 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-hand-holding-usd"></i>
                     </li>
-                    <li @click="activeTab(3)" :class="{'bg-opacity-100 text-black': isActive === 3 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <li @click="isActive = 3" :class="{'bg-opacity-100 text-black': isActive === 3 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-volume-up"></i>
                     </li>
-                    <li @click="activeTab(4)" :class="{'bg-opacity-100 text-black': isActive === 4 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                    <li @click="isActive = 4" :class="{'bg-opacity-100 text-black': isActive === 4 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-search"></i>
                     </li>
                     <Link :href="route('plan')" class="w-[20%] !pointer-events-auto m-1 hover:text-red-700 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                         <i class="text-[46px] fas fa-times"></i>
                     </Link>
                 </ul>
-                <div :class="{'h-[200px]': isActive === 0}" class="bg-white h-[730px] max-w-lg mx-auto">
-                    <div class="h-[730px]" :class="{'hidden': isActive !== 1 }" >
+                <div :class="{'!h-[200px]': isActive === 0}" class="bg-white h-[743px] max-w-lg mx-auto">
+                    <div class="h-[743px] overflow-y-auto" :class="{'hidden': isActive !== 1 }" >
                         <div class="">
                             <ul class="w-full grid grid-cols-5 text-gray-800">
-                                <li @click="subTab(1)" :class="{'bg-opacity-100 text-black': subTabActive === 1 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                                <li @click="subTabActive = 1" :class="{'bg-opacity-100 text-black': subTabActive === 1 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                                     <i class="text-[46px] fas fa-map-marker-alt"></i>
                                 </li>
-                                <li @click="subTab(2)" :class="{'bg-opacity-100 text-black': subTabActive === 2 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                                <li @click="subTabActive = 2" :class="{'bg-opacity-100 text-black': subTabActive === 2 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                                     <i class="text-[46px] fas fa-asterisk"></i>
                                 </li>
-                                <li @click="subTab(3)" :class="{'bg-opacity-100 text-black': subTabActive === 3 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                                <li @click="subTabActive = 3" :class="{'bg-opacity-100 text-black': subTabActive === 3 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
                                     <i class="text-[46px] fas fa-hard-hat"></i>
                                 </li>
                             </ul>
                             <div class="" :class="{'hidden': subTabActive !== 1 }">
-                                <div class="overflow-y-auto p-4 h-[655px] border-4">
+                                <div class="p-4 border-4 h-[670px] overflow-y-auto">
                                     <div class="bg-white">
                                         <input v-model="project.name" type="text" class="bg-gray-200 p-2 mt-2 w-full rounded-md" disabled>
                                         <input v-model="location.address_1" type="text" :class="{'border-red-500 border-2': locationError.address_1 !== '' }" class="bg-gray-200 p-2 mt-2 w-full rounded-md" placeholder="Address1">
@@ -377,7 +368,7 @@
                                 </div>
                             </div>
                             <div class="" :class="{'hidden': subTabActive !== 2 }">
-                                <div class="overflow-y-auto p-4 h-[655px] border-4">
+                                <div class="p-4 border-4 h-[670px] overflow-y-auto">
                                     <p class="text-sm">
                                         Risk assessment is about deciding what could go wrong and determining what you need to do to prevent that happening. It is not possible to completely eliminate all risks. But we endeavour to remove risk to its lowest level compatible with the enjoyment of the activity.
                                     </p>
@@ -421,7 +412,7 @@
                                 </div>
                             </div>
                             <div class="" :class="{'hidden': subTabActive !== 3 }">
-                                <div class="overflow-y-auto p-4 h-[655px] border-4">
+                                <div class="p-4 border-4 h-[670px] overflow-y-auto">
                                     <div class="bg-white space-y-2 rounded-xl p-5">
                                         <div class="flex space-x-4 mr-1 justify-end">
                                             <label>Yes</label>
@@ -468,7 +459,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 2 }">
+                    <div class="h-[760px] overflow-y-auto" :class="{'hidden': isActive !== 2 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5 w-full">
                                 <div class="flex justify-between">
@@ -494,10 +485,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 3 }">
+                    <div class="h-[760px] overflow-y-auto" :class="{'hidden': isActive !== 3 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5">
-                                <p class="text-sm text-center">Please provide your scial media channels</p>
+                                <p class="text-sm text-center">Please provide your social media channels</p>
                                 <div class="flex mt-2 items-center">
                                     <i class="fas fa-globe w-16 fa-2x text-[#639f1e]"></i>
                                     <input type="text" v-model="socialInfo.website" placeholder="website" class="w-full ml-3 border-2 bg-gray-200">
@@ -533,7 +524,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="h-[730px] overflow-y-auto" :class="{'hidden': isActive !== 4 }">
+                    <div :class="{'hidden': isActive !== 4 }">
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5 space-y-2 font-sans">
                                 <p class="text-lg text-gray-400">Who are your leadership team</p>
@@ -609,11 +600,12 @@
                     </div>
                 </div>
                 <div v-if="isActive === 0" class="w-full flex justify-between text-[48px]">
-                    <div :class="{'pointer-events-none opacity-50':disable}" class="m-1 cursor-pointer w-[20%]"><i class="h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center rounded bg-[#639f1e] fas fa-save"></i></div>
-                    <div class="m-1 w-[60%] flex items-center">
-                        <input v-model="location.name" type="text" class="w-full rounded border-2 border-[#639f1e] border-opacity-75" placeholder="Write Project Name here.."/>
+                    <div :class="{'pointer-events-none opacity-50':approved}" class="m-1 cursor-pointer w-[20%]"><i class="h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center rounded bg-[#639f1e] fas fa-save"></i></div>
+                    <div class="m-1 w-[60%]">
+                        <input v-model="location.name" type="text" class="flex items-center w-full rounded border-2 border-[#639f1e] border-opacity-75" placeholder="Write Project Name here.."/>
+                        <div v-if="!!nameError" class="text-red-700 text-xs font-bold text-center py-2">{{nameError}}</div>
                     </div>
-                    <div :class="{'pointer-events-none opacity-50':disable}" @click="saveName(location.name)" class="m-1 bg-opacity-75 hover:bg-opacity-100 bg-[#639f1e] rounded cursor-pointer w-[20%]">
+                    <div :class="{'pointer-events-none opacity-50':approved}" @click="saveName(location.name)" class="m-1 bg-opacity-75 hover:bg-opacity-100 bg-[#639f1e] rounded cursor-pointer w-[20%]">
                         <i class="h-20 flex items-center justify-center fas fa-thumbs-up"></i>
                     </div>
                 </div>

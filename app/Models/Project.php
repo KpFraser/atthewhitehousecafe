@@ -25,12 +25,12 @@ class Project extends Model
 
     public function ProjectRisk ()
     {
-        return $this->hasOne(RiskManagement::class, 'project_id', 'id');
+        return $this->hasMany(RiskManagement::class, 'project_id', 'id')->select('id', 'user_id', 'project_id', 'name', 'risk', 'control');
     }
 
     public function ProjectSafety ()
     {
-        return $this->hasOne(Safety::class, 'project_id', 'id');
+        return $this->hasOne(Safety::class, 'project_id', 'id')->select('id', 'user_id', 'project_id', 'document', 'document_path', 'text1', 'text2', 'text3', 'date');
     }
 
     public function ProjectFunding ()

@@ -35,13 +35,14 @@ class FundingController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->expenses);
+//        dd($request->all());
         Funding::updateOrCreate([
             'user_id'=> auth()->user()->id,
+            'project_id'=> $request->project_id,
         ],[
-            'funding' => $request->lottery,
-            'text1' => $request->funding,
-            'text2' => $request->expenses,
+            'funding' => $request->finance['funding'],
+            'text1' => $request->finance['text1'],
+            'text2' => $request->finance['text2'],
         ]);
         return response()->success();
     }

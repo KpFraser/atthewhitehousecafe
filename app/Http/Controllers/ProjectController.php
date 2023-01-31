@@ -48,6 +48,13 @@ class ProjectController extends Controller
         $data = Project::select('name', 'slug')->where(array('is_approved'=> 1))->orderBy('name')->get();
         return response()->success($data);
     }
+
+    public function allNames ()
+    {
+        $data = Project::select('name', 'slug')->orderBy('name')->get();
+        return response()->success($data);
+    }
+
     public function editFavouriteInfo($slug)
     {
         if(!empty($slug)){
@@ -209,10 +216,12 @@ class ProjectController extends Controller
         return response()->success();
     }
 
-    public function deleteUser($id)
+    public function deleteProject($slug)
     {
-        dd($id);
-//        Project::where('id', $id)->delete();
-//        return response()->success();
+        if(!!$slug){
+            Project::where('slug', $slug)->delete();
+            return response()->success();
+        } else
+            return response()->error('Request Failed!', 500);
     }
 }

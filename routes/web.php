@@ -109,6 +109,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::post('/approve-project', [ProjectController::class, 'approve']);
     Route::delete('/delete-project/{id}', [ProjectController::class, 'destroy']);
     Route::delete('/user-delete-project/{id}', [ProjectController::class, 'deleteUser']);
+    Route::delete('/delete-a-project/{id}', [ProjectController::class, 'deleteProject']);
 /*
 *  ProjectUserController
 */
@@ -145,7 +146,9 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
 });
 
-Route::get('/project-names', [ProjectController::class, 'names']);
+//Route::get('/project-names', [ProjectController::class, 'names']);
+Route::get('/project-names', [ProjectController::class, 'allNames']);
+Route::get('/project-all-names', [ProjectController::class, 'allNames']);
 Route::get('/proposals/{slug?}', fn ()=> Inertia::render('project/proposals') )->name('proposals');
 
 Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');

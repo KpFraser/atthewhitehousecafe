@@ -35,11 +35,14 @@ class RiskManagementController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($request->all() as $data){
+//        dd($request->project_id);
+        foreach ($request->riskManagement as $data){
             RiskManagement::updateOrCreate([
+                'project_id'=> $request->project_id,
                 'user_id'=> auth()->user()->id,
                 'id'=> $data['id'],
             ],[
+                'user_id'=> auth()->user()->id,
                 'name'=>$data['name'],
                 'risk'=>$data['risk'],
                 'control'=>$data['control'],

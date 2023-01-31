@@ -26,15 +26,22 @@ const projects = () =>{
     axios
         .get('/projects')
         .then((response)=>{
-            names.value = response.data.data
-            all_names.value = names.value
-                .filter(x => x.is_approved === 1 && x.is_archived !== 1)
+            all_names.value = response.data.data
             user_names.value = all_names.value
                 .filter(x => x.is_user === 1 && x.is_archived !== 1)
             if(user_names.value.length===0)
                 isActive.value = 3
-            archieved.value = names.value
+            archieved.value = all_names.value
                 .filter(x => x.is_archived === 1)
+            // names.value = response.data.data
+            // all_names.value = names.value
+            //     .filter(x => x.is_approved === 1 && x.is_archived !== 1)
+            // user_names.value = all_names.value
+            //     .filter(x => x.is_user === 1 && x.is_archived !== 1)
+            // if(user_names.value.length===0)
+            //     isActive.value = 3
+            // archieved.value = names.value
+            //     .filter(x => x.is_archived === 1)
         })
 }
 
@@ -139,8 +146,9 @@ const eventName = () =>{
     }
 }
 
-const openEvent =(slug)=>{
-    console.log(slug, project.value)
+const openEvent =(event, project)=>{
+    // console.log(event, project)
+    Inertia.visit('/roster/'+event+'/'+project)
 }
 
 const userDelBtn = (id) =>{
@@ -171,12 +179,12 @@ onMounted( ()=> {
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full">
                 <MasterHeader/>
-                <div class="flex justify-end my-6 mr-4">
-                    <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
-                        <i class="fas fa-home"></i>
-                    </Link>
-                </div>
-                <div class="max-w-lg text-black border-4 border-b-4 border-[#20351d] mx-10 border-opacity-75 mb-28 bg-white text-lg">
+<!--                <div class="flex justify-end my-6 mr-4">-->
+<!--                    <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">-->
+<!--                        <i class="fas fa-home"></i>-->
+<!--                    </Link>-->
+<!--                </div>-->
+                <div class="max-w-lg text-black border-4 border-b-4 border-[#20351d] m-10 border-opacity-75 mb-28 bg-white text-lg">
                     <ul class="w-full flex">
                         <li class="w-1/3">
                             <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-center border-opacity-75 border-[#20351d] bg-opacity-75 block font-bold text-xs text-[#20351d] uppercase border-b-2 border-r-2 border-transparent px-6 py-3">
@@ -206,7 +214,7 @@ onMounted( ()=> {
                                     <div :id="'event'+user.id" class="absolute text-white eventHide max-w-lg z-10 overflow-hidden bg-[#639f1e] h-0 left-0 right-0 top-[3.3rem] text-center text-base opacity-90 duration-700">
                                         <div class="text-left text-black font-bold text-lg pl-2">Events</div>
                                         <div class="h-[180px] overflow-auto">
-                                            <div @click="openEvent('test')" class="max-w-md mx-auto p-2 cursor-pointer truncate ..." :title="data?.name" v-if="events.length>0" v-for="(data, key) in events">{{key+1}}. {{ data?.name }}</div>
+                                            <div @click="openEvent(data.slug, user.slug)" class="max-w-md mx-auto p-2 cursor-pointer truncate ..." :title="data?.name" v-if="events.length>0" v-for="(data, key) in events">{{key+1}}. {{ data?.name }}</div>
                                             <div v-else>Events not available !</div>
                                         </div>
                                         <button @click="project = user" class="px-2 border-2 border-white text-black" data-bs-toggle="modal" data-bs-target="#eventmodel">Add an Event</button>
