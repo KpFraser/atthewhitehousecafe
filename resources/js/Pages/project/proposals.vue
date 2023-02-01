@@ -1,6 +1,15 @@
 <script setup>
     import MasterFooter from '@/Components/MasterFooter.vue';
     import MasterHeader from '@/Components/MasterHeader.vue';
+    import Location from '@/Components/Svg/Location.vue';
+    import Finance from '@/Components/Svg/Finance.vue';
+    import Search from '@/Components/Svg/Search.vue';
+    import Setting from '@/Components/Svg/Setting.vue';
+    import Save from '@/Components/Svg/Save.vue';
+    import Insurance from '@/Components/Svg/Insurance.vue';
+    import Thumb from '@/Components/Svg/Thumb.vue';
+    import Risk from '@/Components/Svg/Risk.vue';
+    import Marketing from '@/Components/Svg/Marketing.vue';
     import useFooterList from "../../../use/useFooterList";
     import {ref, onMounted } from "vue";
     import { Link } from '@inertiajs/inertia-vue3';
@@ -82,7 +91,7 @@
                 .post('/location-information', location.value)
                 .then((response)=>{
                     if(response.data.success) {
-                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        Toast.fire({icon: "success", title: "Saved"})
                     }
                 }).finally(() => approved.value = false)
         }
@@ -107,8 +116,9 @@
                 .post('/save-risk', {project_id:project.value.id, riskManagement:riskManagement.value})
                 .then((response)=>{
                     if(response.data.success){
-                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        Toast.fire({icon: "success", title: "Saved"})
                         approved.value = false
+                        proposalAllData ()
                     }
                 }).finally(() => approved.value = false)
         } else
@@ -150,7 +160,7 @@
                 })
                 .then((response)=>{
                     if(response.data.success){
-                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        Toast.fire({icon: "success", title: "Saved"})
                         approved.value = false
                     }
                 })
@@ -169,7 +179,7 @@
                 .post('/save-finance', {project_id:project.value.id, finance:finance.value})
                 .then((response)=>{
                     if(response.data.success){
-                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        Toast.fire({icon: "success", title: "Saved"})
                         approved.value = false
                     }
                 }).finally(() => approved.value = false)
@@ -184,7 +194,7 @@
                 .post('/save-social', {social: socialInfo.value, project_id:project.value.id})
                 .then((response)=>{
                     if(response.data.success){
-                        Toast.fire({icon: "success", title: "Data saved successfully!"})
+                        Toast.fire({icon: "success", title: "Saved"})
                         approved.value = false
                     }
                 }).finally(() => approved.value = false)
@@ -197,7 +207,7 @@
             .post('/save-leadership', leadership.value)
             .then((response)=>{
                 if(response.data.success){
-                    Toast.fire({icon: "success", title: "Data saved successfully!"})
+                    Toast.fire({icon: "success", title: "Saved"})
                     approved.value = false
                 }
             }).finally(() => approved.value = false)
@@ -239,15 +249,17 @@
         }
     }
 
-    const saveName = (post) =>{
+    const saveName = (post, id) =>{
+        // console.log(post, !!id);
+        // return
         nameError.value = ''
         if(!!post) {
             approved.value = true
             axios
-                .post('/project-names', {name: post})
+                .post('/project-names', {name: post, id: id})
                 .then((response) => {
                     if (response.data.success){
-                        Toast.fire({icon: "success", title: "Project name saved!"})
+                        Toast.fire({icon: "success", title: "Project Saved"})
                         Inertia.visit('/proposals/'+response.data?.data?.slug)
                     }
                 }).catch((err)=>{
@@ -272,34 +284,49 @@
             <MasterHeader/>
             <div class="relative text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
                 <ul :class="{'pointer-events-none':isActive === 0}" class="w-full flex !text-gray-800 justify-between">
-                    <li @click="isActive = 1" :class="{'bg-opacity-100 text-black': isActive === 1 }" class="w-[20%] hover:text-gray-200 m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <i class="text-[46px] fas fa-cog"></i>
+                    <li @click="isActive = 1" class="!w-[20%] hover:text-gray-200 m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                        <!-- <i class="text-[46px] fas fa-cog"></i> -->
+                        <Setting />
                     </li>
-                    <li @click="isActive = 2" :class="{'bg-opacity-100 text-black': isActive === 2 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <i class="text-[46px] fas fa-hand-holding-usd"></i>
+                    <li @click="isActive = 2" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                        <!-- <i class="text-[46px] fas fa-hand-holding-usd"></i> -->
+                        <Finance />
                     </li>
-                    <li @click="isActive = 3" :class="{'bg-opacity-100 text-black': isActive === 3 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <i class="text-[46px] fas fa-volume-up"></i>
+                    <li @click="isActive = 3" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                        <!-- <i class="text-[46px] fas fa-volume-up"></i> -->
+                        <Marketing />
                     </li>
-                    <li @click="isActive = 4" :class="{'bg-opacity-100 text-black': isActive === 4 }" class="w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <i class="text-[46px] fas fa-search"></i>
+                    <li @click="isActive = 4" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
+                        <!-- <i class="text-[46px] fas fa-search"></i> -->
+                        <Search />
                     </li>
-                    <Link :href="route('plan')" class="w-[20%] !pointer-events-auto m-1 hover:text-red-700 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <i class="text-[46px] fas fa-times"></i>
+                    <Link :href="route('plan')" class="!w-[20%] !pointer-events-auto m-1 hover:text-red-700 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded text-center">
+                        <div class="flex mx-auto items-center justify-center w-full h-full">
+                            <i class="text-[46px] text-gray-600 fal fa-times"></i>
+                        </div>
                     </Link>
                 </ul>
                 <div :class="{'!h-[200px]': isActive === 0}" class="bg-white h-[743px] max-w-lg mx-auto">
                     <div class="h-[743px] overflow-y-auto" :class="{'hidden': isActive !== 1 }" >
                         <div class="">
                             <ul class="w-full grid grid-cols-5 text-gray-800">
-                                <li @click="subTabActive = 1" :class="{'bg-opacity-100 text-black': subTabActive === 1 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                                    <i class="text-[46px] fas fa-map-marker-alt"></i>
+                                <li @click="subTabActive = 1" :class="{'bg-opacity-100 text-black': subTabActive === 1 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
+                                    <!-- <i class="text-[46px] fas fa-map-marker-alt"></i> -->
+                                    <div class="flex mx-auto">
+                                        <Location />
+                                    </div>
                                 </li>
-                                <li @click="subTabActive = 2" :class="{'bg-opacity-100 text-black': subTabActive === 2 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                                    <i class="text-[46px] fas fa-asterisk"></i>
+                                <li @click="subTabActive = 2" :class="{'bg-opacity-100 text-black': subTabActive === 2 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
+                                    <!-- <i class="text-[46px] fas fa-asterisk"></i> -->
+                                    <div class="flex mt-1 mx-auto">
+                                        <Risk />
+                                    </div>
                                 </li>
-                                <li @click="subTabActive = 3" :class="{'bg-opacity-100 text-black': subTabActive === 3 }" class="m-1 hover:text-black cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                                    <i class="text-[46px] fas fa-hard-hat"></i>
+                                <li @click="subTabActive = 3" :class="{'bg-opacity-100 text-black': subTabActive === 3 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
+                                    <!-- <i class="text-[46px] fas fa-hard-hat"></i> -->
+                                    <div class="flex mx-auto">
+                                        <Insurance />
+                                    </div>
                                 </li>
                             </ul>
                             <div class="" :class="{'hidden': subTabActive !== 1 }">
@@ -599,14 +626,18 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="isActive === 0" class="w-full flex justify-between text-[48px]">
-                    <div :class="{'pointer-events-none opacity-50':approved}" class="m-1 cursor-pointer w-[20%]"><i class="h-20 flex items-center bg-opacity-75 hover:bg-opacity-100 justify-center rounded bg-[#639f1e] fas fa-save"></i></div>
+                <div v-if="isActive === 0 || isActive === 1" class="w-full flex justify-between text-[48px]">
+                    <div :class="{'pointer-events-none opacity-50':approved}" @click="saveName(project.name, project.id)" class="m-1 cursor-pointer w-[20%] bg-opacity-75 hover:bg-opacity-100 rounded bg-[#639f1e]">
+                        <!-- <i class="h-20 flex items-center justify-center fas fa-save"></i> -->
+                        <Save />
+                    </div>
                     <div class="m-1 w-[60%]">
-                        <input v-model="location.name" type="text" class="flex items-center w-full rounded border-2 border-[#639f1e] border-opacity-75" placeholder="Write Project Name here.."/>
+                        <input v-model="project.name" type="text" class="flex items-center w-full rounded focus:border-[#639f1e] focus:ring-0 border-2 border-[#639f1e] border-opacity-75" placeholder="Write Project Name here.."/>
                         <div v-if="!!nameError" class="text-red-700 text-xs font-bold text-center py-2">{{nameError}}</div>
                     </div>
-                    <div :class="{'pointer-events-none opacity-50':approved}" @click="saveName(location.name)" class="m-1 bg-opacity-75 hover:bg-opacity-100 bg-[#639f1e] rounded cursor-pointer w-[20%]">
-                        <i class="h-20 flex items-center justify-center fas fa-thumbs-up"></i>
+                    <div :class="{'pointer-events-none opacity-50':approved}" class="m-1 bg-opacity-75 hover:bg-opacity-100 bg-[#639f1e] rounded cursor-pointer w-[20%]">
+                        <!-- <i class="h-20 flex items-center justify-center fas fa-thumbs-up"></i> -->
+                        <Thumb />
                     </div>
                 </div>
             </div>
