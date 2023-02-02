@@ -26,22 +26,22 @@ const projects = () =>{
     axios
         .get('/projects')
         .then((response)=>{
-            all_names.value = response.data.data
-            user_names.value = all_names.value
-                .filter(x => x.is_user === 1 && x.is_archived !== 1)
-            if(user_names.value.length===0)
-                isActive.value = 3
-            archieved.value = all_names.value
-                .filter(x => x.is_archived === 1)
-            // names.value = response.data.data
-            // all_names.value = names.value
-            //     .filter(x => x.is_approved === 1 && x.is_archived !== 1)
+            // all_names.value = response.data.data
             // user_names.value = all_names.value
             //     .filter(x => x.is_user === 1 && x.is_archived !== 1)
             // if(user_names.value.length===0)
             //     isActive.value = 3
-            // archieved.value = names.value
+            // archieved.value = all_names.value
             //     .filter(x => x.is_archived === 1)
+            names.value = response.data.data
+            all_names.value = names.value
+                .filter(x => x.is_approved === 1 && x.is_archived !== 1)
+            user_names.value = all_names.value
+                .filter(x => x.is_user === 1 && x.is_archived !== 1)
+            if(user_names.value.length===0)
+                isActive.value = 3
+            archieved.value = names.value
+                .filter(x => x.is_archived === 1)
         })
 }
 
@@ -94,8 +94,10 @@ const bikeProject = (slug) =>{
         Inertia.visit('/favourite-project/'+slug)
 }
 
-const showEvents = (id) =>{
-    if ($('.eventHide').hasClass('!h-[250px]')){
+const showEvents = (id, slug) =>{
+    if(slug === 'bike-repair')
+        bikeProject (slug)
+    else if($('.eventHide').hasClass('!h-[250px]')){
         $('.btnMinus').removeClass('!rotate-90')
         $('.eventHide').removeClass('!h-[250px]')
     }else{
@@ -209,7 +211,7 @@ onMounted( ()=> {
                                 <div @click="bikeProject(user.slug)" :class="!!user.is_key ? `ml-3 text-white cursor-pointer font-extrabold` : `ml-3 cursor-pointer text-white`" class="truncate w-1/2">{{user.name}}</div>
                                 <div class="flex items-center">
                                     <i class="fas mr-4 cursor-pointer text-[30px] fa-save" @click="archieveBtn(user.id)"></i>
-                                    <div @click="showEvents(user.id)" :id="'btn'+user.id" class="btnMinus fas cursor-pointer duration-700 text-[30px] fa-minus-circle px-4">
+                                    <div @click="showEvents(user.id, user.slug)" :id="'btn'+user.id" class="btnMinus fas cursor-pointer duration-700 text-[30px] fa-minus-circle px-4">
                                     </div>
                                     <div :id="'event'+user.id" class="absolute text-white eventHide max-w-lg z-10 overflow-hidden bg-[#639f1e] h-0 left-0 right-0 top-[3.3rem] text-center text-base opacity-90 duration-700">
                                         <div class="text-left text-black font-bold text-lg pl-2">Events</div>

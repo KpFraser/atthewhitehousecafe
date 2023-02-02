@@ -4,8 +4,7 @@ class="!w-[80px] !h-[70px] mx-auto"
    viewBox="0 0 23.640141 23.14786"
    version="1.1"
    id="svg3590"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
+   xmlns="http://www.w3.org/2000/svg">
   <defs
      id="defs3587" />
   <g

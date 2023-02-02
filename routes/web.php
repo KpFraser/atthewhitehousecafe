@@ -102,6 +102,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/footer-project', [ProjectController::class, 'footer_project'])->name('footer-project');
     Route::get('/archieve-project', [ProjectController::class, 'showArchieve']);
     Route::post('/project-names', [ProjectController::class, 'store']);
+    Route::post('/project-approve', [ProjectController::class, 'projectApprove']);
     Route::post('/archieve-project', [ProjectController::class, 'isarchieve']);
     Route::post('/un-archieve', [ProjectController::class, 'unarchieve']);
     Route::post('/favourite-project', [ProjectController::class, 'iskey']);

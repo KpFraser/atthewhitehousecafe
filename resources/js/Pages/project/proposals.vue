@@ -21,7 +21,7 @@
 
     const isActive = ref(0),
         subTabActive = ref(1),
-        project = ref({}),
+        project = ref({name:'', id:'', slug:''}),
         approved = ref(false),
         location = ref({project_id:'', address_1:'', address_2: '', city:'', postcode:'', country:'', repeat_time:'', repeat_every:'', never:'', on:'', after:'',
             repeat_on:[{day: 'mon', value:0}, {day: 'tue', value:0}, {day: 'wed', value:0}, {day: 'thu', value:0}, {day: 'fri', value:0}, {day: 'sat', value:0}, {day: 'sun', value:0}]}),
@@ -250,8 +250,6 @@
     }
 
     const saveName = (post, id) =>{
-        // console.log(post, !!id);
-        // return
         nameError.value = ''
         if(!!post) {
             approved.value = true
@@ -271,8 +269,27 @@
             nameError.value = 'Project name is required !'
     }
 
-    onMounted(()=>{
+    const approveName = (post, id) =>{
+        nameError.value = ''
+        if(!!post) {
+            approved.value = true
+            axios
+                .post('/project-approve', {name: post, id: id})
+                .then((response) => {
+                    if (response.data.success){
+                        Toast.fire({icon: "success", title: "Project Approved"})
+                        Inertia.visit('/proposals/'+response.data?.data?.slug)
+                    }
+                }).catch((err)=>{
+                nameError.value = err.response?.data?.errors?.name[0]
+            }).finally(()=>{
+                approved.value = false
+            });
+        } else
+            nameError.value = 'Project name is required !'
+    }
 
+    onMounted(()=>{
         proposalAllData ()
     })
 
@@ -285,19 +302,15 @@
             <div class="relative text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
                 <ul :class="{'pointer-events-none':isActive === 0}" class="w-full flex !text-gray-800 justify-between">
                     <li @click="isActive = 1" class="!w-[20%] hover:text-gray-200 m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <!-- <i class="text-[46px] fas fa-cog"></i> -->
                         <Setting />
                     </li>
                     <li @click="isActive = 2" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <!-- <i class="text-[46px] fas fa-hand-holding-usd"></i> -->
                         <Finance />
                     </li>
                     <li @click="isActive = 3" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <!-- <i class="text-[46px] fas fa-volume-up"></i> -->
                         <Marketing />
                     </li>
                     <li @click="isActive = 4" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <!-- <i class="text-[46px] fas fa-search"></i> -->
                         <Search />
                     </li>
                     <Link :href="route('plan')" class="!w-[20%] !pointer-events-auto m-1 hover:text-red-700 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded text-center">
@@ -311,19 +324,16 @@
                         <div class="">
                             <ul class="w-full grid grid-cols-5 text-gray-800">
                                 <li @click="subTabActive = 1" :class="{'bg-opacity-100 text-black': subTabActive === 1 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
-                                    <!-- <i class="text-[46px] fas fa-map-marker-alt"></i> -->
                                     <div class="flex mx-auto">
                                         <Location />
                                     </div>
                                 </li>
                                 <li @click="subTabActive = 2" :class="{'bg-opacity-100 text-black': subTabActive === 2 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
-                                    <!-- <i class="text-[46px] fas fa-asterisk"></i> -->
                                     <div class="flex mt-1 mx-auto">
                                         <Risk />
                                     </div>
                                 </li>
                                 <li @click="subTabActive = 3" :class="{'bg-opacity-100 text-black': subTabActive === 3 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
-                                    <!-- <i class="text-[46px] fas fa-hard-hat"></i> -->
                                     <div class="flex mx-auto">
                                         <Insurance />
                                     </div>
@@ -627,16 +637,14 @@
                     </div>
                 </div>
                 <div v-if="isActive === 0 || isActive === 1" class="w-full flex justify-between text-[48px]">
-                    <div :class="{'pointer-events-none opacity-50':approved}" @click="saveName(project.name, project.id)" class="m-1 cursor-pointer w-[20%] bg-opacity-75 hover:bg-opacity-100 rounded bg-[#639f1e]">
-                        <!-- <i class="h-20 flex items-center justify-center fas fa-save"></i> -->
+                    <div :class="{'pointer-events-none opacity-50':approved}" @click="saveName(project.name, project.id)" class="m-1 cursor-pointer w-[20%] bg-opacity-75 rounded bg-[#639f1e]">
                         <Save />
                     </div>
                     <div class="m-1 w-[60%]">
                         <input v-model="project.name" type="text" class="flex items-center w-full rounded focus:border-[#639f1e] focus:ring-0 border-2 border-[#639f1e] border-opacity-75" placeholder="Write Project Name here.."/>
                         <div v-if="!!nameError" class="text-red-700 text-xs font-bold text-center py-2">{{nameError}}</div>
                     </div>
-                    <div :class="{'pointer-events-none opacity-50':approved}" class="m-1 bg-opacity-75 hover:bg-opacity-100 bg-[#639f1e] rounded cursor-pointer w-[20%]">
-                        <!-- <i class="h-20 flex items-center justify-center fas fa-thumbs-up"></i> -->
+                    <div :class="{'pointer-events-none opacity-50':approved}" @click="approveName(project.name, project.id)" class="m-1 cursor-pointer w-[20%] bg-opacity-75 bg-[#639f1e] rounded">
                         <Thumb />
                     </div>
                 </div>

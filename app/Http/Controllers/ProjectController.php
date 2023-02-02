@@ -36,6 +36,22 @@ class ProjectController extends Controller
 //           return Inertia::render('ProjectsHome');
     }
 
+    public function projectApprove(Request $request){
+//        dd($request->all());
+        $request->validate([
+            'name' => 'required|unique:projects,name,'.$request->id,
+        ]);
+        $data = Project::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'slug' => Str::slug($request->name),
+            'created_by'=> auth()->user()->id,
+            'name'=> $request->name,
+            'is_approved'=> 1,
+        ]);
+        return response()->success($data);
+    }
+
     public function events ($id)
     {
         $data = Event::select('id', 'name', 'slug')->where('project_id', $id)->get();

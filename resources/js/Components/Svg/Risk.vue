@@ -4,8 +4,7 @@
 viewBox="0 0 20.166706 20.163097"
 version="1.1"
 id="svg10122"
-xmlns="http://www.w3.org/2000/svg"
-xmlns:svg="http://www.w3.org/2000/svg">
+xmlns="http://www.w3.org/2000/svg" >
 <defs
  id="defs10119" />
 <g

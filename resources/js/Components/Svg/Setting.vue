@@ -4,37 +4,10 @@
       viewBox="0 0 24.81233 24.295637"
       version="1.1"
       id="svg10122"
-      sodipodi:docname="finance-1.svg"
-      inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
-      xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-      xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlns:svg="http://www.w3.org/2000/svg">
-     <sodipodi:namedview
-        id="namedview10124"
-        pagecolor="#ffffff"
-        bordercolor="#000000"
-        borderopacity="0.25"
-        inkscape:showpageshadow="2"
-        inkscape:pageopacity="0.0"
-        inkscape:pagecheckerboard="0"
-        inkscape:deskcolor="#d1d1d1"
-        inkscape:document-units="mm"
-        showgrid="false"
-        inkscape:zoom="0.26787747"
-        inkscape:cx="-643.95112"
-        inkscape:cy="-93.326249"
-        inkscape:window-width="1366"
-        inkscape:window-height="705"
-        inkscape:window-x="-8"
-        inkscape:window-y="-8"
-        inkscape:window-maximized="1"
-        inkscape:current-layer="layer1" />
+      xmlns="http://www.w3.org/2000/svg" >
      <defs
         id="defs10119" />
      <g
-        inkscape:label="Layer 1"
-        inkscape:groupmode="layer"
         id="layer1"
         transform="translate(-127.84763,-64.893)">
        <g
