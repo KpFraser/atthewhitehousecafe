@@ -20,10 +20,12 @@ class AllProjectResource extends JsonResource
             'name'=> $this->name ?? '',
             'is_approved'=> $this->is_approved ?? '',
             'slug'=> $this->slug ?? '',
+//            'created_by'=> $this->created_by ?? '',
             'is_archived'=> $this->is_archived ?? '',
-            'is_user'=> !empty($this->projectUser) && !empty($this->projectUser->is_user) ? $this->projectUser->is_user: '',
-            'is_key'=> !empty($this->projectUser) && !empty($this->projectUser->is_key) ? $this->projectUser->is_key: '',
-            'project_user_id'=> !empty($this->projectUser) && !empty($this->projectUser->id) ? $this->projectUser->id: '',
+            'is_user_by'=> !empty($this->projectUserInfo) && !empty($this->projectUserInfo->user_id) ? $this->projectUserInfo->user_id: '',
+            'is_user'=> !empty($this->projectUserInfo) && !empty($this->projectUserInfo->is_user) ? $this->projectUserInfo->is_user: '',
+            'is_key'=> !empty($this->projectUserInfo) && !empty($this->projectUserInfo->is_key) ? $this->projectUserInfo->is_key: '',
+            'project_user_id'=> !empty($this->projectUserInfo) && !empty($this->projectUserInfo->id) ? $this->projectUserInfo->id: '',
         ];
     }
 }

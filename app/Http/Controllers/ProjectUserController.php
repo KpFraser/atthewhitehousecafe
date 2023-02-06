@@ -155,8 +155,8 @@ class ProjectUserController extends Controller
     public function update(Request $request)
     {
         ProjectUser::updateOrCreate([
-            'project_id' => $request->id,
             'user_id'=> auth()->user()->id,
+            'project_id' => $request->id,
         ],[
             'user_id'=> auth()->user()->id,
             'is_user'=> 1,

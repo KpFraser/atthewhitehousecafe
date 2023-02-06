@@ -13,9 +13,12 @@ class Project extends Model
         'name', 'slug', 'location', 'is_survey', 'frequency', 'requirements', 'is_approved', 'is_archived', 'created_by', 'updated_by'
     ];
 
-    public function projectUser(): HasOne
+    public function projectUserInfo()
     {
-        return $this->hasOne(ProjectUser::class,'project_id','id')->select('project_id', 'id', 'is_user', 'is_key')->where(array('user_id'=> !empty(auth()->user()->id)));
+        if(auth()->check())
+        return $this->hasOne(ProjectUser::class,'project_id', 'id')->where(array('user_id'=> auth()->user()->id));
+        else
+        return $this->hasOne(ProjectUser::class,'project_id', 'id');
     }
 
     public function ProjectLocation ()

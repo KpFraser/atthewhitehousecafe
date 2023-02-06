@@ -26,18 +26,16 @@ const projects = () =>{
     axios
         .get('/projects')
         .then((response)=>{
-            // all_names.value = response.data.data
-            // user_names.value = all_names.value
-            //     .filter(x => x.is_user === 1 && x.is_archived !== 1)
-            // if(user_names.value.length===0)
-            //     isActive.value = 3
-            // archieved.value = all_names.value
-            //     .filter(x => x.is_archived === 1)
-            names.value = response.data.data
-            all_names.value = names.value
+            names.value = response?.data?.data
+            if(!!response?.data?.data1){
+                user_names.value = response?.data?.data1
+                    .filter(x => x.is_user === 1 && x.project_names?.is_archived !== 1)
+            }
+
+            all_names.value = names?.value
                 .filter(x => x.is_approved === 1 && x.is_archived !== 1)
-            user_names.value = all_names.value
-                .filter(x => x.is_user === 1 && x.is_archived !== 1)
+
+            console.log(all_names.value)
             if(user_names.value.length===0)
                 isActive.value = 3
             archieved.value = names.value
@@ -208,18 +206,18 @@ onMounted( ()=> {
                     <div class="bg-white max-w-lg mx-auto">
                         <div v-if="isActive === 1">
                             <div class="relative flex h-12 p-1 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="user in user_names">
-                                <div @click="bikeProject(user.slug)" :class="!!user.is_key ? `ml-3 text-white cursor-pointer font-extrabold` : `ml-3 cursor-pointer text-white`" class="truncate w-1/2">{{user.name}}</div>
+                                <div @click="bikeProject(user?.project_names?.slug)" :class="!!user?.project_names?.is_key ? `ml-3 text-white cursor-pointer font-extrabold` : `ml-3 cursor-pointer text-white`" class="truncate w-1/2">{{user.project_names.name}}</div>
                                 <div class="flex items-center">
-                                    <i class="fas mr-4 cursor-pointer text-[30px] fa-save" @click="archieveBtn(user.id)"></i>
-                                    <div @click="showEvents(user.id, user.slug)" :id="'btn'+user.id" class="btnMinus fas cursor-pointer duration-700 text-[30px] fa-minus-circle px-4">
+                                    <i class="fas mr-4 cursor-pointer text-[30px] fa-save" @click="archieveBtn(user?.project_names?.id)"></i>
+                                    <div @click="showEvents(user?.project_names?.id, user?.project_names?.slug)" :id="'btn'+user?.project_names?.id" class="btnMinus fas cursor-pointer duration-700 text-[30px] fa-minus-circle px-4">
                                     </div>
-                                    <div :id="'event'+user.id" class="absolute text-white eventHide max-w-lg z-10 overflow-hidden bg-[#639f1e] h-0 left-0 right-0 top-[3.3rem] text-center text-base opacity-90 duration-700">
+                                    <div :id="'event'+user?.project_names?.id" class="absolute text-white eventHide max-w-lg z-10 overflow-hidden bg-[#639f1e] h-0 left-0 right-0 top-[3.3rem] text-center text-base opacity-90 duration-700">
                                         <div class="text-left text-black font-bold text-lg pl-2">Events</div>
                                         <div class="h-[180px] overflow-auto">
-                                            <div @click="openEvent(data.slug, user.slug)" class="max-w-md mx-auto p-2 cursor-pointer truncate ..." :title="data?.name" v-if="events.length>0" v-for="(data, key) in events">{{key+1}}. {{ data?.name }}</div>
+                                            <div @click="openEvent(data.slug, user?.project_names?.slug)" class="max-w-md mx-auto p-2 cursor-pointer truncate ..." :title="data?.name" v-if="events.length>0" v-for="(data, key) in events">{{key+1}}. {{ data?.name }}</div>
                                             <div v-else>Events not available !</div>
                                         </div>
-                                        <button @click="project = user" class="px-2 border-2 border-white text-black" data-bs-toggle="modal" data-bs-target="#eventmodel">Add an Event</button>
+                                        <button @click="project = user?.project_names" class="px-2 border-2 border-white text-black" data-bs-toggle="modal" data-bs-target="#eventmodel">Add an Event</button>
                                     </div>
 <!--                                    <i class="far fa-trash mr-8 cursor-pointer text-[30px]"  @click="userDelBtn(user.id)"></i>-->
 <!--                                    <i class="far fa-pencil mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>-->
@@ -237,8 +235,9 @@ onMounted( ()=> {
                         </div>
                         <div  v-else-if="isActive === 3">
                             <div class="flex h-12 p-1.5 my-1 mx-2 justify-between bg-[#639f1e] items-center" v-for="all in all_names">
-                                <div :class="!!all.is_user ? `ml-3 text-white font-extrabold`: `ml-3 text-white`" class="truncate w-1/2">{{all.name}}</div>
+                                <div :class="{'font-extrabold': all?.is_user === 1 && all?.is_user_by === $page.props.auth?.user?.id}" class="truncate w-1/2 ml-3 text-white">{{ all?.name }}</div>
                                 <div>
+<!--                                    $page.props.auth.user.id-->
 <!--                                    <i class="far fa-pencil mr-4 cursor-pointer text-[30px]" @click="allPencilBtn(all.slug)"></i>-->
                                     <i :class="{'text-gray-600':all.is_user !== 1}" class="fas cursor-pointer text-[30px] mr-4 fa-plus-circle" @click="plusBtn(all.id)"></i>
                                     <i class="fas cursor-pointer text-[30px] fa-save" @click="archieveBtn(all.id)"></i>

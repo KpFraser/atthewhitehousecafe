@@ -18,6 +18,7 @@ const projects = () =>{
         .get('/project-all-names')
         .then((response)=>{
             names.value = response.data.data
+            console.log(names.value)
 
         })
 }

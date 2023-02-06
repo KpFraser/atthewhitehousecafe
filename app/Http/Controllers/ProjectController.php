@@ -67,7 +67,8 @@ class ProjectController extends Controller
 
     public function allNames ()
     {
-        $data = Project::select('name', 'slug')->orderBy('name')->get();
+//        $data = ProjectUser::select('id', 'user_id', 'project_id')->where('user_id', auth()->user()->id)->with('project_names')->get();
+        $data = Project::select('name', 'slug')->where('created_by', auth()->user()->id)->orderBy('name')->get();
         return response()->success($data);
     }
 
@@ -217,13 +218,21 @@ class ProjectController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Project  $project
-     * @return AllProjectResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function projects(Project $project)
     {
-        $data = Project::select( 'id', 'name', 'is_approved', 'is_archived', 'slug' )
-            ->with('projectUser')->orderBy('name')->get();
-        return response()->success(AllProjectResource::Collection($data));
+        if (auth()->check()){
+            $data1 = ProjectUser::select( 'id', 'user_id', 'project_id', 'is_user' )
+                ->where('user_id', auth()->user()->id)
+                ->with('project_names')
+                ->get();
+        }
+            $data = Project::select( 'id', 'name', 'is_approved', 'is_archived', 'slug', 'created_by' )
+                ->with('projectUserInfo')
+                ->orderBy('name')
+                ->get();
+        return response()->json(['data'=>AllProjectResource::Collection($data), 'data1'=>$data1 ?? '']);
     }
 
     public function destroy($id)

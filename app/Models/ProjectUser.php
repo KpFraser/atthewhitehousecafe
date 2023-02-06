@@ -23,4 +23,8 @@ class ProjectUser extends Model
     {
         return $this->hasMany(ProjectUserImages::class,'project_user_id', 'id');
     }
+    public function project_names()
+    {
+        return $this->belongsTo(Project::class,'project_id', 'id')->select( 'id', 'name', 'slug', 'is_archived')->orderBy('name');
+    }
 }
