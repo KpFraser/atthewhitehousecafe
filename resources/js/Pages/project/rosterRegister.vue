@@ -171,10 +171,10 @@ const selectEmail = (email) => {
                     </div>
                     <div class="my-4">
                         <div class="flex items-center">
-                            <BreezeLabel for="email" value="Password *" />
+                            <BreezeLabel for="password" value="Password *" />
                             <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.password }}</div>
                         </div>
-                        <BreezeInput id="password" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.password" required autofocus autocomplete="password" />
+                        <BreezeInput id="password" value="password" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.password" required autofocus autocomplete="password" />
                     </div>
 <!--                    <div v-show="alreadyRegister !== true" class="flex items-center justify-end mt-4">-->
                         <BreezeButton @click="submit(formInfo)" class="bg-[#639f1e] hover:bg-opacity-75 text-white w-full font-sans submit mx-auto py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': formInfo.processing }" :disabled="formInfo.processing">
