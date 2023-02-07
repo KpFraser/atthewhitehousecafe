@@ -54,7 +54,7 @@ onMounted(()=>{
                     </div>
                 </div>
             </div>
-            <div class="text-black border-4 border-b-4 border-[#20351d] mx-10 border-opacity-75 mb-28 space-y-4 bg-white text-lg">
+            <div class="text-black border-4 border-b-4 border-[#20351d] mx-10 border-opacity-75 mb-28 bg-white text-lg">
                 <ul class="w-full uppercase flex">
                     <li class="nav-item w-1/2">
                         <a @click="(isActive=1)" :class="{'bg-[#20351d] !text-white': isActive === 1 }" class="text-[15px] cursor-pointer text-center border-opacity-75 border-[#20351d] bg-opacity-75 block text-[#20351d] border-b-2 px-6 py-3 active">

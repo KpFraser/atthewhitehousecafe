@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/project-leadership/leader/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
     Route::get('/project-leadership/application/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-application');
+    Route::get('/cycle', fn ()=> Inertia::render('project/cycle') )->name('cycle-project');
     Route::get('/bike-project/{slug}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
     Route::get('/bike-project/{project_slug}/{bike_slug?}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project-edit');
     Route::get('/bike-all-projects/{slug}', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');

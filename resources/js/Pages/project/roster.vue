@@ -381,7 +381,7 @@
         />
     </div>
 </template>
-<style>
+<style scoped>
 [type='time'], [type='date'] {
      color: white;
      background-color: transparent;

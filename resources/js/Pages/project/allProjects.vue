@@ -62,38 +62,40 @@ const archieveBtn = (id) =>{
         })
 }
 
-const keyBtn = (id, key) =>{
-    if(key === '')
-        key = 1
-    else
-        key = 0
-    axios
-        .post('/favourite-project',{id: id, key:key})
-        .then((response)=>{
-            if (response.data.success){
-                if(response.data?.data === 1)
-                    Toast.fire({icon: "success", title: "Added to Key Project!"})
-                else
-                    Toast.fire({icon: "success", title: "Removed from Key Project!"})
-                projects  ()
-            }
-        })
-}
+// const keyBtn = (id, key) =>{
+//     if(key === '')
+//         key = 1
+//     else
+//         key = 0
+//     axios
+//         .post('/favourite-project',{id: id, key:key})
+//         .then((response)=>{
+//             if (response.data.success){
+//                 if(response.data?.data === 1)
+//                     Toast.fire({icon: "success", title: "Added to Key Project!"})
+//                 else
+//                     Toast.fire({icon: "success", title: "Removed from Key Project!"})
+//                 projects  ()
+//             }
+//         })
+// }
 
-const allPencilBtn = (slug) =>{
-    if (slug !== 'bike-repair')
-    Inertia.visit('/proposed/'+slug)
-}
+// const allPencilBtn = (slug) =>{
+//     if (slug !== 'bike-repair')
+//     Inertia.visit('/proposed/'+slug)
+// }
 
 const bikeProject = (slug) =>{
-    if(slug === 'bike-repair')
+    if(slug === 'bike-repair' || slug === 'bike-mechanic')
         Inertia.visit('/bike-all-projects/'+slug)
+    else if(slug === 'cycle-track')
+        Inertia.visit('/cycle')
     else
         Inertia.visit('/favourite-project/'+slug)
 }
 
 const showEvents = (id, slug) =>{
-    if(slug === 'bike-repair')
+    if(slug === 'bike-repair' || slug === 'bike-mechanic' || slug === 'cycle-track')
         bikeProject (slug)
     else if($('.eventHide').hasClass('!h-[250px]')){
         $('.btnMinus').removeClass('!rotate-90')
@@ -151,22 +153,22 @@ const openEvent =(event, project)=>{
     Inertia.visit('/roster/'+event+'/'+project)
 }
 
-const userDelBtn = (id) =>{
-    if (!!id){
-        ConfirmToast.fire({}).then((confirmed) => {
-            if (confirmed.isConfirmed === true) {
-                axios
-                    .delete('/delete-project/' + id)
-                    .then((response) => {
-                        if (response.data.success){
-                            Toast.fire({icon: "success", title: "Removed from Key Project!"})
-                            projects ()
-                        }
-                    })
-            }
-        })
-    }
-}
+// const userDelBtn = (id) =>{
+//     if (!!id){
+//         ConfirmToast.fire({}).then((confirmed) => {
+//             if (confirmed.isConfirmed === true) {
+//                 axios
+//                     .delete('/delete-project/' + id)
+//                     .then((response) => {
+//                         if (response.data.success){
+//                             Toast.fire({icon: "success", title: "Removed from Key Project!"})
+//                             projects ()
+//                         }
+//                     })
+//             }
+//         })
+//     }
+// }
 
 onMounted( ()=> {
     projects ()
