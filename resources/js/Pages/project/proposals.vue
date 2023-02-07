@@ -391,7 +391,10 @@
                                                    <input @click="endDate('after')" :checked="location.after !== '' && location.after !== null" class="focus:ring-[#639f1e] bg-gray-200 mr-2 focus:border-[#639f1e] border-2 border-[#639f1e] text-[#639f1e] cursor-pointer" type="radio" id="date" name="endOn">
                                                    <label class="inline-block text-gray-800" for="tilldate">After</label>
                                                </div>
-                                               <input v-if="ends === 'after' || location.after !== '' && location.after !== null" v-model="location.after" type="number" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
+                                               <div class="flex items-center space-x-2">
+                                                   <input v-if="ends === 'after' || location.after !== '' && location.after !== null" v-model="location.after" type="number" class="w-40 h-8 bg-gray-200 rounded-md px-3 ">
+                                                   <label class="inline-block text-gray-800">Events</label>
+                                               </div>
                                            </div>
                                            <div class="flex justify-end">
                                                <div class="pr-5 flex justify-end">

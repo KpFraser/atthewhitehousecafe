@@ -58,7 +58,7 @@ class EventController extends Controller
 
             $project_id = Project::select('id')->where('slug', $project_slug)->first();
 
-            $data1 = ProjectUser::with('project_users', 'project_users_images')->where(array('project_id'=>$project_id->id, 'is_key'=> 1))->get();
+            $data1 = ProjectUser::with('project_users', 'project_users_images')->where(array('project_id'=>$project_id->id))->get();
             $data2 = RosterProjectResource::Collection($data1);
 //            dd($data2);
             $data3 = Event::select('id','slug', 'group_comment')->where( 'slug', $event_slug)->first();
@@ -129,12 +129,13 @@ class EventController extends Controller
     }
     public function RosterConfirm(Request $request)
     {
+//        dd($request->all());
         $project_id = Project::select('id')->where('slug', $request->project_slug)->first();
         if (!empty($project_id)) {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'password' => ['required', Rules\Password::defaults()],
             ]);
             $user = User::create([
                 'name' => $request->name,
