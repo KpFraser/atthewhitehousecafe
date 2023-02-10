@@ -44,13 +44,13 @@ onMounted(()=>{
             <MasterHeader/>
             <div class="flex justify-between px-10">
                 <div class="flex justify-end my-6">
-                    <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
-                        <i class="fas fa-home px-1"></i>
+                    <Link :href="route('plan')" class="text-[25px] bg-[#639f1e] py-1 px-3 text-center font-bold bg-opacity-75">
+                        <i class="text-[40px] hover:text-red-700 fal fa-times"></i>
                     </Link>
                 </div>
                 <div class="flex justify-end my-6">
-                    <div @click="newBike()" class="text-[25px] bg-[#639f1e] cursor-pointer p-1 text-center font-bold bg-opacity-75">
-                        <i class="fas fa-plus px-1.5"></i>
+                    <div @click="newBike()" class="text-[25px] bg-[#639f1e] cursor-pointer py-1 px-3 text-center font-bold bg-opacity-75">
+                        <i class="text-[40px] fal fa-plus "></i>
                     </div>
                 </div>
             </div>

@@ -10,6 +10,7 @@ use App\Models\Project;
 use App\Models\RiskManagement;
 use App\Models\Safety;
 use App\Models\SocialMedia;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
@@ -78,7 +79,9 @@ class LocationController extends Controller
                 ->where('slug', $slug)
                 ->with('ProjectLocation', 'ProjectRisk', 'ProjectSafety', 'ProjectFunding', 'ProjectMedia')
                 ->first();
-            return response()->success(new ProjectResource($data));
+            $data1 = User::select('id', 'name')->where('id', '!=', auth()->user()->id)->get();
+            $data2 = LeadershipTeam::select('id', 'user_id','status', 'project_id', 'role', 'apply_appoint')->with('checkUserName')->get();
+            return response()->json(['data'=>new ProjectResource($data), 'data1'=> $data1, 'data2'=> $data2]);
         } else
             return response()->error(500, 'Data not found !');
 

@@ -20,7 +20,8 @@ use App\Http\Controllers\{BikeController,
     ProjectController,
     EventController,
     ProjectUserController,
-    ApplicationController};
+    ApplicationController,
+    UserAttendanceController};
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +60,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/security', fn ()=> Inertia::render('account/security') )->name('security');
     Route::get('/healthcare', fn ()=> Inertia::render('account/healthcare') )->name('healthcare');
 
-    Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
+//    Route::get('/projectshome', fn ()=> Inertia::render('ProjectsHome') )->name('projectshome');
     Route::get('/new-project', fn ()=> Inertia::render('project/newProject') )->name('new-project');
     Route::get('/proposed/{slug}', fn ()=> Inertia::render('project/proposed') )->name('proposed');
     Route::get('/archieved', fn ()=> Inertia::render('project/archieved') )->name('archieved');
@@ -130,6 +131,9 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
     Route::get('/bike-show/{bike_slug?}', [GoalController::class, 'show']);
 
+    Route::get('/cycle-info', [UserAttendanceController::class, 'show']);
+    Route::post('/cycle-info', [UserAttendanceController::class, 'store']);
+
     Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
     Route::post('/bike-all-information', [BikeController::class, 'store']);
 
@@ -144,7 +148,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
     Route::post('/save-social', [SocialMediaController::class, 'store']);
 
-    Route::post('/save-leadership', [LeadershipTeamController::class, 'store']);
+    Route::post('/checked-names', [LeadershipTeamController::class, 'store']);
 
 });
 

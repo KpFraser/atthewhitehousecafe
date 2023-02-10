@@ -9,6 +9,11 @@ class LeadershipTeam extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'project_id', 'organisers', 'leaders', 'assistants', 'mentors'
+        'user_id','status', 'project_id', 'role', 'apply_appoint'
     ];
+
+    public function checkUserName()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id')->select('id', 'name');
+    }
 }

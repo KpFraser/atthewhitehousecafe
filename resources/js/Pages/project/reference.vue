@@ -14,7 +14,9 @@ const { Toast } = commonFunctions(),
 
 const info = ref({}),
     reference = ref({ one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}),
-    validationErrors = ref({})
+    validationErrors = ref({}),
+    view = ref(true)
+
 
 const validation = (post) =>{
     validationErrors.value = {}
@@ -54,9 +56,10 @@ const referenceSubmit = (post) =>{
             .post('/reference-form',{info:info.value, form:reference.value})
             .then((response)=>{
                 if (response.data.success === true) {
-                    Toast.fire({icon: "success", title: "Information Submitted successfully!"})
+                    view.value = false
+                    // Toast.fire({icon: "success", title: "Information Submitted successfully!"})
                     reference.value = { approve: false, one: 'Please Select', two: 'Please Select', three: 'Please Select', four: 'Please Select', five: 'Please Select', six: 'Please Select'}
-                    Inertia.visit('/footer-project')
+                    // Inertia.visit('/footer-project')
                 }
             })
             .finally(() => {
@@ -80,12 +83,12 @@ onMounted( ()=> {
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full justify-center">
                 <MasterHeader/>
-                <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
-                    <div class="flex justify-end mr-4">
-                        <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
-                            <i class="fas fa-home"></i>
-                        </Link>
-                    </div>
+                <div class="flex justify-end m-4">
+                    <Link :href="route('display-projects')" class="text-[25px] bg-[#639f1e] py-1 px-3 text-center font-bold bg-opacity-75">
+                        <i class="text-[40px] hover:text-red-700 fal fa-times"></i>
+                    </Link>
+                </div>
+                <form v-if="view" class="text-black mt-5 mb-28 space-y-4 bg-white text-lg mx-10">
                     <BreezeLabel value="1. How long have you known the applicant ?"/>
                     <div class="ml-2 text-red-700 font-bold text-sm" v-for="message in  validationErrors.one">{{ message }}</div>
                     <div class="w-full">
@@ -220,6 +223,7 @@ onMounted( ()=> {
                         Submit
                     </button>
                 </form>
+                <div v-else class="text-[20px] md:text-[30px] mb-28 lg:text-[40px] text-center flex items-center px-20">Thank you for completing the reference</div>
             </div>
             <MasterFooter
                 :footerLists="footerLists"

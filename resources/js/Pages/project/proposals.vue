@@ -1,6 +1,7 @@
 <script setup>
     import MasterFooter from '@/Components/MasterFooter.vue';
     import MasterHeader from '@/Components/MasterHeader.vue';
+    import BreezeCheckbox from '@/Components/Checkbox.vue';
     import Location from '@/Components/Svg/Location.vue';
     import Finance from '@/Components/Svg/Finance.vue';
     import Search from '@/Components/Svg/Search.vue';
@@ -33,7 +34,10 @@
         finance = ref({funding: '', text1: '', text2: ''}),
         socialInfo = ref({}),
         nameError = ref(),
-        locationError = ref ({address_1:'', city:'', country:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''})
+        locationError = ref ({address_1:'', city:'', country:'', postcode:'', repeat_time:'', repeat_every:'', ends:'', days: ''}),
+        usersTeam = ref({}),
+        users = ref({}),
+        checkUser =ref({checkedOptions:{}})
 
     const selectDay = (tab) =>{
         let index = _.findKey(location.value.repeat_on, function(o) { return o.day === tab; });
@@ -202,15 +206,15 @@
 
     const saveLeadershipInfo = () =>{
 
-        approved.value = true
-        axios
-            .post('/save-leadership', leadership.value)
-            .then((response)=>{
-                if(response.data.success){
-                    Toast.fire({icon: "success", title: "Saved"})
-                    approved.value = false
-                }
-            }).finally(() => approved.value = false)
+        // approved.value = true
+        // axios
+        //     .post('/save-leadership', leadership.value)
+        //     .then((response)=>{
+        //         if(response.data.success){
+        //             Toast.fire({icon: "success", title: "Saved"})
+        //             approved.value = false
+        //         }
+        //     }).finally(() => approved.value = false)
     }
 
     const proposalAllData = () => {
@@ -243,8 +247,10 @@
 
                     if(!!response.data?.data?.ProjectMedia)
                         socialInfo.value = response.data?.data?.ProjectMedia
-
-                    //     leadership.value = !!response.data[6] ? response.data[6]: ''
+                    if(!!response.data?.data1?.length>0)
+                        users.value = response.data?.data1
+                    if(!!response.data?.data2?.length>0)
+                        usersTeam.value = response.data?.data2
                 })
         }
     }
@@ -267,6 +273,40 @@
             });
         } else
             nameError.value = 'Project name is required !'
+    }
+
+    const appointModel = (role) =>{
+        if (!!usersTeam.value){
+            const test = usersTeam.value.filter(x=>x.role === role)
+
+            _.forEach(test, function (value, key) {
+                if (value.status === 1) {
+                    checkUser.value.checkedOptions[value.user_id] = true
+                } else if (value.status === 2) {
+                    checkUser.value.checkedOptions[value.user_id] = false
+                }
+            });
+        }
+        checkUser.value.role = role
+        $('#AppointTeamModal').modal('show');
+    }
+
+    const checkedNames = () =>{
+
+        checkUser.value.project_id = project.value.id
+        checkUser.value.apply_appoint = 2
+        if (!!checkUser.value.project_id && !!checkUser.value.apply_appoint && !!checkUser.value.role){
+            axios
+                .post('/checked-names', checkUser.value)
+                .then((response)=>{
+                    if(response.data.success){
+                        Toast.fire({icon: "success", title: "Saved"})
+                        proposalAllData()
+                        isActive.value = 4
+                        $('#AppointTeamModal').modal('hide');
+                    }
+                })
+        }
     }
 
     const approveName = (post, id) =>{
@@ -302,16 +342,16 @@
             <div class="relative text-black mt-4 border-4 border-b-4 border-[#20351d] border-opacity-75 mb-28 bg-white text-lg">
                 <ul :class="{'pointer-events-none':isActive === 0}" class="w-full flex !text-gray-800 justify-between">
                     <li @click="isActive = 1" class="!w-[20%] hover:text-gray-200 m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <Setting />
+                        <Setting :tab = isActive />
                     </li>
                     <li @click="isActive = 2" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <Finance />
+                        <Finance :tab = isActive />
                     </li>
                     <li @click="isActive = 3" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <Marketing />
+                        <Marketing :tab = isActive />
                     </li>
                     <li @click="isActive = 4" class="!w-[20%] hover:text-black m-1 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded p-2 text-center">
-                        <Search />
+                        <Search :tab = isActive />
                     </li>
                     <Link :href="route('plan')" class="!w-[20%] !pointer-events-auto m-1 hover:text-red-700 cursor-pointer bg-[#639f1e] bg-opacity-75 rounded text-center">
                         <div class="flex mx-auto items-center justify-center w-full h-full">
@@ -319,23 +359,23 @@
                         </div>
                     </Link>
                 </ul>
-                <div :class="{'!h-[200px]': isActive === 0}" class="bg-white h-[743px] max-w-lg mx-auto">
+                <div :class="{'!h-[200px]': isActive === 0}" class="bg-white max-w-lg mx-auto">
                     <div class="h-[743px] overflow-y-auto" :class="{'hidden': isActive !== 1 }" >
                         <div class="">
                             <ul class="w-full grid grid-cols-5 text-gray-800">
                                 <li @click="subTabActive = 1" :class="{'bg-opacity-100 text-black': subTabActive === 1 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
                                     <div class="flex mx-auto">
-                                        <Location />
+                                        <Location :tab = subTabActive />
                                     </div>
                                 </li>
                                 <li @click="subTabActive = 2" :class="{'bg-opacity-100 text-black': subTabActive === 2 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
                                     <div class="flex mt-1 mx-auto">
-                                        <Risk />
+                                        <Risk :tab = subTabActive />
                                     </div>
                                 </li>
                                 <li @click="subTabActive = 3" :class="{'bg-opacity-100 text-black': subTabActive === 3 }" class="bg-[#3a542a] mx-1 rounded-xl cursor-pointer text-center">
                                     <div class="flex mx-auto">
-                                        <Insurance />
+                                        <Insurance :tab = subTabActive />
                                     </div>
                                 </li>
                             </ul>
@@ -568,74 +608,90 @@
                         <div class="w-full h-auto pb-2 mb-4 mt-2">
                             <div class="bg-white rounded-xl p-5 space-y-2 font-sans">
                                 <p class="text-lg text-gray-400">Who are your leadership team</p>
-<!--                                <textarea v-model="leadership.organisers" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
-<!--                                    rows="6" placeholder="Organisers           (Apply/Appoint)"></textarea>-->
-<!--                                <textarea v-model="leadership.leaders" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
-<!--                                    rows="6" placeholder="Leaders           (Apply/Appoint)"></textarea>-->
-<!--                                <textarea v-model="leadership.assistants" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
-<!--                                    rows="6" placeholder="Assistances           (Apply/Appoint)"></textarea>-->
-<!--                                <textarea v-model="leadership.mentors" class="w-full border-2 bg-gray-200 mt-5 rounded-xl placeholder:text-center" cols="30"-->
-<!--                                    rows="6" placeholder="Mentors           (Apply/Appoint)"></textarea>-->
                                 <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
                                     <div class="flex justify-between">
                                         <div>Organisers</div>
-                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                        <div>
+                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <span> / </span>
+                                            <span @click="appointModel(1)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
+                                        </div>
                                     </div>
                                     <div class="flex m-2">
                                         <div class="mr-4">Applicants:</div>
                                         <div class="text-gray-700">name1, name2</div>
                                     </div>
-                                    <div class="flex m-2">
+                                    <div class="flex m-2 w-[400px] truncate ...">
                                         <div class="mr-4">Appointments:</div>
-                                        <div class="text-gray-700">name1, name2</div>
+                                        <div class="text-gray-700" v-for="data in usersTeam">
+                                            <span v-if="data.status === 1 && data.role === 1">{{data.check_user_name?.name}}</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
                                     <div class="flex justify-between">
                                         <div>Leaders</div>
-                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                        <div>
+                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <span> / </span>
+                                            <span @click="appointModel(2)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
+                                        </div>
                                     </div>
                                     <div class="flex m-2">
                                         <div class="mr-4">Applicants:</div>
                                         <div class="text-gray-700">name1, name2</div>
                                     </div>
-                                    <div class="flex m-2">
+                                    <div class="flex m-2 w-[400px] truncate ...">
                                         <div class="mr-4">Appointments:</div>
-                                        <div class="text-gray-700">name1, name2</div>
+                                        <div class="text-gray-700" v-for="data in usersTeam">
+                                            <pre class="font-sans ov" v-if="data.status === 1 && data.role === 2">{{data.check_user_name?.name}}, </pre>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
                                     <div class="flex justify-between">
                                         <div>Assistants</div>
-                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                        <div>
+                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <span> / </span>
+                                            <span @click="appointModel(3)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
+                                        </div>
                                     </div>
                                     <div class="flex m-2">
                                         <div class="mr-4">Applicants:</div>
                                         <div class="text-gray-700">name1, name2</div>
                                     </div>
-                                    <div class="flex m-2">
+                                    <div class="flex m-2 w-[400px] truncate ...">
                                         <div class="mr-4">Appointments:</div>
-                                        <div class="text-gray-700">name1, name2</div>
+                                        <div class="text-gray-700" v-for="data in usersTeam">
+                                            <pre class="font-sans ov" v-if="data.status === 1 && data.role === 3">{{data.check_user_name?.name}}, </pre>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="h-40 p-2 rounded-xl text-gray-500 bg-[#e1e1e1ff]">
                                     <div class="flex justify-between">
                                         <div>Mentors</div>
-                                        <Link :href="route('application')">Apply/Appoint</Link>
+                                        <div>
+                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <span> / </span>
+                                            <span @click="appointModel(4)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
+                                        </div>
                                     </div>
                                     <div class="flex m-2">
                                         <div class="mr-4">Applicants:</div>
                                         <div class="text-gray-700">name1, name2</div>
                                     </div>
-                                    <div class="flex m-2">
+                                    <div class="flex m-2 w-[400px] truncate ...">
                                         <div class="mr-4">Appointments:</div>
-                                        <div class="text-gray-700">name1, name2</div>
+                                        <div class="text-gray-700" v-for="data in usersTeam">
+                                            <pre class="font-sans ov" v-if="data.status === 1 && data.role === 4">{{data.check_user_name?.name}}, </pre>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-<!--                            <div class="pr-5 flex justify-end">-->
-<!--                                <button @click="saveLeadershipInfo()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>-->
-<!--                            </div>-->
+                            <div class="pr-5 flex justify-end">
+                                <button @click="saveLeadershipInfo()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -649,6 +705,27 @@
                     </div>
                     <div :class="{'pointer-events-none opacity-50':approved}" @click="approveName(project.name, project.id)" class="m-1 cursor-pointer w-[20%] bg-opacity-75 bg-[#639f1e] rounded">
                         <Thumb />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="AppointTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="userImagePeview" aria-hidden="true">
+            <div class="modal-dialog relative w-auto pointer-events-none">
+                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 rounded-t-md">
+<!--                        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Images</h5>-->
+                        <button @click="checkUser = {checkedOptions:{}}" type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    </div>
+                    <div class="modal-body overflow-y-auto relative p-4">
+                        <div class=" ">
+                            <div class="flex items-center m-2" v-for="data in users">
+                                <BreezeCheckbox v-model="checkUser.checkedOptions[data.id]" :checked="checkUser.checkedOptions[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
+                                <label :for="data.id">{{data.name}}</label>
+                            </div>
+                        </div>
+                        <div class="pr-5 flex justify-end">
+                            <button @click="checkedNames()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
+                        </div>
                     </div>
                 </div>
             </div>

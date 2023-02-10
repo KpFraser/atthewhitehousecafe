@@ -35,15 +35,22 @@ class LeadershipTeamController extends Controller
      */
     public function store(Request $request)
     {
-        LeadershipTeam::updateOrCreate([
-            'user_id'=> auth()->user()->id,
-        ],[
-            'assistants' => $request->assistances,
-            'organisers' => $request->organisers,
-            'leaders' => $request->leaders,
-            'mentors' => $request->mentors,
-        ]);
-        return response()->success();
+        if(!empty($request->checkedOptions) && count($request->checkedOptions) > 0) {
+            foreach ($request->checkedOptions as $key => $row ) {
+                if ($row) $status = 1;
+                else $status = 2;
+                    LeadershipTeam::updateOrCreate([
+                        'user_id' => $key,
+                        'project_id' => $request->project_id,
+                        'role' => $request->role,
+                    ], [
+                        'apply_appoint' => $request->apply_appoint,
+                        'status' => $status,
+                    ]);
+            }
+            return response()->success();
+        } else
+            return response()->error('something went wrong', 500);
     }
 
     /**

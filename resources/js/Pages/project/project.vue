@@ -80,7 +80,7 @@ onMounted( ()=> {
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
                     <div class="flex justify-end mr-2">
                         <Link :href="route('display-projects')" class="text-[25px] bg-[#639f1e] py-1 px-3 text-center font-bold bg-opacity-75">
-                            <i class="text-[40px]  hover:text-red-700 fal fa-times"></i>
+                            <i class="text-[40px] hover:text-red-700 fal fa-times"></i>
                         </Link>
                     </div>
                     <Link :href="route('application')" class="text-[20px] text-white bg-[#639f1e] p-1 text-center bg-opacity-75">

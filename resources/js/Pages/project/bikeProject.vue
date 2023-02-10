@@ -1,17 +1,17 @@
 <script setup>
-    import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-    import MasterFooter from '@/Components/MasterFooter.vue';
-    import MasterHeader from '@/Components/MasterHeader.vue';
-    import BreezeInput from '@/Components/Input.vue';
-    import BreezeCheckbox from '@/Components/Checkbox.vue';
-    import BreezeLabel from '@/Components/Label.vue';
-    import BreezeButton from '@/Components/Button.vue';
-    import useFooterList from "../../../use/useFooterList";
-    import {onMounted, reactive, ref} from "vue";
-    import commonFunctions from "@/use/common";
-    import {Inertia} from "@inertiajs/inertia";
+import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
+import MasterFooter from '@/Components/MasterFooter.vue';
+import MasterHeader from '@/Components/MasterHeader.vue';
+import BreezeInput from '@/Components/Input.vue';
+import BreezeCheckbox from '@/Components/Checkbox.vue';
+import BreezeLabel from '@/Components/Label.vue';
+import BreezeButton from '@/Components/Button.vue';
+import useFooterList from "../../../use/useFooterList";
+import {onMounted, reactive, ref} from "vue";
+import commonFunctions from "@/use/common";
+import {Inertia} from "@inertiajs/inertia";
 
-    const { Toast } = commonFunctions(),
+const { Toast } = commonFunctions(),
         { footerLists } = useFooterList();
 
     const bike = ref({id: '', image: '', system_name: '', name: '', project_slug: '', phone: '', estimated_total: '', middle_total: '', actual_total: '', rating: '', leader: '', assistant: '', checkGoals: {}, estimated_costs: [{item_name: '', cost: '', id: ''}], middle_costs: [{item_name: '', cost: '', id: ''}], actual_costs: [{item_name: '', cost: '', id: ''}]}),
@@ -36,70 +36,77 @@
 
     const bikeInfo = () =>{
         let queryString = window.location.href.split('/')[5]
+        if (queryString !== ''){
         axios
             .get('/bike-show/'+queryString)
             .then((response)=>{
-                if (queryString !== ''){
-                    if(response.data.bike !== '' && response.data.bike_items && response.data.bike_option){
-                        bike.value.show = true
-                        bike.value.id = response.data.bike.id
-                        bike.value.phone = response.data.bike.mobile
-                        bike.value.name = response.data.bike.name
-                        bike.value.leader = response.data.bike.leader
-                        bike.value.assistant = response.data.bike.assistant
-                        bike.value.rating = response.data.bike.rating
-                        bike.value.system_name = response.data.bike.system_name
-                        bike.value.image = response.data.bike.image_name
-                        bike.value.estimated_total = response.data.bike.estimated_cost
-                        bike.value.actual_total = response.data.bike.actual_cost
-                        bike.value.estimated_costs = response.data.bike_items.filter(x => x.stage_id === 1)
-                        bike.value.middle_costs = response.data.bike_items.filter(x => x.stage_id === 2)
-                        bike.value.actual_costs = response.data.bike_items.filter(x => x.stage_id === 3)
-
-                        _.forEach(response.data.bike_option, function(value, key) {
-                            if(value.status === 1) {
-                                bike.value.checkGoals[value.goal_id] = true
-                            }else if(value.status === 2) {
-                                bike.value.checkGoals[value.goal_id] = false
-                            }
-                        });
-                    }
+                if (response?.data?.bike_items?.length >0){
+                    bike.value.estimated_costs = response.data.bike_items.filter(x => x.stage_id === 1)
+                    bike.value.middle_costs = response.data.bike_items.filter(x => x.stage_id === 2)
+                    bike.value.actual_costs = response.data.bike_items.filter(x => x.stage_id === 3)
                     totalEstimate ()
                     totalMiddle ()
                     totalActual ()
                 }
-                if(response.data.goals !== ''){
+
+                if(response.data.bike !== ''){
+
+                    bike.value.id = !!response.data?.bike?.id ? response.data?.bike?.id:''
+                    bike.value.phone = !!response.data?.bike?.mobile ? response.data?.bike?.mobile:''
+                    bike.value.name = !!response.data?.bike?.name ? response.data?.bike?.name:''
+                    bike.value.leader = !!response.data?.bike?.leader ? response.data?.bike?.leader:''
+                    bike.value.assistant = !!response.data?.bike?.assistant ? response.data?.bike?.assistant:''
+                    bike.value.rating = !!response.data?.bike?.rating ? response.data?.bike?.rating:''
+                    bike.value.system_name = !!response?.bike?.bike.system_name ? response.data?.bike?.system_name:''
+                    bike.value.image = !!response.data?.bike?.image_name ? response.data?.bike?.image_name:''
+                    bike.value.estimated_total = !!response.data?.bike?.estimated_cost ? response.data?.bike?.estimated_cost:''
+                    bike.value.actual_total = !!response.data?.bike?.actual_cost ? response.data?.bike?.actual_cost:''
+                    bike.value.show = bike.value.image !== '';
+                }
+
+                if (response?.data?.bike_option?.length > 0) {
+                    _.forEach(response.data.bike_option, function (value, key) {
+                        if (value.status === 1) {
+                            bike.value.checkGoals[value.goal_id] = true
+                        } else if (value.status === 2) {
+                            bike.value.checkGoals[value.goal_id] = false
+                        }
+                    });
+                }
+
+                if(response?.data?.goal?.length > 0){
                     goals.value = response.data.goal
                 }
             })
+        }
+
     }
 
     const validation = (post) => {
 
-            errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = "", errors.actualCost = ''
+            errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = '', errors.actualCost = ''
         if(!post.name)
             errors.name = '* Name is required field!'
-        if(!post.image)
-            errors.image = '* Image is required field!'
+        // if(!post.image)
+        //     errors.image = '* Image is required field!'
         if(!post.phone)
             errors.phone = '* Image is required field!'
         if(!post.estimated_total || !post.actual_total)
             errors.cost = '* Write Estimated and Actual Cost!'
-        if(!post.assistant && !post.leader)
-            errors.roles = '* Write Assistant and Leader!'
-        if(post.estimated_costs[0].item_name === '' || post.estimated_costs[0].cost ===  '')
-            errors.estimatedCost = '* Fillup item name and cost'
-        if(post.actual_costs[0].item_name === '' || post.actual_costs[0].cost ===  '')
-            errors.actualCost = '* Fillup item name and cost'
-        return errors.name === '' && errors.image === '' && errors.phone === '' && errors.cost === '' && errors.roles === '' && errors.estimatedCost === "" && errors.actualCost === ''
+        // if(!post.assistant && !post.leader)
+        //     errors.roles = '* Write Assistant and Leader!'
+        // if(post.estimated_costs[0].item_name === '' || post.estimated_costs[0].cost ===  '')
+        //     errors.estimatedCost = '* Fillup item name and cost'
+        // if(post.actual_costs[0].item_name === '' || post.actual_costs[0].cost ===  '')
+        //     errors.actualCost = '* Fillup item name and cost'
+        return errors.name === '' && errors.phone === '' && errors.cost === ''
 
     }
 
     const bikeAllInfo = (post) => {
 
         processing.process = true
-        const queryString = window.location.href.split('/')[4]
-        bike.value.project_slug = queryString
+        bike.value.project_slug = window.location.href.split('/')[4]
 
         let valid = validation(post)
 
@@ -238,8 +245,8 @@
                                     </div>
                                 </label>
                                 <a v-if="url || bike.show"  target="_blank" :href="baseUrl+'/storage/images/'+bike.image" id="preview" class="ml-4">
-                                    <img class="w-32 h-32" v-if="url" :src="url" />
-                                    <img class="w-32 h-32" v-if="bike.show" :src="baseUrl+'/storage/images/'+bike.image" />
+                                    <img alt="one" class="w-32 h-32" v-if="url" :src="url" />
+                                    <img alt="two" class="w-32 h-32" v-if="bike.show" :src="baseUrl+'/storage/images/'+bike.image" />
                                 </a>
                                 <div v-show="errors.image !== ''" class="flex items-center">
                                     <div  class="text-red-600 font-bold text-[14px]">{{ errors.image }}</div>
@@ -248,7 +255,7 @@
                             <div class="flex flex-col my-3 justify-between">
                                 <div class="bg-[#639f1e] bg-opacity-75">
                                     <div @click="bikeAllRedirect()" class="text-[28px] cursor-pointer flex justify-center p-1 text-center font-bold">
-                                        <i class="fas fa-home"></i>
+                                        <i class="hover:text-red-700 fal fa-times"></i>
                                     </div>
                                 </div>
                                 <div class="bg-[#639f1e] bg-opacity-75">
@@ -400,9 +407,9 @@
                                     <div class="flex mx-auto">
                                         <div class="flex justify-center">
                                             <form class="grid grid-cols-2">
-                                                <div class="flex mx-2 items-center space-y-2" v-for="goal in goals">
+                                                <div class="flex mx-2 items-center py-2" v-for="goal in goals">
                                                     <BreezeCheckbox v-model="bike.checkGoals[goal.id]" :checked="bike.checkGoals[goal.id] === true ? true: false" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
-                                                    <label class="block font-medium text-gray-700 text-[14px]">{{goal.name}}</label>
+                                                    <label class="font-medium text-gray-700 text-[14px]">{{goal.name}}</label>
                                                 </div>
                                             </form>
                                         </div>
@@ -419,11 +426,11 @@
                                 <div class="grid grid-cols-2 gap-4 mx-4">
                                     <div>
                                         <BreezeLabel value="Estimated" />
-                                        <BreezeInput disabled type="number" v-model="bike.estimated_total" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                        <BreezeInput type="number" v-model="bike.estimated_total" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
                                     </div>
                                     <div>
                                         <BreezeLabel value="Actual" />
-                                        <BreezeInput disabled type="number" v-model="bike.actual_total" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
+                                        <BreezeInput type="number" v-model="bike.actual_total" class="!placeholder-gray-400 p-2 bg-[#639f1e] bg-opacity-75"/>
                                     </div>
                                 </div>
                             </div>

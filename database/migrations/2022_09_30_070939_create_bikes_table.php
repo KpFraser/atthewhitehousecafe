@@ -18,14 +18,14 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->string('name')->length(100);
             $table->string('slug');
-            $table->string('mobile');
-            $table->string('leader');
-            $table->string('assistant');
-            $table->string('image_name');
+            $table->string('mobile')->nullable(true);
+            $table->string('leader')->nullable(true);
+            $table->string('assistant')->nullable(true);
+            $table->string('image_name')->nullable(true);
             $table->tinyInteger('rating')->nullable(true)->comment('1 for one star rating so on upto 5');
-            $table->string('system_name');
-            $table->integer('estimated_cost');
-            $table->integer('actual_cost');
+            $table->string('system_name')->nullable(true);
+            $table->integer('estimated_cost')->nullable(true);
+            $table->integer('actual_cost')->nullable(true);
             $table->timestamps();
         });
     }

@@ -35,7 +35,6 @@ const projects = () =>{
             all_names.value = names?.value
                 .filter(x => x.is_approved === 1 && x.is_archived !== 1)
 
-            console.log(all_names.value)
             if(user_names.value.length===0)
                 isActive.value = 3
             archieved.value = names.value
@@ -149,7 +148,6 @@ const eventName = () =>{
 }
 
 const openEvent =(event, project)=>{
-    // console.log(event, project)
     Inertia.visit('/roster/'+event+'/'+project)
 }
 
@@ -181,11 +179,6 @@ onMounted( ()=> {
         <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
             <div class="w-full">
                 <MasterHeader/>
-<!--                <div class="flex justify-end my-6 mr-4">-->
-<!--                    <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">-->
-<!--                        <i class="fas fa-home"></i>-->
-<!--                    </Link>-->
-<!--                </div>-->
                 <div class="max-w-lg text-black border-4 border-b-4 border-[#20351d] m-10 border-opacity-75 mb-28 bg-white text-lg">
                     <ul class="w-full flex">
                         <li class="w-1/3">

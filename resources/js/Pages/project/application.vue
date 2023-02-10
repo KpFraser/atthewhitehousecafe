@@ -106,11 +106,8 @@ onMounted( ()=> {
                 <div v-if="!information.project_id || !information.role_id" class="mt-2 text-center text-red-700 font-bold text-sm" v-for="message in  validationErrors.selectOption">{{ message }}</div>
                 <form class="text-black mt-10 mb-28 space-y-4 bg-white text-lg mx-10">
                     <div class="flex justify-end mr-4">
-<!--                        <Link :href="route('reference')" class="text-[20px] text-white bg-[#639f1e] p-1 text-center bg-opacity-75">-->
-<!--                            Reference-->
-<!--                        </Link>-->
-                        <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
-                            <i class="fas fa-home"></i>
+                        <Link :href="route('plan')" class="text-[25px] bg-[#639f1e] py-1 px-3 text-center font-bold bg-opacity-75">
+                            <i class="text-[40px] hover:text-red-700 fal fa-times"></i>
                         </Link>
                     </div>
                     <div class=" ">

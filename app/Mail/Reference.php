@@ -31,7 +31,7 @@ class Reference extends Mailable
     public function build()
     {
         return $this->subject('Mail to Reference Emails')
-            ->from( env('MAIL_FROM_ADDRESS'))
+            ->from( 'contact@atthewhitehousecafe.com')
             ->view('mail.reference');
     }
 }

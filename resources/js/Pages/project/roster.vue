@@ -243,8 +243,8 @@
             <MasterHeader/>
             <form class="text-black border-4 border-b-4 p-10 border-[#20351d] border-opacity-75 mt-10 mb-28 space-y-4 bg-white text-lg">
                 <div class="flex justify-end">
-                    <Link :href="route('projectshome')" class="text-[25px] bg-[#639f1e] p-1 text-center font-bold bg-opacity-75">
-                        <i class="fas fa-home"></i>
+                    <Link :href="route('display-projects')" class="text-[25px] bg-[#639f1e] py-1 px-3 text-center font-bold bg-opacity-75">
+                        <i class="text-[40px] hover:text-red-700 fal fa-times"></i>
                     </Link>
                 </div>
                 <div v-if="errors.length !== 0" class="ml-2 text-red-700 font-bold text-sm" v-for="message in  errors.dateAndTime">{{ message }}</div>
