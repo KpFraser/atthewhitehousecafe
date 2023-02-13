@@ -20,7 +20,7 @@ const
     errors = ref({}),
     urlGroup =  ref([]),
     imagesPreview = ref([]),
-    checkUsers = ref({module:1, id: '', date:'', images:[], previous_img:[], groupComment:'', morning:{}, noon:{}, afternoon:{}}),
+    checkUsers = ref({module:2, id: '', date:'', images:[], previous_img:[], groupComment:'', morning:{}, noon:{}, afternoon:{}}),
     approve = ref(false)
 
 const validationError = (post) =>{
@@ -92,7 +92,7 @@ const removeImage = (key) =>{
 
 const cycleInfo = () =>{
     axios
-        .get('/cycle-info/'+1)
+        .get('/cycle-info/'+2)
         .then((response)=>{
             users.value = !!response.data?.data1?.length>0 ? response.data?.data1:[]
             if(!!response.data?.data2){
@@ -143,12 +143,12 @@ onMounted( ()=> {
                         <Datepicker v-model="checkUsers.date" />
                     </div>
                 </div>
-                <BreezeLabel value="Attendance"/>
+                <BreezeLabel value="Register"/>
                 <div class="bg-[#639f1e] w-full bg-opacity-75">
                     <div class="ml-[25%] text-[12px] flex w-[70%] justify-around">
-                        <div>Morning</div>
-                        <div>Noon</div>
-                        <div>Afternoon</div>
+                        <div>Cook</div>
+                        <div>Clean</div>
+                        <div>Stock</div>
                     </div>
                     <div class="p-2 flex items-center" v-for="data in users">
                         <div :title="data?.name" class="w-28 truncate ... items-center">

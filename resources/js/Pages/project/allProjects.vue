@@ -89,12 +89,14 @@ const bikeProject = (slug) =>{
         Inertia.visit('/bike-all-projects/'+slug)
     else if(slug === 'cycle-track')
         Inertia.visit('/cycle')
+    else if(slug === 'the-cafe')
+        Inertia.visit('/cafe')
     else
         Inertia.visit('/favourite-project/'+slug)
 }
 
 const showEvents = (id, slug) =>{
-    if(slug === 'bike-repair' || slug === 'bike-mechanic' || slug === 'cycle-track')
+    if(slug === 'bike-repair' || slug === 'bike-mechanic' || slug === 'cycle-track' || slug === 'cafe')
         bikeProject (slug)
     else if($('.eventHide').hasClass('!h-[250px]')){
         $('.btnMinus').removeClass('!rotate-90')

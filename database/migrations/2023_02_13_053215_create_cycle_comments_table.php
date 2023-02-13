@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_attendances', function (Blueprint $table) {
+        Schema::create('cycle_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('time_period')->nullable(true)->comment('1 for morning, 2 for noon, 3 for afternoon');
-            $table->integer('status')->nullable(true)->comment('1 for true, 2 for false');
+            $table->integer('module')->comment('1 for cycle track 2 for cafe');
+            $table->date('date')->nullable(true);
+            $table->string('comment')->nullable(true);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_attendances');
+        Schema::dropIfExists('cycle_comments');
     }
 };

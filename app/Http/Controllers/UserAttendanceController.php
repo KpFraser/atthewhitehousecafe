@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CycleComment;
+use App\Models\CycleTrackImage;
 use App\Models\User;
 use App\Models\UserAttendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use function GuzzleHttp\Promise\all;
+use Illuminate\Support\Facades\File;
 
 class UserAttendanceController extends Controller
 {
@@ -38,9 +40,48 @@ class UserAttendanceController extends Controller
      */
     public function store(Request $request)
     {
-//        $groupComment = json_decode($request->groupComment, true);
-//        $date = json_decode($request->date, true);
-//        $date = Carbon::parse($date)->format('Y.m.d');
+        $module = json_decode($request->module, true);
+        $groupComment = json_decode($request->groupComment, true);
+        $raw_date = json_decode($request->date, true);
+        $date = Carbon::parse($raw_date)->format('Y.m.d');
+        $length = json_decode($request->length, true);
+        $previous_img = json_decode($request->previous_img, true);
+
+        $cycle_comment = CycleComment::updateOrCreate([
+            'id' => $request->id,
+        ],[
+            'date' => $date,
+            'module' => $module,
+            'comment' => $groupComment,
+        ]);
+
+        for ($i=1; $i <= $length; $i++ ){
+            if ($request->hasFile('image'.$i)) {
+                $file1 = $request->file('image'.$i)->getClientOriginalName();
+                $filename1 = pathinfo($file1, PATHINFO_FILENAME);
+                $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
+                $image = $filename1.'-'.time().'.'.$extension1;
+                $request->file('image'.$i)->move(public_path('storage/images/cycle-track'), $image);
+
+                CycleTrackImage::create([
+                    'user_id'=> auth()->user()->id,
+                    'image' => $image,
+                    'system_name' => $filename1,
+                    'cycle_comment_id' => $cycle_comment->id,
+                ]);
+
+                if (!empty($length) && $length !== 0 && count($previous_img) !== 0){
+                    foreach ($previous_img as $item) {
+                        if(!empty($item)){
+                            if (File::exists(storage_path('/app/public/images/cycle-track/') . $item['image'])) {
+                                File::delete(storage_path('/app/public/images/cycle-track/') . $item['image']);
+                            }
+                            CycleTrackImage::where('id', $item['id'])->delete();
+                        }
+                    }
+                }
+            }
+        }
 
         $morning = json_decode($request->morning, true);
         $noon = json_decode($request->noon, true);
@@ -56,6 +97,7 @@ class UserAttendanceController extends Controller
                     UserAttendance::updateOrCreate([
                         'user_id' => $key,
                         'time_period' => $time_period,
+                        'cycle_comment_id' =>$cycle_comment->id,
                     ], [
                         'status' => $status,
                     ]);
@@ -71,11 +113,13 @@ class UserAttendanceController extends Controller
      * @param  \App\Models\UserAttendance  $userAttendance
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show()
+    public function show($module)
     {
-        $data1 = User::select('id', 'name')->get();
-        $data2 = UserAttendance::all();
-        return response()->json(['data1'=> $data1, 'data2'=> $data2]);
+        if(!empty($module)){
+            $data1 = User::select('id', 'name')->get();
+            $data2 = CycleComment::select('id', 'date', 'comment')->where('module', $module)->with('UserAttendance', 'CycleTrackImage')->first();
+            return response()->json(['data1'=> $data1, 'data2'=> $data2]);
+        }
     }
 
     /**

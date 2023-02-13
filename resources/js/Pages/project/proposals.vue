@@ -249,8 +249,9 @@
                         socialInfo.value = response.data?.data?.ProjectMedia
                     if(!!response.data?.data1?.length>0)
                         users.value = response.data?.data1
-                    if(!!response.data?.data2?.length>0)
+                    if(!!response.data?.data2?.length>0){
                         usersTeam.value = response.data?.data2
+                    }
                 })
         }
     }
@@ -276,7 +277,7 @@
     }
 
     const appointModel = (role) =>{
-        if (!!usersTeam.value){
+        if(Object.values(usersTeam.value).length !== 0){
             const test = usersTeam.value.filter(x=>x.role === role)
 
             _.forEach(test, function (value, key) {
@@ -717,14 +718,17 @@
                         <button @click="checkUser = {checkedOptions:{}}" type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                     </div>
                     <div class="modal-body overflow-y-auto relative p-4">
-                        <div class=" ">
+                        <div v-if="!!users && users?.length > 0">
                             <div class="flex items-center m-2" v-for="data in users">
                                 <BreezeCheckbox v-model="checkUser.checkedOptions[data.id]" :checked="checkUser.checkedOptions[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                                 <label :for="data.id">{{data.name}}</label>
                             </div>
+                            <div class="pr-5 flex justify-end">
+                                <button @click="checkedNames()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
+                            </div>
                         </div>
-                        <div class="pr-5 flex justify-end">
-                            <button @click="checkedNames()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
+                        <div v-else class="text-center ">
+                            Not a single user available !
                         </div>
                     </div>
                 </div>

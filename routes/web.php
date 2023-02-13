@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/project-leadership/assistant/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
     Route::get('/project-leadership/application/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-application');
     Route::get('/cycle', fn ()=> Inertia::render('project/cycle') )->name('cycle-project');
+    Route::get('/cafe', fn ()=> Inertia::render('project/cafe') )->name('cafe-project');
     Route::get('/bike-project/{slug}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
     Route::get('/bike-project/{project_slug}/{bike_slug?}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project-edit');
     Route::get('/bike-all-projects/{slug}', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
@@ -131,7 +132,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
     Route::get('/bike-show/{bike_slug?}', [GoalController::class, 'show']);
 
-    Route::get('/cycle-info', [UserAttendanceController::class, 'show']);
+    Route::get('/cycle-info/{module}', [UserAttendanceController::class, 'show']);
     Route::post('/cycle-info', [UserAttendanceController::class, 'store']);
 
     Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
