@@ -87,19 +87,21 @@ const { Toast } = commonFunctions(),
             errors.name = '', errors.image = '', errors.phone = '', errors.cost = '', errors.roles = '', errors.estimatedCost = '', errors.actualCost = ''
         if(!post.name)
             errors.name = '* Name is required field!'
-        // if(!post.image)
-        //     errors.image = '* Image is required field!'
+        if(!post.image)
+            errors.image = '* Image is required field!'
         if(!post.phone)
             errors.phone = '* Image is required field!'
-        if(!post.estimated_total || !post.actual_total)
-            errors.cost = '* Write Estimated and Actual Cost!'
+        if(!post.estimated_total)
+            errors.cost = '* Estimated Cost required!'
+        // if(!post.estimated_total || !post.actual_total)
+        //     errors.cost = '* Write Estimated and Actual Cost!'
         // if(!post.assistant && !post.leader)
         //     errors.roles = '* Write Assistant and Leader!'
         // if(post.estimated_costs[0].item_name === '' || post.estimated_costs[0].cost ===  '')
         //     errors.estimatedCost = '* Fillup item name and cost'
         // if(post.actual_costs[0].item_name === '' || post.actual_costs[0].cost ===  '')
         //     errors.actualCost = '* Fillup item name and cost'
-        return errors.name === '' && errors.phone === '' && errors.cost === ''
+        return errors.name === '' && errors.phone === '' && errors.cost === '' && errors.image === ''
 
     }
 
