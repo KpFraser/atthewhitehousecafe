@@ -96,7 +96,7 @@ const bikeProject = (slug) =>{
 }
 
 const showEvents = (id, slug) =>{
-    if(slug === 'bike-repair' || slug === 'bike-mechanic' || slug === 'cycle-track' || slug === 'cafe')
+    if(slug === 'bike-repair' || slug === 'bike-mechanic' || slug === 'cycle-track' || slug === 'the-cafe')
         bikeProject (slug)
     else if($('.eventHide').hasClass('!h-[250px]')){
         $('.btnMinus').removeClass('!rotate-90')
