@@ -59,12 +59,14 @@ const submit = (Info) => {
                 })
                 .then((response) => {
                     if (response.data.success) {
-                        // formInfo.value.processing = false
+                        formInfo.value.processing = false
                         // sendEmail.value = false
                         // Toast.fire({icon: "success", title: "Email Sent Successfully!"})
                         Toast.fire({icon: "success", title: "Participant Added!"})
-                        Inertia.visit('/roster/' + event_slug + '/' + project_slug)
-
+                        if(!!event_slug)
+                            Inertia.visit('/roster/' + event_slug + '/' + project_slug)
+                        else
+                            Inertia.visit('/cafe')
                     }
                 }).catch((response) => {
                 errors.value = response.response.data.errors
@@ -74,45 +76,52 @@ const submit = (Info) => {
     }
 }
 
-const addParticipant = () =>{
-    if (!!formInfo.value.email) {
-        validationErrors.value = {}
-        emailError.value = {}
-        formInfo.value.processing = true
-        const queryString = window.location.href
-        let event_slug = queryString.split('/')[4]
-        let project_slug = queryString.split('/')[5]
-        axios
-            .post('/add-participant', {event_slug:event_slug, project_slug:project_slug, email: formInfo.value.email})
-            .then((response) => {
-                if (response.data.success === true) {
-                    Toast.fire({icon: "success", title: "Participant added Successfully!"})
-                    formInfo.value.processing = false
-                    Inertia.visit('/roster/' + event_slug + '/' + project_slug)
-                }
-            }).catch((response) => {
-            emailError.value[0] = response.response.data.error
-            formInfo.value.processing = false
-        });
-    } else {
-        emailError.value[0] = '*Email Required !'
-    }
-}
+// const addParticipant = () =>{
+//     if (!!formInfo.value.email) {
+//         validationErrors.value = {}
+//         emailError.value = {}
+//         formInfo.value.processing = true
+//         const queryString = window.location.href
+//         let event_slug = queryString.split('/')[4]
+//         let project_slug = queryString.split('/')[5]
+//         axios
+//             .post('/add-participant', {event_slug:event_slug, project_slug:project_slug, email: formInfo.value.email})
+//             .then((response) => {
+//                 if (response.data.success === true) {
+//                     Toast.fire({icon: "success", title: "Participant added Successfully!"})
+//                     formInfo.value.processing = false
+//                     Inertia.visit('/roster/' + event_slug + '/' + project_slug)
+//                 }
+//             }).catch((response) => {
+//             emailError.value[0] = response.response.data.error
+//             formInfo.value.processing = false
+//         });
+//     } else {
+//         emailError.value[0] = '*Email Required !'
+//     }
+// }
 
-const checkRegister = () => {
-    emailError.value = []
-    if (alreadyRegister.value === true)
-        alreadyRegister.value = false
-    else
-    alreadyRegister.value = true
-}
+// const checkRegister = () => {
+//     emailError.value = []
+//     if (alreadyRegister.value === true)
+//         alreadyRegister.value = false
+//     else
+//     alreadyRegister.value = true
+// }
 
 const redirect = () => {
     const queryString = window.location.href
     let event_slug = queryString.split('/')[4]
     let project_slug = queryString.split('/')[5]
-    console.log(event_slug, project_slug)
-    Inertia.visit('/roster/' + event_slug + '/' + project_slug)
+    if(!!event_slug && !!project_slug)
+        Inertia.visit('/roster/' + event_slug + '/' + project_slug)
+    else{
+        console.log(window.location.pathname)
+        if (window.location.pathname === '/roster-register-cafe')
+            Inertia.visit('/cafe')
+        else if (window.location.pathname === '/roster-register-cycle')
+            Inertia.visit('/cycle')
+    }
 }
 
 const inputSearch = debounce(() => {
@@ -121,7 +130,7 @@ const inputSearch = debounce(() => {
         axios
             .get('/searchEmail/'+formInfo.value.email)
             .then((response) => {
-                console.log(search.value = response.data.data)
+                search.value = response.data.data
             })
     }
 }, 1000)

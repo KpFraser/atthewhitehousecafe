@@ -129,31 +129,28 @@ class EventController extends Controller
     }
     public function RosterConfirm(Request $request)
     {
-//        dd($request->all());
         $project_id = Project::select('id')->where('slug', $request->project_slug)->first();
-        if (!empty($project_id)) {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => ['required', Rules\Password::defaults()],
+//        dd($project_id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', Rules\Password::defaults()],
+        ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        if (!empty($user->id) && !empty($project_id)){
+            ProjectUser::create([
+                'user_id' => $user->id,
+                'project_id' => $project_id->id,
+                'is_user' => 1,
+                'is_key' => 1
             ]);
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-            if (!empty($user->id)){
-                ProjectUser::create([
-                    'user_id' => $user->id,
-                    'project_id' => $project_id->id,
-                    'is_user' => 1,
-                    'is_key' => 1
-                ]);
-            }
-            return response()->success();
-        }else{
-            return response()->error('Request Failed', 500);
         }
+        return response()->success();
     }
     public function addParticipant(Request $request)
     {

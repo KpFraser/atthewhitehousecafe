@@ -613,7 +613,7 @@
                                     <div class="flex justify-between">
                                         <div>Organisers</div>
                                         <div>
-                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <Link :href="route('application')" class="hover:text-gray-700 cursor-pointer">Apply</Link>
                                             <span> / </span>
                                             <span @click="appointModel(1)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
                                         </div>
@@ -633,7 +633,7 @@
                                     <div class="flex justify-between">
                                         <div>Leaders</div>
                                         <div>
-                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <Link :href="route('application')" class="hover:text-gray-700 cursor-pointer">Apply</Link>
                                             <span> / </span>
                                             <span @click="appointModel(2)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
                                         </div>
@@ -653,7 +653,7 @@
                                     <div class="flex justify-between">
                                         <div>Assistants</div>
                                         <div>
-                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <Link :href="route('application')" class="hover:text-gray-700 cursor-pointer">Apply</Link>
                                             <span> / </span>
                                             <span @click="appointModel(3)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
                                         </div>
@@ -673,7 +673,7 @@
                                     <div class="flex justify-between">
                                         <div>Mentors</div>
                                         <div>
-                                            <span class="hover:text-gray-700 cursor-pointer">Apply</span>
+                                            <Link :href="route('application')" class="hover:text-gray-700 cursor-pointer">Apply</Link>
                                             <span> / </span>
                                             <span @click="appointModel(4)" class="hover:text-gray-700 cursor-pointer">Appoint</span>
                                         </div>

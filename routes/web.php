@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\CafeUserComment;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\{BikeController,
     BikeItemsController,
+    CafeUserCommentController,
     FundingController,
     GoalController,
     LeadershipTeamController,
@@ -69,6 +71,8 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register');
+    Route::get('/roster-register-cycle', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register-cycle');
+    Route::get('/roster-register-cafe', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register-cafe');
     Route::get('/project-leadership/leader/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
     Route::get('/project-leadership/application/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-application');
@@ -137,6 +141,8 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
     Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
     Route::post('/bike-all-information', [BikeController::class, 'store']);
+
+    Route::post('/user-comment', [CafeUserCommentController::class, 'store']);
 
     Route::get('/proposals-page-information/{slug?}', [LocationController::class, 'show']);
     Route::post('/location-information', [LocationController::class, 'store']);

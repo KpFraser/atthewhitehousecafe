@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CafeResource;
 use App\Models\CycleComment;
 use App\Models\CycleTrackImage;
 use App\Models\User;
@@ -40,17 +41,25 @@ class UserAttendanceController extends Controller
      */
     public function store(Request $request)
     {
+
         $module = json_decode($request->module, true);
         $groupComment = json_decode($request->groupComment, true);
         $raw_date = json_decode($request->date, true);
+        $s_time = json_decode($request->start_time, true);
+        $e_time = json_decode($request->end_time, true);
         $date = Carbon::parse($raw_date)->format('Y.m.d');
+        $start_time = Carbon::parse($s_time)->format('H:i:s');
+        $end_time = Carbon::parse($e_time)->format('H:i:s');
         $length = json_decode($request->length, true);
         $previous_img = json_decode($request->previous_img, true);
+//        dd($previous_img);
 
         $cycle_comment = CycleComment::updateOrCreate([
             'id' => $request->id,
         ],[
             'date' => $date,
+            'start_time' => $start_time,
+            'end_time' => $end_time,
             'module' => $module,
             'comment' => $groupComment,
         ]);
@@ -117,8 +126,8 @@ class UserAttendanceController extends Controller
     {
         if(!empty($module)){
             $data1 = User::select('id', 'name')->get();
-            $data2 = CycleComment::select('id', 'date', 'comment')->where('module', $module)->with('UserAttendance', 'CycleTrackImage')->first();
-            return response()->json(['data1'=> $data1, 'data2'=> $data2]);
+            $data2 = CycleComment::select('id', 'date', 'comment', 'start_time', 'end_time')->where('module', $module)->with('UserAttendance', 'CycleTrackImage', 'UserComments')->first();
+            return response()->json(['data1'=> $data1, 'data2'=> new CafeResource($data2)]);
         }
     }
 

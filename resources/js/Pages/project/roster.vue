@@ -3,14 +3,13 @@
     import MasterFooter from '@/Components/MasterFooter.vue';
     import MasterHeader from '@/Components/MasterHeader.vue';
     import BreezeButton from '@/Components/Button.vue';
+    import BreezeInput from '@/Components/Input.vue';
     import ImageLogo from '@/Components/CameraLogo.vue';
     import useFooterList from "../../../use/useFooterList";
     import {Link} from '@inertiajs/inertia-vue3';
     import {onMounted, ref} from "vue";
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
-    import BreezeInput from '@/Components/Input.vue';
-
 
     const { Toast } = commonFunctions(),
         { footerLists } = useFooterList()

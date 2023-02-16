@@ -5,11 +5,13 @@ import MasterHeader from '@/Components/MasterHeader.vue';
 import BreezeButton from '@/Components/Button.vue';
 import ImageLogo from '@/Components/CameraLogo.vue';
 import BreezeCheckbox from '@/Components/Checkbox.vue';
+import BreezeInput from '@/Components/Input.vue';
 import useFooterList from "../../../use/useFooterList";
 import {Link} from '@inertiajs/inertia-vue3';
 import {onMounted, ref} from "vue";
 import commonFunctions from "@/use/common";
-import Datepicker from '@vuepic/vue-datepicker';
+import {Inertia} from "@inertiajs/inertia";
+// import Datepicker from '@vuepic/vue-datepicker';
 
 const { Toast } = commonFunctions(),
     { footerLists } = useFooterList()
@@ -18,19 +20,19 @@ const
     baseUrl = window.location.origin,
     users = ref({}),
     errors = ref({}),
+    userComment = ref({id:'', comment:'', user_id:'', cycle_comment_id:''}),
     urlGroup =  ref([]),
     imagesPreview = ref([]),
-    checkUsers = ref({module:2, id: '', date:'', images:[], previous_img:[], groupComment:'', morning:{}, noon:{}, afternoon:{}}),
+    checkUsers = ref({module:2, id: '', date:'', start_time:'', end_time:'', images:[], previous_img:[], user_comments:[], groupComment:'', morning:{}, noon:{}, afternoon:{}}),
     approve = ref(false)
 
 const validationError = (post) =>{
+
     errors.value = {}
-    console.log(!post.date);
     if(!post.groupComment)
         errors.value.groupComment = '*Comment is required!'
-    if(!post.date)
-        errors.value.date = '*Date is required!'
-    console.log(errors.value);
+    if(!post.date || !post.end_time || !post.start_time)
+        errors.value.date = '*Date and time required'
 
     return Object.values(errors.value).length === 0;
 }
@@ -90,6 +92,42 @@ const removeImage = (key) =>{
     }
 }
 
+const commentModal = (id) =>{
+    userComment.value = {id:'', comment:'', user_id:'', cycle_comment_id:''}
+    if(!!id){
+        userComment.value.user_id = id
+        $("#addComment").modal('show')
+        let Comment = checkUsers.value.user_comments.filter(x=>x.user_id === id)
+        if(Comment.length > 0)
+            userComment.value = Comment[0]
+        else
+            userComment.value = {id:'', comment:'', user_id:id, cycle_comment_id:''}
+    }
+}
+
+const userCommentSave = (comment) =>{
+    errors.value = {}
+    approve.value = true
+
+        console.log(comment)
+    if(!!comment.comment && !!comment.user_id){
+        userComment.value.cycle_comment_id = checkUsers.value.id
+        axios
+            .post('/user-comment', userComment.value)
+            .then((response)=>{
+                if(response.data.success){
+                    $("#addComment").modal('hide')
+                    Toast.fire({icon: "success", title: "Comment Saved"})
+                    userComment.value = {id:'', comment:'', user_id:'', cycle_comment_id:''}
+                    approve.value = false
+                    cycleInfo ()
+                }
+            })
+    } else
+        errors.value.userComment = 'comment required'
+        approve.value = false
+}
+
 const cycleInfo = () =>{
     axios
         .get('/cycle-info/'+2)
@@ -100,10 +138,15 @@ const cycleInfo = () =>{
                 checkUsers.value.id = response.data?.data2?.id
                 checkUsers.value.groupComment = response.data?.data2?.comment
                 checkUsers.value.date = response.data?.data2?.date
+                checkUsers.value.start_time = response.data?.data2?.start_time
+                checkUsers.value.end_time = response.data?.data2?.end_time
                 imagesPreview.value = response.data?.data2?.cycle_track_image
-                checkUsers.value.previous_img = response.data?.data2?.cycle_track_image
-
+                if(!!response.data?.data2?.cycle_track_image)
+                    checkUsers.value.previous_img = response.data?.data2?.cycle_track_image
+                if(response.data?.data2?.user_comments?.length> 0)
+                    checkUsers.value.user_comments = response.data?.data2?.user_comments
                 filterCheckData(response.data?.data2?.user_attendance)
+
             }
         })
 }
@@ -130,7 +173,7 @@ onMounted( ()=> {
     <div class="flex justify-center bg-white items-center max-w-lg mx-auto font-serif">
         <div class="w-full">
             <MasterHeader/>
-            <form class="text-black border-4 border-b-4 p-10 border-[#20351d] border-opacity-75 mt-10 mb-28 space-y-4 bg-white text-lg">
+            <form class="text-black border-4 border-b-4 p-10 border-[#20351d] border-opacity-75 mt-5 mb-28 space-y-4 bg-white text-lg">
                 <div class="flex justify-end">
                     <Link :href="route('display-projects')" class="text-[25px] bg-[#639f1e] py-1 px-3 text-center font-bold bg-opacity-75">
                         <i class="text-[40px]  hover:text-red-700 fal fa-times"></i>
@@ -138,13 +181,27 @@ onMounted( ()=> {
                 </div>
                 <div v-if="!!errors?.date" class="ml-2 text-red-700 font-bold text-sm">{{ errors.date }}</div>
                 <div class="flex space-x-2 justify-between">
-                    <div class="bg-opacity-75 w-full rounded bg-[#639f1e] flex p-4 justify-between items-center">
-                        <div class="text-[16px] text-center">Date</div>
-                        <Datepicker v-model="checkUsers.date" />
+                    <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
+                        <div class="px-4 pt-2 text-[16px] text-center">Date</div>
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="date" v-model="checkUsers.date">
+                    </div>
+                    <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
+                        <div class="px-4 pt-2 text-[16px] text-center">Start Time</div>
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="checkUsers.start_time">
+                    </div>
+                    <div class="bg-opacity-75 w-32 rounded bg-[#639f1e]">
+                        <div class="px-4 pt-2 text-[16px] text-center">End Time</div>
+                        <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="checkUsers.end_time">
                     </div>
                 </div>
+<!--                <div class="flex space-x-2 justify-between">-->
+<!--                    <div class="bg-opacity-75 w-full rounded bg-[#639f1e] flex p-4 justify-between items-center">-->
+<!--                        <div class="text-[16px] text-center">Date</div>-->
+<!--                        <Datepicker v-model="checkUsers.date" />-->
+<!--                    </div>-->
+<!--                </div>-->
                 <BreezeLabel value="Register"/>
-                <div class="bg-[#639f1e] w-full bg-opacity-75">
+                <div class="bg-[#639f1e] w-full bg-opacity-75 pb-5">
                     <div class="ml-[25%] text-[12px] flex w-[70%] justify-around">
                         <div>Cook</div>
                         <div>Clean</div>
@@ -159,18 +216,22 @@ onMounted( ()=> {
                             <BreezeCheckbox v-model="checkUsers.noon[data.id]" :checked="checkUsers.noon[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                             <BreezeCheckbox v-model="checkUsers.afternoon[data.id]" :checked="checkUsers.afternoon[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                         </div>
-                        <i class="fal fa-pencil cursor-pointer p-1"></i>
+                        <i @click="commentModal(data.id)" class="far fa-pen cursor-pointer"></i>
                     </div>
+                    <Link :href="route('roster-register-cafe')" class="flex mx-auto items-center mt-4 space-x-2 border border-white p-0.5 cursor-pointer w-36 justify-center text-[12px]">
+                        <div>Add a Participant</div>
+                        <i class="fa fa-plus"></i>
+                    </Link>
                 </div>
                 <div class="flex items-center">
                     <div class="flex items-center justify-between w-full">
                         <div>
                             <BreezeLabel value="Group Comment"/>
-                            <div v-if="!!errors?.groupComment" class="text-red-700 font-bold text-sm">{{ errors.groupComment }}</div>
+                            <div v-if="!!errors.groupComment" class="text-red-700 font-bold text-sm">{{ errors.groupComment }}</div>
                         </div>
                         <div class="flex items-end">
                             <div class="text-center">
-                                <div v-if="imagesPreview.length !== 0 || urlGroup.length !== 0" class="mr-2 text-sm text-blue-700  cursor-pointer" data-bs-toggle="modal" data-bs-target="#preview">Preview</div>
+                                <div v-if="imagesPreview?.length !== 0 || urlGroup?.length !== 0" class="mr-2 text-sm text-blue-700  cursor-pointer" data-bs-toggle="modal" data-bs-target="#preview">Preview</div>
                             </div>
                             <label for="camera">
                                 <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
@@ -180,7 +241,7 @@ onMounted( ()=> {
                     </div>
                 </div>
                 <textarea v-model="checkUsers.groupComment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]"></textarea>
-                <BreezeButton @click="groupComments(checkUsers)" type="button" class="bg-opacity-75 px-10 mt-4 bg-[#639f1e] text-white w-full font-sans submit py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': approve }" :disabled="approve">
+                <BreezeButton @click="groupComments(checkUsers)" type="button" class="bg-opacity-75 px-10 mt-4 bg-[#639f1e] text-white w-full font-sans py-3 justify-center text-[25px] font-bold" :class="{ 'opacity-25': approve }" :disabled="approve">
                     Save
                 </BreezeButton>
             </form>
@@ -206,9 +267,38 @@ onMounted( ()=> {
                 </div>
             </div>
         </div>
+        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="addComment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addCommentLabel" aria-hidden="true">
+            <div class="modal-dialog relative w-auto pointer-events-none">
+                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                    <div class="modal-header flex items-center justify-between p-4 rounded-t-md">
+                        <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    </div>
+                    <div class="pb-4 px-4">
+                        <div class="flex items-center">
+                            <h5 class="text-xl font-medium leading-normal text-gray-800">Comment:</h5>
+                            <div v-if="!!errors?.userComment" class="ml-2 text-red-700 font-bold text-sm" >{{ errors.userComment }}</div>
+                        </div>
+                        <textarea v-model="userComment.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]" placeholder="Add a comment here.."></textarea>
+                        <div class="flex justify-end">
+                            <BreezeButton @click="userCommentSave(userComment)" type="button" class="bg-opacity-75 flex justify-end text-right bg-[#639f1e] text-white font-sans py-2 justify-center font-bold" :class="{ 'opacity-25': approve }" :disabled="approve">Save</BreezeButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <MasterFooter
             :footerLists="footerLists"
         />
     </div>
 </template>
-
+<style scoped>
+[type='time'], [type='date'] {
+    color: white;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0;
+    padding: 0 !important;
+    font-size: 0.75rem;
+    text-align: center;
+}
+</style>
