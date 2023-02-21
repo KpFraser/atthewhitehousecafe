@@ -164,7 +164,7 @@ class BikeController extends Controller
     public function show($slug)
     {
         $project_id = Project::select('id')->where('slug', $slug)->first();
-        $data = Bike::select('id', 'name', 'slug', 'mobile')->where('project_id', $project_id->id)->get();
+        $data = Bike::select('id', 'name', 'slug', 'mobile', 'image_name')->where('project_id', $project_id->id)->get();
         return response()->success($data);
     }
 

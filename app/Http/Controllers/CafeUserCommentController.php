@@ -40,6 +40,7 @@ class CafeUserCommentController extends Controller
             'cycle_comment_id'=> $request->cycle_comment_id,
         ],[
             'comment'=> $request->comment,
+            'image'=> 'test',
         ]);
         return response()->success();
     }

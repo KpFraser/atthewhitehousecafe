@@ -35,20 +35,21 @@ class SocialMediaController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
-        SocialMedia::updateOrCreate([
-            'project_id'=> $request->project_id,
-            'user_id'=> auth()->user()->id,
-        ],[
-            'facebook' => $request->social['facebook'],
-            'twitter' => $request->social['twitter'],
-            'instagram' => $request->social['instagram'],
-            'youtube' => $request->social['youtube'],
-            'website' => $request->social['website'],
-            'meetup' => $request->social['meetup'],
-            'others' => $request->social['others'],
-        ]);
-        return response()->success();
+        if(!empty($request->social && $request->project_id)) {
+            SocialMedia::updateOrCreate([
+                'project_id' => $request->project_id,
+                'user_id' => auth()->user()->id,
+            ], [
+                'facebook' => !empty($request->social['facebook']) ? $request->social['facebook']:'',
+                'twitter' => !empty($request->social['twitter']) ? $request->social['twitter']:'',
+                'instagram' => !empty($request->social['instagram']) ? $request->social['instagram']:'',
+                'youtube' => !empty($request->social['youtube']) ? $request->social['youtube']:'',
+                'website' => !empty($request->social['website']) ? $request->social['website']:'',
+                'meetup' => !empty($request->social['meetup']) ? $request->social['meetup']:'',
+                'others' => !empty($request->social['others']) ? $request->social['others']:'',
+            ]);
+            return response()->success();
+        }
     }
 
     /**

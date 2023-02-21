@@ -16,6 +16,7 @@
     import { Link } from '@inertiajs/inertia-vue3';
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
+    import ModalDialog from '@/Components/ModalDialog.vue';
 
     const { Toast } = commonFunctions(),
         { footerLists } = useFooterList()
@@ -328,6 +329,10 @@
             });
         } else
             nameError.value = 'Project name is required !'
+    }
+
+    const CloseModal = () =>{
+        checkUser.value = {checkedOptions:{}}
     }
 
     onMounted(()=>{
@@ -710,30 +715,49 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="AppointTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="userImagePeview" aria-hidden="true">
-            <div class="modal-dialog relative w-auto pointer-events-none">
-                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                    <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 rounded-t-md">
-<!--                        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Images</h5>-->
-                        <button @click="checkUser = {checkedOptions:{}}" type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
+<!--        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="AppointTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="userImagePeview" aria-hidden="true">-->
+<!--            <div class="modal-dialog relative w-auto pointer-events-none">-->
+<!--                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">-->
+<!--                    <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 rounded-t-md">-->
+<!--                        <button @click="checkUser = {checkedOptions:{}}" type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>-->
+<!--                    </div>-->
+<!--                    <div class="modal-body overflow-y-auto relative p-4">-->
+<!--                        <div v-if="!!users && users?.length > 0">-->
+<!--                            <div class="flex items-center m-2" v-for="data in users">-->
+<!--                                <BreezeCheckbox v-model="checkUser.checkedOptions[data.id]" :checked="checkUser.checkedOptions[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>-->
+<!--                                <label :for="data.id">{{data.name}}</label>-->
+<!--                            </div>-->
+<!--                            <div class="pr-5 flex justify-end">-->
+<!--                                <button @click="checkedNames()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div v-else class="text-center ">-->
+<!--                            Not a single user available !-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <modal-dialog
+            ModalId='AppointTeamModal'
+            ModalTitle='Group Images'
+            @CloseModel=CloseModal
+        >
+            <div class="modal-body overflow-y-auto relative p-4">
+                <div v-if="!!users && users?.length > 0">
+                    <div class="flex items-center m-2" v-for="data in users">
+                        <BreezeCheckbox v-model="checkUser.checkedOptions[data.id]" :checked="checkUser.checkedOptions[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
+                        <label :for="data.id">{{data.name}}</label>
                     </div>
-                    <div class="modal-body overflow-y-auto relative p-4">
-                        <div v-if="!!users && users?.length > 0">
-                            <div class="flex items-center m-2" v-for="data in users">
-                                <BreezeCheckbox v-model="checkUser.checkedOptions[data.id]" :checked="checkUser.checkedOptions[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
-                                <label :for="data.id">{{data.name}}</label>
-                            </div>
-                            <div class="pr-5 flex justify-end">
-                                <button @click="checkedNames()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
-                            </div>
-                        </div>
-                        <div v-else class="text-center ">
-                            Not a single user available !
-                        </div>
+                    <div class="pr-5 flex justify-end">
+                        <button @click="checkedNames()" class="bg-[#639f1e] cursor-pointer bg-opacity-75 hover:bg-opacity-100 text-white justify-center text-center px-4 py-1 flex items-center border-gray-800 border-opacity-75 border-2" :class="{ 'opacity-25': approved }" :disabled="approved">save</button>
                     </div>
                 </div>
+                <div v-else class="text-center ">
+                    Not a single user available !
+                </div>
             </div>
-        </div>
+        </modal-dialog>
         <MasterFooter
             :footerLists="footerLists"
         />

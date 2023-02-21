@@ -25,3 +25,4 @@ createInertiaApp({
 });
 
 InertiaProgress.init({ color: '#639f1e' });
+import 'tw-elements';

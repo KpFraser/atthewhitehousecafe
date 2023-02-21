@@ -11,9 +11,11 @@ const { Toast } = commonFunctions(),
     { footerLists } = useFooterList(),
     names = ref([]),
     isActive = ref(1),
-    projects = ref({})
+    projects = ref({}),
+    baseUrl = window.location.origin
 
-const newBike = () =>{
+
+    const newBike = () =>{
     const queryString = window.location.href.split('/')[4]
     Inertia.visit('/bike-project/'+queryString)
 }
@@ -23,7 +25,7 @@ const project = () =>{
     axios
         .get('/bike-projects/'+queryString)
         .then((response)=>{
-            console.log(projects.value = response.data.data)
+            projects.value = response.data.data
         })
 }
 
@@ -70,12 +72,12 @@ onMounted(()=>{
                 <div class="bg-white max-w-lg mx-auto">
                     <div class="h-96 overflow-y-auto" :class="{'hidden': isActive === 2 }" >
                         <div v-for="data in projects">
-                            <div @click="editBike(data.slug)" class="flex cursor-pointer p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
+                            <div @click="editBike(data?.slug)" class="flex cursor-pointer p-1 my-1 mx-2 justify-between bg-opacity-75 bg-[#639f1e] items-center">
                                 <div class="ml-2">
-                                    <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.name }}</p>
-                                    <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data.mobile }}</p>
+                                    <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data?.name }}</p>
+                                    <p class="font-normal py-1 text-[18px] self-center leading-tight">{{ data?.mobile }}</p>
                                 </div>
-                                <i class="fa-3x mr-2 fal fa-bicycle"></i>
+                                <img alt="bike image" v-if="!!data?.mobile" class="w-16 h-16" :src="baseUrl+'/storage/images/'+data?.image_name" />
                             </div>
                         </div>
                         <div class="flex justify-center items-center" v-show="projects.length === 0">

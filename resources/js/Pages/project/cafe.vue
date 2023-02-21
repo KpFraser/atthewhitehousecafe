@@ -5,7 +5,7 @@ import MasterHeader from '@/Components/MasterHeader.vue';
 import BreezeButton from '@/Components/Button.vue';
 import ImageLogo from '@/Components/CameraLogo.vue';
 import BreezeCheckbox from '@/Components/Checkbox.vue';
-import BreezeInput from '@/Components/Input.vue';
+import ModalDialog from '@/Components/ModalDialog.vue';
 import useFooterList from "../../../use/useFooterList";
 import {Link} from '@inertiajs/inertia-vue3';
 import {onMounted, ref} from "vue";
@@ -96,7 +96,7 @@ const commentModal = (id) =>{
     userComment.value = {id:'', comment:'', user_id:'', cycle_comment_id:''}
     if(!!id){
         userComment.value.user_id = id
-        $("#addComment").modal('show')
+        $("#addPersonalCommentModel").modal('show')
         let Comment = checkUsers.value.user_comments.filter(x=>x.user_id === id)
         if(Comment.length > 0)
             userComment.value = Comment[0]
@@ -109,14 +109,13 @@ const userCommentSave = (comment) =>{
     errors.value = {}
     approve.value = true
 
-        console.log(comment)
     if(!!comment.comment && !!comment.user_id){
         userComment.value.cycle_comment_id = checkUsers.value.id
         axios
             .post('/user-comment', userComment.value)
             .then((response)=>{
                 if(response.data.success){
-                    $("#addComment").modal('hide')
+                    $("#addPersonalCommentModel").modal('hide')
                     Toast.fire({icon: "success", title: "Comment Saved"})
                     userComment.value = {id:'', comment:'', user_id:'', cycle_comment_id:''}
                     approve.value = false
@@ -194,12 +193,6 @@ onMounted( ()=> {
                         <input class="mx-auto my-2 focus:ring-0 flex cursor-pointer justify-center" type="time" v-model="checkUsers.end_time">
                     </div>
                 </div>
-<!--                <div class="flex space-x-2 justify-between">-->
-<!--                    <div class="bg-opacity-75 w-full rounded bg-[#639f1e] flex p-4 justify-between items-center">-->
-<!--                        <div class="text-[16px] text-center">Date</div>-->
-<!--                        <Datepicker v-model="checkUsers.date" />-->
-<!--                    </div>-->
-<!--                </div>-->
                 <BreezeLabel value="Register"/>
                 <div class="bg-[#639f1e] w-full bg-opacity-75 pb-5">
                     <div class="ml-[25%] text-[12px] flex w-[70%] justify-around">
@@ -231,7 +224,7 @@ onMounted( ()=> {
                         </div>
                         <div class="flex items-end">
                             <div class="text-center">
-                                <div v-if="imagesPreview?.length !== 0 || urlGroup?.length !== 0" class="mr-2 text-sm text-blue-700  cursor-pointer" data-bs-toggle="modal" data-bs-target="#preview">Preview</div>
+                                <div v-if="imagesPreview?.length !== 0 || urlGroup?.length !== 0" class="mr-2 text-sm text-blue-700  cursor-pointer" data-te-toggle="modal" data-te-target="#preview" data-te-ripple-init >Preview</div>
                             </div>
                             <label for="camera">
                                 <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
@@ -246,49 +239,34 @@ onMounted( ()=> {
                 </BreezeButton>
             </form>
         </div>
-        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="preview" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="previewLabel" aria-hidden="true">
-            <div class="modal-dialog relative w-auto pointer-events-none">
-                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                    <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-                        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLabel">Group Images</h5>
-                        <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
-                    </div>
-                    <div class="modal-body h-[500px] overflow-y-auto relative p-4">
-                        <div v-if="urlGroup.length !== 0" v-for="(img, key) in urlGroup">
-                            <div class="flex justify-end">
-                                <i @click="removeImage(key)" class="fas fa-times cursor-pointer hover:text-white hover:bg-red-500 text-red-500 border-2 border-red-500 px-2 py-[5px] -mr-3 -mb-4 z-10 bg-white rounded-full"></i>
-                            </div>
-                            <img alt="image" :src="img" class="p-2">
-                        </div>
-                        <div v-else v-for="info in imagesPreview">
-                            <img alt="image" :src="'/storage/images/cycle-track/'+info.image" class="p-2">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="addComment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addCommentLabel" aria-hidden="true">
-            <div class="modal-dialog relative w-auto pointer-events-none">
-                <div class="modal-content border-none shadow-lg relative mx-auto flex justify-center flex-col w-auto pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                    <div class="modal-header flex items-center justify-between p-4 rounded-t-md">
-                        <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
-                    </div>
-                    <div class="pb-4 px-4">
-                        <div class="flex items-center">
-                            <h5 class="text-xl font-medium leading-normal text-gray-800">Comment:</h5>
-                            <div v-if="!!errors?.userComment" class="ml-2 text-red-700 font-bold text-sm" >{{ errors.userComment }}</div>
-                        </div>
-                        <textarea v-model="userComment.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]" placeholder="Add a comment here.."></textarea>
-                        <div class="flex justify-end">
-                            <BreezeButton @click="userCommentSave(userComment)" type="button" class="bg-opacity-75 flex justify-end text-right bg-[#639f1e] text-white font-sans py-2 justify-center font-bold" :class="{ 'opacity-25': approve }" :disabled="approve">Save</BreezeButton>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <MasterFooter
             :footerLists="footerLists"
         />
+        <modal-dialog ModalId='preview' ModalTitle='Group Images'>
+            <div class="modal-body h-[500px] overflow-y-auto relative p-4">
+                <div v-if="urlGroup.length !== 0" v-for="(img, key) in urlGroup">
+                    <div class="flex justify-end">
+                        <i @click="removeImage(key)" class="fas fa-times cursor-pointer hover:text-white hover:bg-red-500 text-red-500 border-2 border-red-500 px-2 py-[5px] -mr-3 -mb-4 z-10 bg-white rounded-full"></i>
+                    </div>
+                    <img alt="image" :src="img" class="p-2">
+                </div>
+                <div v-else v-for="info in imagesPreview">
+                    <img alt="image" :src="'/storage/images/cycle-track/'+info.image" class="p-2">
+                </div>
+            </div>
+        </modal-dialog>
+        <modal-dialog ModalId='addPersonalCommentModel' ModalTitle=''>
+            <div class="pb-4 px-4">
+                <div class="flex items-center">
+                    <h5 class="text-xl font-medium leading-normal text-gray-800">Comment:</h5>
+                    <div v-if="!!errors?.userComment" class="ml-2 text-red-700 font-bold text-sm" >{{ errors?.userComment }}</div>
+                </div>
+                <textarea v-model="userComment.comment" class="w-full h-28 bg-opacity-75 bg-[#639f1e]" placeholder="Add a comment here.."></textarea>
+                <div class="flex justify-end">
+                    <BreezeButton @click="userCommentSave(userComment)" type="button" class="bg-opacity-75 flex justify-end text-right bg-[#639f1e] text-white font-sans py-2 justify-center font-bold" :class="{ 'opacity-25': approve }" :disabled="approve">Save</BreezeButton>
+                </div>
+            </div>
+        </modal-dialog>
     </div>
 </template>
 <style scoped>

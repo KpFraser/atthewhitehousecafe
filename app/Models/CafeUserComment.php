@@ -9,6 +9,6 @@ class CafeUserComment extends Model
 {
     use HasFactory;
     protected $fillable=[
-        'user_id', 'comment', 'cycle_comment_id'
+        'user_id', 'comment', 'cycle_comment_id', 'image'
     ];
 }
