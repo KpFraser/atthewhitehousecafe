@@ -138,6 +138,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
     Route::get('/cycle-info/{module}', [UserAttendanceController::class, 'show']);
     Route::post('/cycle-info', [UserAttendanceController::class, 'store']);
+    Route::delete('/delete-participant/{id}', [UserAttendanceController::class, 'destroy']);
 
     Route::get('/bike-projects/{slug}', [BikeController::class, 'show']);
     Route::post('/bike-all-information', [BikeController::class, 'store']);

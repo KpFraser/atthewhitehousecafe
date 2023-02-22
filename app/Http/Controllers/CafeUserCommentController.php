@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CafeUserComment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CafeUserCommentController extends Controller
 {
@@ -35,12 +36,30 @@ class CafeUserCommentController extends Controller
      */
     public function store(Request $request)
     {
+//        dd($request->all());
+        if ($request->hasFile('image')) {
+            $file1 = $request->file('image')->getClientOriginalName();
+            $filename1 = pathinfo($file1, PATHINFO_FILENAME);
+            $extension1 = pathinfo($file1, PATHINFO_EXTENSION);
+            $image = $filename1.'-'.time().'.'.$extension1;
+            $request->file('image')->move(public_path('storage/images/cycle-track-user'), $image);
+
+            if(!empty($request->previous_image)){
+                if (File::exists(storage_path('/app/public/images/cycle-track-user/') . $request->previous_image)) {
+                    File::delete(storage_path('/app/public/images/cycle-track-user/') . $request->previous_image);
+                }
+            }
+        }else if(!empty($request->previous_image))
+            $image = $request->previous_image;
+        else
+            $image = '';
+
         CafeUserComment::updateOrCreate([
             'user_id' => $request->user_id,
             'cycle_comment_id'=> $request->cycle_comment_id,
         ],[
             'comment'=> $request->comment,
-            'image'=> 'test',
+            'image'=> $image,
         ]);
         return response()->success();
     }

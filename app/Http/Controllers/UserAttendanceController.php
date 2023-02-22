@@ -125,8 +125,11 @@ class UserAttendanceController extends Controller
     public function show($module)
     {
         if(!empty($module)){
-            $data1 = User::select('id', 'name')->get();
-            $data2 = CycleComment::select('id', 'date', 'comment', 'start_time', 'end_time')->where('module', $module)->with('UserAttendance', 'CycleTrackImage', 'UserComments')->first();
+            $data1 = User::select('id', 'name', 'created_by')->get();
+            $data2 = CycleComment::select('id', 'date', 'comment', 'start_time', 'end_time')
+                ->where('module', $module)
+                ->with('UserAttendance', 'CycleTrackImage', 'UserComments')
+                ->first();
             return response()->json(['data1'=> $data1, 'data2'=> new CafeResource($data2)]);
         }
     }
@@ -160,8 +163,13 @@ class UserAttendanceController extends Controller
      * @param  \App\Models\UserAttendance  $userAttendance
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserAttendance $userAttendance)
+    public function destroy($id)
     {
-        //
+        $participant = User::where('id', $id)->first();
+        if($participant->created_by === auth()->user()->id){
+            $participant->delete();
+            return response()->success();
+        } else
+            return response()->error('You have not created this participant', 500);
     }
 }

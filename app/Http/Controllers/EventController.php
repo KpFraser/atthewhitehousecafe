@@ -139,6 +139,7 @@ class EventController extends Controller
         ]);
         $user = User::create([
             'name' => $request->name,
+            'created_by' => auth()->user()->id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);

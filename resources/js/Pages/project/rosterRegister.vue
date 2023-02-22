@@ -63,10 +63,11 @@ const submit = (Info) => {
                         // sendEmail.value = false
                         // Toast.fire({icon: "success", title: "Email Sent Successfully!"})
                         Toast.fire({icon: "success", title: "Participant Added!"})
-                        if(!!event_slug)
-                            Inertia.visit('/roster/' + event_slug + '/' + project_slug)
-                        else
-                            Inertia.visit('/cafe')
+                        // if(!!event_slug)
+                        //     Inertia.visit('/roster/' + event_slug + '/' + project_slug)
+                        // else
+                        //     Inertia.visit('/cafe')
+                        redirect()
                     }
                 }).catch((response) => {
                 errors.value = response.response.data.errors
@@ -115,13 +116,10 @@ const redirect = () => {
     let project_slug = queryString.split('/')[5]
     if(!!event_slug && !!project_slug)
         Inertia.visit('/roster/' + event_slug + '/' + project_slug)
-    else{
-        console.log(window.location.pathname)
-        if (window.location.pathname === '/roster-register-cafe')
+    else if(window.location.pathname === '/roster-register-cafe')
             Inertia.visit('/cafe')
-        else if (window.location.pathname === '/roster-register-cycle')
-            Inertia.visit('/cycle')
-    }
+    else if (window.location.pathname === '/roster-register-cycle')
+        Inertia.visit('/cycle')
 }
 
 const inputSearch = debounce(() => {
@@ -137,7 +135,7 @@ const inputSearch = debounce(() => {
 
 const selectEmail = (email) => {
     formInfo.value.email = email
-    search.value = []
+    search.value = ''
 }
 
 </script>
@@ -158,11 +156,11 @@ const selectEmail = (email) => {
 <!--                        <BreezeLabel class="ml-2 text-black" value="Already a Member?" />-->
 <!--                    </div>-->
 <!--                    <div v-show="alreadyRegister !== true">-->
-                        <div class="flex items-center">
-                            <BreezeLabel for="name" class="text-black" value="Name *" />
-                            <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.name }}</div>
-                        </div>
-                        <BreezeInput id="name" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.name" required autofocus autocomplete="name" />
+                    <div class="flex items-center">
+                        <BreezeLabel for="name" class="text-black" value="Name *" />
+                        <div v-if="validationErrors !== ''" class="ml-2 text-red-700 font-bold text-sm">{{ validationErrors.name }}</div>
+                    </div>
+                    <BreezeInput id="name" type="text" class="mt-1 border-b-8 border-[#639f1e] bg-transparent outline-0 block w-full" v-model="formInfo.name" required autofocus autocomplete="name" />
 <!--                    </div>-->
                     <div class="mt-4">
                         <div class="flex items-center">

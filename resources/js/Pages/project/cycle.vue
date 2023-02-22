@@ -6,21 +6,23 @@ import BreezeButton from '@/Components/Button.vue';
 import ImageLogo from '@/Components/CameraLogo.vue';
 import BreezeCheckbox from '@/Components/Checkbox.vue';
 import useFooterList from "../../../use/useFooterList";
-import {Link} from '@inertiajs/inertia-vue3';
+import {Link, usePage} from '@inertiajs/inertia-vue3';
 import {onMounted, ref} from "vue";
 import commonFunctions from "@/use/common";
 import ModalDialog from '@/Components/ModalDialog.vue';
+// import { usePage } from '@inertiajs/vue3';
 
-const { Toast } = commonFunctions(),
+const { Toast, ConfirmToast } = commonFunctions(),
     { footerLists } = useFooterList()
 
-const
-    baseUrl = window.location.origin,
+const baseUrl = window.location.origin,
     users = ref({}),
     errors = ref({}),
     urlGroup =  ref([]),
+    user = ref({}),
+    userImageUrl = ref(),
     imagesPreview = ref([]),
-    userComment = ref({id:'', comment:'', user_id:'', cycle_comment_id:''}),
+    userComment = ref({id:'', comment:'', user_id:'', cycle_comment_id:'', image:'', previous_image:''}),
     checkUsers = ref({module:1, id: '', date:'', start_time:'', end_time:'', images:[], previous_img:[], user_comments:[], groupComment:'', morning:{}, noon:{}, afternoon:{}}),
     approve = ref(false)
 
@@ -90,41 +92,60 @@ const removeImage = (key) =>{
     }
 }
 
+const emptyUserComment = () =>{
+    userComment.value = {id:'', comment:'', user_id:'', cycle_comment_id:'', image:'', previous_image:''}
+}
 
 const userCommentSave = (comment) =>{
 
     errors.value = {}
     approve.value = true
-
+    const formData = new FormData();
     if(!!comment.comment && !!comment.user_id){
         userComment.value.cycle_comment_id = checkUsers.value.id
+
+        formData.append('cycle_comment_id', userComment.value.cycle_comment_id);
+        formData.append('comment', comment.comment);
+        formData.append('user_id', comment.user_id);
+        formData.append('image', userComment.value.image);
+        formData.append('previous_image', userComment.value.previous_image);
+
         axios
-            .post('/user-comment', userComment.value)
+            .post('/user-comment', formData , {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
             .then((response)=>{
                 if(response.data.success){
                     $("#addComment").modal('hide')
                     Toast.fire({icon: "success", title: "Comment Saved"})
-                    userComment.value = {id:'', comment:'', user_id:'', cycle_comment_id:''}
+                    emptyUserComment ()
                     approve.value = false
                     cycleInfo ()
                 }
             })
     } else{
-        errors.value.userComment = 'comment required'
+        errors.value.userComment = 'Comment required'
         approve.value = false
     }
 }
 
 const commentModal = (id) =>{
-    userComment.value = {id:'', comment:'', user_id:'', cycle_comment_id:''}
-    if(!!id){
+    userImageUrl.value = ''
+    emptyUserComment ()
+    if(!!id) {
         userComment.value.user_id = id
-        $("#addComment").modal('show')
-        let Comment = checkUsers.value.user_comments.filter(x=>x.user_id === id)
-        if(Comment.length > 0)
+        let Comment = checkUsers.value.user_comments.filter(x => x.user_id === id)
+        if (Comment.length > 0){
             userComment.value = Comment[0]
-        else
-            userComment.value = {id:'', comment:'', user_id:id, cycle_comment_id:''}
+            userComment.value.previous_image = Comment[0].image
+        } else{
+            emptyUserComment ()
+            userComment.value.user_id=id
+        }
+
+        $("#addComment").modal('show')
     }
 }
 
@@ -162,7 +183,39 @@ const filterCheckData = (post) =>{
     });
 }
 
+const userImage = (e) =>{
+    userComment.value.image = e.target.files[0]
+    userImageUrl.value = URL.createObjectURL(e.target.files[0])
+}
+
+const deleteParticipant = (id) =>{
+    if (!!id){
+        ConfirmToast.fire({}).then((confirmed) => {
+            if (confirmed.isConfirmed === true) {
+                axios
+                    .delete('/delete-participant/' + id)
+                    .then((response) => {
+                        if (response.data.success){
+                            Toast.fire({icon: "success", title: "Deleted"})
+                            cycleInfo ()
+                        }
+                    })
+                    .catch((err)=>{
+                        Toast.fire({icon: "error", title: err.response.data.error})
+                    })
+            }
+        })
+    }
+}
+
+const CloseModel = () =>{
+    userImageUrl.value = ''
+    emptyUserComment ()
+}
+
 onMounted( ()=> {
+    // let test = usePage()
+    console.log(user.value = usePage().props.value.auth.user)
     cycleInfo ()
 })
 
@@ -195,7 +248,7 @@ onMounted( ()=> {
                 </div>
                 <BreezeLabel value="Attendance"/>
                 <div class="bg-[#639f1e] w-full bg-opacity-75 pb-5">
-                    <div class="ml-[25%] text-[12px] flex w-[70%] justify-around">
+                    <div class="ml-[20%] text-[12px] flex w-[70%] justify-around">
                         <div>Morning</div>
                         <div>Noon</div>
                         <div>Afternoon</div>
@@ -204,12 +257,15 @@ onMounted( ()=> {
                         <div :title="data?.name" class="w-28 truncate ... items-center">
                             {{ data?.name }}
                         </div>
-                        <div class="w-[70%] flex w-full justify-around">
+                        <div class="w-[78%] flex w-full justify-around">
                             <BreezeCheckbox v-model="checkUsers.morning[data.id]" :checked="checkUsers.morning[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                             <BreezeCheckbox v-model="checkUsers.noon[data.id]" :checked="checkUsers.noon[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                             <BreezeCheckbox v-model="checkUsers.afternoon[data.id]" :checked="checkUsers.afternoon[data.id] === true" class="accent-[#639f1e] mr-2 w-4 h-4 border-[#639f1e] text-[16px] hover:text-[#639f1e]"/>
                         </div>
-                        <i @click="commentModal(data.id)" class="far fa-pen cursor-pointer"></i>
+                        <div class="w-7 flex items-center mx-auto">
+                            <i v-if=" data.created_by===user.id" @click="deleteParticipant(data.id)" class="far mr-3 hover:text-red-700 fa-trash cursor-pointer"></i>
+                        </div>
+                        <i @click="commentModal(data.id)" class="mx-auto w-7 far fa-pen cursor-pointer"></i>
                     </div>
                     <Link :href="route('roster-register-cycle')" class="flex mx-auto items-center mt-4 space-x-2 border border-white p-0.5 cursor-pointer w-36 justify-center text-[12px]">
                         <div>Add a Participant</div>
@@ -242,7 +298,7 @@ onMounted( ()=> {
         <MasterFooter
             :footerLists="footerLists"
         />
-        <modal-dialog ModalId='preview' ModalTitle='Group Images'>
+        <modal-dialog ModalId='preview' ModalTitle='Group Images' @CloseModel=CloseModel>
             <div class="modal-body h-[500px] overflow-y-auto relative p-4">
                 <div v-if="urlGroup.length !== 0" v-for="(img, key) in urlGroup">
                     <div class="flex justify-end">
@@ -257,7 +313,16 @@ onMounted( ()=> {
         </modal-dialog>
         <modal-dialog ModalId='addComment' ModalTitle=''>
             <div class="pb-4 px-4">
-                <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer mb-2" />
+                <div class="flex items-end -mt-8">
+                    <label for="userCamera">
+                        <ImageLogo class="w-20 h-auto rounded-lg cursor-pointer" />
+                    </label>
+                    <div class="text-center">
+                        <a v-if="!!userImageUrl" :href="userImageUrl" target="_blank" class="ml-2 text-sm text-blue-700 cursor-pointer">Preview</a>
+                        <a v-else-if="!!userComment.image" :href="baseUrl+'/storage/images/cycle-track-user/'+userComment.image" target="_blank" class="ml-2 text-sm text-blue-700 cursor-pointer">Preview</a>
+                    </div>
+                </div>
+                <input @change="userImage($event)" class="hidden" id="userCamera" accept="image/*" type="file">
                 <div class="flex items-center">
                     <h5 class="text-xl font-medium leading-normal text-gray-800">Comment:</h5>
                     <div v-if="!!errors?.userComment" class="ml-2 text-red-700 font-bold text-sm" >{{ errors.userComment }}</div>

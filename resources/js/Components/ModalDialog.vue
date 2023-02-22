@@ -22,7 +22,7 @@
                         {{ ModalTitle }}
                     </h5>
                     <div class="flex items-center justify-between rounded-t-md">
-                        <button @click="$emit('CloseModel')" type="button" class="btn-close py-1 px-3 box-content flex items-center hover:bg-[#7eca21] text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-te-modal-dismiss aria-label="Close">x</button>
+                        <button @click="$emit('CloseModel')" type="button" class="z-10 btn-close py-1 px-3 box-content flex items-center hover:bg-[#7eca21] text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-te-modal-dismiss aria-label="Close">x</button>
                     </div>
                 </div>
                 <div data-te-modal-body-ref class="relative px-4">

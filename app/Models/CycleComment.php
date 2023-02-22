@@ -22,7 +22,7 @@ class CycleComment extends Model
 
     public function UserComments ()
     {
-        return $this->hasMany(CafeUserComment::class, 'cycle_comment_id', 'id')->select('id', 'user_id',	'cycle_comment_id', 'comment');
+        return $this->hasMany(CafeUserComment::class, 'cycle_comment_id', 'id')->select('id', 'user_id',	'cycle_comment_id', 'comment', 'image');
     }
 }
 

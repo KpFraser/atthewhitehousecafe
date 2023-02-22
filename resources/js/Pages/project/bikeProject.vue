@@ -251,7 +251,7 @@ const { Toast } = commonFunctions(),
                                     <img alt="two" class="w-32 h-32" v-if="bike.show" :src="baseUrl+'/storage/images/'+bike.image" />
                                 </a>
                                 <div v-show="errors.image !== ''" class="flex items-center">
-                                    <div  class="text-red-600 font-bold text-[14px]">{{ errors.image }}</div>
+                                    <div class="text-red-600 font-bold text-[14px]">{{ errors.image }}</div>
                                 </div>
                             </div>
                             <div class="flex flex-col my-3 justify-between">
