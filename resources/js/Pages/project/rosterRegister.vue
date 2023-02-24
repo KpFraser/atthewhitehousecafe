@@ -9,7 +9,7 @@ import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 import BreezeCheckbox from '@/Components/Checkbox.vue';
 import { Link, useForm } from '@inertiajs/inertia-vue3';
 import useFooterList from "../../../use/useFooterList";
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 import {Inertia} from "@inertiajs/inertia";
 import commonFunctions from "@/use/common";
 import debounce from "lodash/debounce";
@@ -116,15 +116,14 @@ const redirect = () => {
     let project_slug = queryString.split('/')[5]
     if(!!event_slug && !!project_slug)
         Inertia.visit('/roster/' + event_slug + '/' + project_slug)
-    else if(window.location.pathname === '/roster-register-cafe')
-            Inertia.visit('/cafe')
-    else if (window.location.pathname === '/roster-register-cycle')
-        Inertia.visit('/cycle')
+    else if(window.location.href.split('/')[3] === 'roster-register-cafe')
+            Inertia.visit('/cafe/'+event_slug)
+    else if (window.location.href.split('/')[3] === 'roster-register-cycle')
+        Inertia.visit('/cycle/'+event_slug)
 }
 
 const inputSearch = debounce(() => {
     if(formInfo.value.email !== ''){
-        console.log(formInfo.value.email)
         axios
             .get('/searchEmail/'+formInfo.value.email)
             .then((response) => {

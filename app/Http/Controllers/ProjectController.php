@@ -54,7 +54,7 @@ class ProjectController extends Controller
 
     public function events ($id)
     {
-        $data = Event::select('id', 'name', 'slug')->where('project_id', $id)->get();
+        $data = Event::select('id', 'name', 'slug', 'module', 'event_date', 'start_time', 'end_time')->where('project_id', $id)->get();
         if (!empty($data))
             return response()->success($data);
     }

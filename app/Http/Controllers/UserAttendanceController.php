@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CafeResource;
 use App\Models\CycleComment;
 use App\Models\CycleTrackImage;
+use App\Models\Event;
 use App\Models\User;
 use App\Models\UserAttendance;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class UserAttendanceController extends Controller
      */
     public function store(Request $request)
     {
-
+//        dd($request->all());
         $module = json_decode($request->module, true);
         $groupComment = json_decode($request->groupComment, true);
         $raw_date = json_decode($request->date, true);
@@ -54,15 +55,14 @@ class UserAttendanceController extends Controller
         $previous_img = json_decode($request->previous_img, true);
 //        dd($previous_img);
 
-        $cycle_comment = CycleComment::updateOrCreate([
-            'id' => $request->id,
-        ],[
-            'date' => $date,
+        $event_comment = Event::where(array('id' => $request->id))->update([
+            'event_date' => $date,
             'start_time' => $start_time,
             'end_time' => $end_time,
             'module' => $module,
-            'comment' => $groupComment,
+            'group_comment' => $groupComment,
         ]);
+//        dd($event_comment);
 
         for ($i=1; $i <= $length; $i++ ){
             if ($request->hasFile('image'.$i)) {
@@ -76,7 +76,7 @@ class UserAttendanceController extends Controller
                     'user_id'=> auth()->user()->id,
                     'image' => $image,
                     'system_name' => $filename1,
-                    'cycle_comment_id' => $cycle_comment->id,
+                    'event_id' => $request->id,
                 ]);
 
                 if (!empty($length) && $length !== 0 && count($previous_img) !== 0){
@@ -106,7 +106,7 @@ class UserAttendanceController extends Controller
                     UserAttendance::updateOrCreate([
                         'user_id' => $key,
                         'time_period' => $time_period,
-                        'cycle_comment_id' =>$cycle_comment->id,
+                        'event_id' =>$request->id,
                     ], [
                         'status' => $status,
                     ]);
@@ -122,12 +122,13 @@ class UserAttendanceController extends Controller
      * @param  \App\Models\UserAttendance  $userAttendance
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($module)
+    public function show($module, $event)
     {
-        if(!empty($module)){
+//        dd($module, $event);
+        if(!empty($event)){
             $data1 = User::select('id', 'name', 'created_by')->get();
-            $data2 = CycleComment::select('id', 'date', 'comment', 'start_time', 'end_time')
-                ->where('module', $module)
+            $data2 = Event::select('id', 'event_date', 'group_comment', 'start_time', 'end_time')
+                ->where('slug', $event)
                 ->with('UserAttendance', 'CycleTrackImage', 'UserComments')
                 ->first();
             return response()->json(['data1'=> $data1, 'data2'=> new CafeResource($data2)]);

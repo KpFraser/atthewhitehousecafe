@@ -56,7 +56,7 @@ class CafeUserCommentController extends Controller
 
         CafeUserComment::updateOrCreate([
             'user_id' => $request->user_id,
-            'cycle_comment_id'=> $request->cycle_comment_id,
+            'event_id'=> $request->cycle_comment_id,
         ],[
             'comment'=> $request->comment,
             'image'=> $image,

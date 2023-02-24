@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('cafe_user_comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('cycle_comment_id')->constrained()->onDelete('cascade');
+            $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->string('comment')->nullable(true);
             $table->string('image')->nullable(true);
             $table->timestamps();

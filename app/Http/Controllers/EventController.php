@@ -76,6 +76,13 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+        if($request->slug === "the-cafe")
+            $module = 2;
+        else if ($request->slug === "cycle-track")
+            $module = 1;
+        else
+            $module = 0;
+
         $request->validate([
             'name' => 'required|unique:events,name,'.$request->name,
         ]);
@@ -86,10 +93,19 @@ class EventController extends Controller
             $data2 = ProjectUser::select('project_id')->where(array('is_key'=> 1, 'user_id'=> auth()->user()->id))->first();
             $project_id = $data2->project_id;
         }
+        $time_date = Carbon::now()->toDateTimeString();
+        $date = Carbon::parse($time_date)->format('Y-m-d');
+        $start_time = Carbon::parse($time_date)->format('h:m:s');
+        $end_time = Carbon::parse($time_date)->addHour()->format('h:m:s');
+
         Event::Create([
             'user_id'=> auth()->user()->id,
             'name'=> $request->name,
+            'event_date'=> $date,
+            'start_time'=> $start_time,
+            'end_time'=> $end_time,
             'project_id'=> $project_id,
+            'module'=> $module,
             'slug' => Str::slug($request->name),
         ]);
         return response()->success();

@@ -5,7 +5,7 @@
     import useFooterList from "../../../use/useFooterList";
     import BreezeInput from '@/Components/Input.vue';
     import {ref, onMounted } from "vue";
-    import { Link } from '@inertiajs/inertia-vue3';
+    import ModalDialog from '@/Components/ModalDialog.vue';
     import commonFunctions from "@/use/common";
     import {Inertia} from "@inertiajs/inertia";
     import axios from "axios";
@@ -87,18 +87,20 @@ const archieveBtn = (id) =>{
 const bikeProject = (slug) =>{
     if(slug === 'bike-repair' || slug === 'bike-mechanic')
         Inertia.visit('/bike-all-projects/'+slug)
-    else if(slug === 'cycle-track')
-        Inertia.visit('/cycle')
-    else if(slug === 'the-cafe')
-        Inertia.visit('/cafe')
+    // else if(slug === 'cycle-track')
+    //     Inertia.visit('/cycle')
+    // else if(slug === 'the-cafe')
+    //     Inertia.visit('/cafe')
     else
         Inertia.visit('/favourite-project/'+slug)
 }
 
 const showEvents = (id, slug) =>{
-    if(slug === 'bike-repair' || slug === 'bike-mechanic' || slug === 'cycle-track' || slug === 'the-cafe')
+    console.log(id, slug)
+    // if(slug === 'bike-repair' || slug === 'bike-mechanic' || slug === 'cycle-track' || slug === 'the-cafe')
+    if(slug === 'bike-repair' || slug === 'bike-mechanic')
         bikeProject (slug)
-    else if($('.eventHide').hasClass('!h-[250px]')){
+    else if($('.eventHide').hasClass('!h-[250px]')) {
         $('.btnMinus').removeClass('!rotate-90')
         $('.eventHide').removeClass('!h-[250px]')
     }else{
@@ -141,7 +143,7 @@ const eventName = () =>{
                     Toast.fire({icon: "success", title: "Event Added!"})
                     projects()
                     getEvents(project.value.id)
-                    $(".modal").modal('hide')
+                    $("#eventmodel").modal('hide')
                 }
             }).catch((response)=>{
             errors.value.duplicate = response.response.data.message
@@ -149,8 +151,14 @@ const eventName = () =>{
     }
 }
 
-const openEvent =(event, project)=>{
+const openEvent =(event, project, module)=>{
+    console.log(event, project, module)
+    if (module === 0)
     Inertia.visit('/roster/'+event+'/'+project)
+    else if(project === 'cycle-track' && module === 1)
+        Inertia.visit('/cycle/'+event)
+    else if(project === 'the-cafe' && module === 2)
+        Inertia.visit('/cafe/'+event)
 }
 
 // const userDelBtn = (id) =>{
@@ -211,10 +219,14 @@ onMounted( ()=> {
                                     <div :id="'event'+user?.project_names?.id" class="absolute text-white eventHide max-w-lg z-10 overflow-hidden bg-[#639f1e] h-0 left-0 right-0 top-[3.3rem] text-center text-base opacity-90 duration-700">
                                         <div class="text-left text-black font-bold text-lg pl-2">Events</div>
                                         <div class="h-[180px] overflow-auto">
-                                            <div @click="openEvent(data.slug, user?.project_names?.slug)" class="max-w-md mx-auto p-2 cursor-pointer truncate ..." :title="data?.name" v-if="events.length>0" v-for="(data, key) in events">{{key+1}}. {{ data?.name }}</div>
+                                            <div @click="openEvent(data?.slug, user?.project_names?.slug, data?.module)" class="max-w-md text-left p-2 cursor-pointer truncate ..." :title="data?.name" v-if="events.length>0" v-for="(data, key) in events">
+<!--                                                {{key+1}}.-->
+<!--                                                {{ data?.name }}-->
+                                                <pre>{{key+1}}. {{data?.event_date+' ('+data.start_time+'  to  '+data.end_time+')'}}</pre>
+                                            </div>
                                             <div v-else>Events not available !</div>
                                         </div>
-                                        <button @click="project = user?.project_names" class="px-2 border-2 border-white text-black" data-bs-toggle="modal" data-bs-target="#eventmodel">Add an Event</button>
+                                        <button @click="project = user?.project_names" class="px-2 border-2 border-white text-black" data-te-toggle="modal" data-te-target="#eventmodel">Add an Event</button>
                                     </div>
 <!--                                    <i class="far fa-trash mr-8 cursor-pointer text-[30px]"  @click="userDelBtn(user.id)"></i>-->
 <!--                                    <i class="far fa-pencil mr-8 cursor-pointer text-[30px]"  @click="userPencilBtn(user.slug)"></i>-->
@@ -245,26 +257,16 @@ onMounted( ()=> {
                     </div>
                 </div>
             </div>
-            <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="eventmodel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="eventmodelLabel" aria-hidden="true">
-                <div class="modal-dialog relative w-auto pointer-events-none">
-                    <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-                        <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-                            <div class="flex items-center">
-                                <h5 class="text-xl mr-2 font-medium leading-normal text-gray-800" id="exampleModalLabel">Add Event</h5>
-                                <div class="font-bold text-red-700" v-if="errors.duplicate !== ''">* {{errors.duplicate}}</div>
-                            </div>
-
-                            <button type="button" class="btn-close box-content flex items-center hover:bg-[#7eca21] h-3 text-center font-extrabold bg-[#639f1e] uppercase font-sans text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
-                        </div>
-                        <div class="modal-body relative p-4">
-                            <BreezeInput v-model="event.name" placeholder="Write Event Name.."/>
-                        </div>
-                        <div class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-                            <button @click="eventName" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" >Submit</button>
-                        </div>
+            <modal-dialog ModalId='eventmodel' ModalTitle='Add Event'>
+                <div class="pb-4 px-4">
+                    <div class="modal-body relative p-4">
+                        <BreezeInput v-model="event.name" placeholder="Write Event Name.."/>
+                    </div>
+                    <div class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
+                        <button @click="eventName()" type="button" class="inline-block px-6 py-2.5 bg-[#639f1e] text-white text-sm rounded hover:bg-[#89d335]" >Submit</button>
                     </div>
                 </div>
-            </div>
+            </modal-dialog>
             <MasterFooter
                 :footerLists="footerLists"
             />

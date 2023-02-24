@@ -10,6 +10,7 @@ import {Link, usePage} from '@inertiajs/inertia-vue3';
 import {onMounted, ref} from "vue";
 import commonFunctions from "@/use/common";
 import ModalDialog from '@/Components/ModalDialog.vue';
+import {Inertia} from "@inertiajs/inertia";
 // import { usePage } from '@inertiajs/vue3';
 
 const { Toast, ConfirmToast } = commonFunctions(),
@@ -150,26 +151,29 @@ const commentModal = (id) =>{
 }
 
 const cycleInfo = () =>{
-    axios
-        .get('/cycle-info/'+1)
-        .then((response)=>{
-            if(response.data?.data1?.length>0)
-                users.value = response.data?.data1
-            if(!!response.data?.data2){
-                checkUsers.value.id = response.data?.data2?.id
-                checkUsers.value.groupComment = response.data?.data2?.comment
-                checkUsers.value.date = response.data?.data2?.date
-                checkUsers.value.start_time = response.data?.data2?.start_time
-                checkUsers.value.end_time = response.data?.data2?.end_time
-                imagesPreview.value = response.data?.data2?.cycle_track_image
-                if(response.data?.data2?.cycle_track_image.length> 0)
-                    checkUsers.value.previous_img = response.data?.data2?.cycle_track_image
-                if(response.data?.data2?.user_comments?.length> 0)
-                    checkUsers.value.user_comments = response.data?.data2?.user_comments
-                filterCheckData(response.data?.data2?.user_attendance)
-            }
-        })
-}
+    if(!!window.location.href.split('/')[4]){
+        axios
+            .get('/cycle-info/'+1+'/'+window.location.href.split('/')[4])
+            .then((response)=>{
+                if(response.data?.data1?.length>0)
+                    users.value = response.data?.data1
+                if(!!response.data?.data2){
+                    checkUsers.value.id = response.data?.data2?.id
+                    checkUsers.value.groupComment = response.data?.data2?.comment
+                    checkUsers.value.date = response.data?.data2?.date
+                    checkUsers.value.start_time = response.data?.data2?.start_time
+                    checkUsers.value.end_time = response.data?.data2?.end_time
+                    if(response.data?.data2?.cycle_track_image.length> 0) {
+                        imagesPreview.value = response.data?.data2?.cycle_track_image
+                        checkUsers.value.previous_img = response.data?.data2?.cycle_track_image
+                    }
+                    if(response.data?.data2?.user_comments?.length> 0)
+                        checkUsers.value.user_comments = response.data?.data2?.user_comments
+                    filterCheckData(response.data?.data2?.user_attendance)
+                }
+            })
+        }
+    }
 
 const filterCheckData = (post) =>{
 
@@ -208,14 +212,17 @@ const deleteParticipant = (id) =>{
     }
 }
 
+const registerCycle = () =>{
+    Inertia.visit('/roster-register-cycle/'+window.location.href.split('/')[4])
+}
+
 const CloseModel = () =>{
     userImageUrl.value = ''
     emptyUserComment ()
 }
 
 onMounted( ()=> {
-    // let test = usePage()
-    console.log(user.value = usePage().props.value.auth.user)
+    user.value = usePage().props.value.auth.user
     cycleInfo ()
 })
 
@@ -267,10 +274,10 @@ onMounted( ()=> {
                         </div>
                         <i @click="commentModal(data.id)" class="mx-auto w-7 far fa-pen cursor-pointer"></i>
                     </div>
-                    <Link :href="route('roster-register-cycle')" class="flex mx-auto items-center mt-4 space-x-2 border border-white p-0.5 cursor-pointer w-36 justify-center text-[12px]">
+                    <div @click="registerCycle()" class="flex mx-auto items-center mt-4 space-x-2 border border-white p-0.5 cursor-pointer w-36 justify-center text-[12px]">
                         <div>Add a Participant</div>
                         <i class="fa fa-plus"></i>
-                    </Link>
+                    </div>
                 </div>
                 <div class="flex items-center">
                     <div class="flex items-center justify-between w-full">

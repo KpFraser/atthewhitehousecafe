@@ -9,6 +9,6 @@ class UserAttendance extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'time_period', 'comment', 'status', 'cycle_comment_id'
+        'user_id', 'time_period', 'comment', 'status', 'event_id'
     ];
 }

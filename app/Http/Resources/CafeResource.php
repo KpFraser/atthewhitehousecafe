@@ -15,20 +15,20 @@ class CafeResource extends JsonResource
      */
     public function toArray($request)
     {
-//        dd($this->UserComments);
-        if(empty($this->date) && empty($this->start_time) && empty($this->end_time)){
+//        dd($this);
+        if(empty($this->event_date) && empty($this->start_time) && empty($this->end_time)){
             $time_date = Carbon::now()->toDateTimeString();
             $date = Carbon::parse($time_date)->format('Y-m-d');
             $start_time = Carbon::parse($time_date)->format('h:m:s');
             $end_time = Carbon::parse($time_date)->addHour()->format('h:m:s');
         } else {
-            $date = $this->date;
+            $date = $this->event_date;
             $start_time = $this->start_time;
             $end_time = $this->end_time;
         }
         return [
             'id' =>$this->id ?? '',
-            'comment' =>$this->comment ?? '',
+            'comment' =>$this->group_comment ?? '',
             'cycle_track_image' =>$this->CycleTrackImage ?? [],
             'date' =>$date ?? '',
             'start_time' =>$start_time ?? '',

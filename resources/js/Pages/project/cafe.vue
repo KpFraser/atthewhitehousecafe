@@ -128,8 +128,9 @@ const userCommentSave = (comment) =>{
 }
 
 const cycleInfo = () =>{
-    axios
-        .get('/cycle-info/'+2)
+    if(!!window.location.href.split('/')[4]){
+        axios
+        .get('/cycle-info/'+2+'/'+window.location.href.split('/')[4])
         .then((response)=>{
             users.value = !!response.data?.data1?.length>0 ? response.data?.data1:[]
             if(!!response.data?.data2){
@@ -148,6 +149,7 @@ const cycleInfo = () =>{
 
             }
         })
+    }
 }
 
 const filterCheckData = (post) =>{
@@ -160,6 +162,10 @@ const filterCheckData = (post) =>{
         else if(value.time_period === 3)
             checkUsers.value.afternoon[value.user_id] = value.status === 1;
     });
+}
+
+const registerCafe = () =>{
+    Inertia.visit('/roster-register-cafe/'+window.location.href.split('/')[4])
 }
 
 onMounted( ()=> {
@@ -211,10 +217,10 @@ onMounted( ()=> {
                         </div>
                         <i @click="commentModal(data.id)" class="far fa-pen cursor-pointer"></i>
                     </div>
-                    <Link :href="route('roster-register-cafe')" class="flex mx-auto items-center mt-4 space-x-2 border border-white p-0.5 cursor-pointer w-36 justify-center text-[12px]">
+                    <div @click="registerCafe()" class="flex mx-auto items-center mt-4 space-x-2 border border-white p-0.5 cursor-pointer w-36 justify-center text-[12px]">
                         <div>Add a Participant</div>
                         <i class="fa fa-plus"></i>
-                    </Link>
+                    </div>
                 </div>
                 <div class="flex items-center">
                     <div class="flex items-center justify-between w-full">

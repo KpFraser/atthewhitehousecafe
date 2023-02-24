@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('user_attendances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('cycle_comment_id')->nullable(true)->constrained()->onDelete('cascade');
+            $table->foreignId('event_id')->nullable(true)->constrained()->onDelete('cascade');
             $table->integer('time_period')->nullable(true)->comment('1 for morning/cook, 2 for noon/clean, 3 for afternoon/stock');
             $table->string('comment')->nullable(true);
             $table->integer('status')->nullable(true)->comment('1 for true, 2 for false');

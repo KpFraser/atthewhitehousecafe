@@ -71,13 +71,13 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
     Route::get('/roster/{event_id}/{project_id}', fn ()=> Inertia::render('project/roster') )->name('roster');
     Route::get('/application', fn ()=> Inertia::render('project/application') )->name('application');
     Route::get('/roster-register/{event_id}/{project_id}', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register');
-    Route::get('/roster-register-cycle', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register-cycle');
-    Route::get('/roster-register-cafe', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register-cafe');
+    Route::get('/roster-register-cycle/{event_id}', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register-cycle');
+    Route::get('/roster-register-cafe/{event_id}', fn ()=> Inertia::render('project/rosterRegister') )->name('roster-register-cafe');
     Route::get('/project-leadership/leader/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-leader');
     Route::get('/project-leadership/assistant/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-assistant');
     Route::get('/project-leadership/application/{slug}', fn ()=> Inertia::render('project/projectLeadership') )->name('project-application');
-    Route::get('/cycle', fn ()=> Inertia::render('project/cycle') )->name('cycle-project');
-    Route::get('/cafe', fn ()=> Inertia::render('project/cafe') )->name('cafe-project');
+    Route::get('/cycle/{event}', fn ()=> Inertia::render('project/cycle') )->name('cycle-project');
+    Route::get('/cafe/{event}', fn ()=> Inertia::render('project/cafe') )->name('cafe-project');
     Route::get('/bike-project/{slug}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project');
     Route::get('/bike-project/{project_slug}/{bike_slug?}', fn ()=> Inertia::render('project/bikeProject') )->name('bike-project-edit');
     Route::get('/bike-all-projects/{slug}', fn ()=> Inertia::render('project/bikeAllProjects') )->name('bike-all-projects');
@@ -136,7 +136,7 @@ Route::group(['middleware' => ['auth', 'verified']], function (){
 
     Route::get('/bike-show/{bike_slug?}', [GoalController::class, 'show']);
 
-    Route::get('/cycle-info/{module}', [UserAttendanceController::class, 'show']);
+    Route::get('/cycle-info/{module}/{event}', [UserAttendanceController::class, 'show']);
     Route::post('/cycle-info', [UserAttendanceController::class, 'store']);
     Route::delete('/delete-participant/{id}', [UserAttendanceController::class, 'destroy']);
 
